@@ -87,7 +87,7 @@ function vymaz_vykon($id_vykon){
 
     if ($db) {
         $sql = <<<EOF
-          DELETE FROM VYKON WHERE VYKON.ID_VYKON = "$id_vykon";
+          DELETE FROM Vykon WHERE Vykon.id = "$id_vykon";
 EOF;
 
         $ret = $db->exec($sql);

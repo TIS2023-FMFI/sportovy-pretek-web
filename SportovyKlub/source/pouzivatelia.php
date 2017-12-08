@@ -40,8 +40,8 @@ class POUZIVATELIA
     $db = napoj_db();
     
    $sql =<<<EOF
-      INSERT INTO POUZIVATELIA (
-         MENO,PRIEZVISKO,ID_ODDIEL,OS_I_C,CHIP,POZNAMKA,USPECH)
+      INSERT INTO Pouzivatelia (
+         meno,priezvisko,id_oddiel,os_i_c,cip,poznamka,uspech)
       VALUES ("$meno2", "$prezvisko2","$oddiel", "$os_i_c2", "$chip2", "$poznamka2","$uspech2");
 EOF;
 
@@ -61,11 +61,9 @@ EOF;
   static function vrat_pouzivatela($ID){
     $db = napoj_db();
     $sql =<<<EOF
-       SELECT * FROM POUZIVATELIA WHERE ID = $ID;
+       SELECT * FROM Pouzivatelia WHERE id = $ID;
 EOF;
-$sql1 =<<<EOF
-         SELECT * from POUZIVATELIA WHERE ID=$ID;
-EOF;
+
 $count = 0;
 if(is_numeric($ID)){
       $ret = $db->query($sql);
@@ -98,7 +96,7 @@ static function vypis_zoznam(){
   $db = napoj_db();
 
    $sql =<<<EOF
-      SELECT * from POUZIVATELIA LEFT JOIN oddiely ON POUZIVATELIA.id_oddiel=oddiely.id ORDER BY oddiely.id IS NULL, oddiely.nazov;;
+      SELECT * from Pouzivatelia LEFT JOIN Oddiely ON Pouzivatelia.id_oddiel=Oddiely.id ORDER BY Oddiely.id IS NULL, Oddiely.nazov;;
 EOF;
    $akt_oddiel=".";
    $ret = $db->query($sql);
@@ -166,9 +164,8 @@ static function vypis_profil($pouz){
 static function vymaz_pouzivatela($ID){
   $db = napoj_db();
     $sql =<<<EOF
-       DELETE FROM POUZIVATELIA WHERE ID = $ID;
-       DELETE FROM PRIHLASENY WHERE ID_POUZ = $ID;
-       DELETE FROM PLATBY WHERE ID_POUZ = $ID;
+       DELETE FROM Pouzivatelia WHERE id = $ID;
+       DELETE FROM Prihlaseni WHERE id_pouz = $ID;
 EOF;
     $ret = $db->exec($sql);
     if(!$ret){
@@ -191,13 +188,13 @@ function uprav_pouzivatela ($MENO, $PRIEZVISKO, $oddiel, $OS_I_C, $CHIP, $POZNAM
     $POZNAMKA2 = $POZNAMKA;
     $uspech2 = htmlentities($uspech, ENT_QUOTES, "UTF-8");
     $sql =<<<EOF
-       UPDATE POUZIVATELIA set MENO = "$MENO2" where ID="$this->id";
-       UPDATE POUZIVATELIA set PRIEZVISKO = "$PRIEZVISKO2" where ID="$this->id";
-       UPDATE POUZIVATELIA set ID_ODDIEL = "$oddiel" where ID="$this->id";
-       UPDATE POUZIVATELIA set OS_I_C = "$OS_I_C2" where ID="$this->id";
-       UPDATE POUZIVATELIA set CHIP = "$CHIP2" where ID="$this->id";
-       UPDATE POUZIVATELIA set POZNAMKA = "$POZNAMKA2" where ID="$this->id";
-       UPDATE POUZIVATELIA set USPECH = "$uspech2" where ID="$this->id";
+       UPDATE Pouzivatelia set meno = "$MENO2" where id="$this->id";
+       UPDATE Pouzivatelia set priezvisko = "$PRIEZVISKO2" where id="$this->id";
+       UPDATE Pouzivatelia set id_oddiel = "$oddiel" where id="$this->id";
+       UPDATE Pouzivatelia set is_i_c = "$OS_I_C2" where id="$this->id";
+       UPDATE Pouzivatelia set cip = "$CHIP2" where id="$this->id";
+       UPDATE Pouzivatelia set poznamka = "$POZNAMKA2" where id="$this->id";
+       UPDATE Pouzivatelia set uspech = "$uspech2" where id="$this->id";
 EOF;
     $ret = $db->exec($sql);
     if(!$ret){
@@ -207,13 +204,5 @@ EOF;
     }
    $db->close();
   }
-
-
-
-
-
-
-
-
 }
  ?>

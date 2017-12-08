@@ -5,7 +5,7 @@ class MyDB extends SQLite3
    {
       function __construct()
       {
-         $this->open('database.db');
+         $this->open('databaseNew.db');
       }
    }
 
@@ -345,7 +345,7 @@ echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" a
 <?php
         }else{
 
-         echo'<img src="fotky/no_photo.jpg" alt="" />';?>
+         echo'<img src="pictures/no_photo.jpg" alt="" />';?>
          <label for="obrazok">Pridaj foto:</label>
         <br>
          <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>

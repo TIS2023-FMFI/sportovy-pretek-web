@@ -1,3 +1,4 @@
+<!-- nepotrebujeme -->
 <?php
 $filename = "database.db";
 $db = sqlite_open($filename, 0666, $error_message) or die($error_message);

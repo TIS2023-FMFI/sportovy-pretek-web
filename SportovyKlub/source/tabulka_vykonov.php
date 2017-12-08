@@ -33,18 +33,18 @@ function vypis_vykony($id_pouzivatela){
     if($db){
         $sql =<<<EOF
       SELECT
-        * FROM VYKON
-        JOIN POUZIVATELIA ON VYKON.ID_LOG = POUZIVATELIA.ID
-        JOIN PRETEKY ON VYKON.ID_PRET = PRETEKY.ID
-        WHERE ID_LOG = "$id_pouzivatela"
-        ORDER BY DATUM ASC;
+        * FROM Vykon
+        JOIN Pouzivatelia ON Vykon.id_log = Pouzivatelia.id
+        JOIN Preteky ON Vykon.id_pret = Preteky.id
+        WHERE id_log = "$id_pouzivatela"
+        ORDER BY datum ASC;
 EOF;
 
         $ret = $db->query($sql);
 
         $sql =<<<EOF
     SELECT
-        MENO,PRIEZVISKO FROM POUZIVATELIA WHERE ID = "$id_pouzivatela";
+        meno,priezvisko FROM Pouzivatelia WHERE id = "$id_pouzivatela";
 EOF;
 
         $ret2 = $db->query($sql);
@@ -108,7 +108,7 @@ function vymaz_vykon($id_vykon){
 
     if ($db) {
         $sql = <<<EOF
-          DELETE FROM VYKON WHERE VYKON.ID_VYKON = "$id_vykon";
+          DELETE FROM Vykony WHERE Vykon.id = "$id_vykon";
 EOF;
 
         $ret = $db->exec($sql);

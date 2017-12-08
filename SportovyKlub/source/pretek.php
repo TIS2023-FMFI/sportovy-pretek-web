@@ -198,6 +198,8 @@ if($navodik){
         </tbody>
     </table>
 
+  </form>
+
 <br>
     <form>
       <h1>Forma exportu</h1>
@@ -280,7 +282,6 @@ if($navodik){
     <br> <br>   <br>
   </div>
 
-    <!--</form>-->
 
     <!--<form method="post">-->
 
@@ -350,7 +351,7 @@ if($navodik){
       <tbody>
         <?php
 
-        //$pr->vypis_neprihlasenych();
+        $pr->vypis_neprihlasenych();
 
         ?>
       </tbody>
