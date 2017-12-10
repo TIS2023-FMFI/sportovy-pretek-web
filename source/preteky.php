@@ -143,42 +143,41 @@ EOF;
 public function vypis_prihlasenych_d_chip(){
     $db = napoj_db();
     $sql =<<<EOF
-           CREATE TABLE temp
-      (ID INTEGER NOT NULL,
-      MENO              TEXT    NOT NULL,
-      PRIEZVISKO        TEXT    NOT NULL,
-      OS_I_C            TEXT,
-      CHIP              TEXT,
-      POZNAMKA          TEXT,
-      USPECH            TEXT,
-      KAT               TEXT,
-      ID_ODDIEL         INTEGER,
-      NIC TEXT
+      CREATE TABLE temp
+      (id INTEGER NOT NULL,
+      id_nic            INTEGER,
+      meno              TEXT    NOT NULL,
+      priezvisko        TEXT    NOT NULL,
+      os_i_c            TEXT,
+      cip               TEXT,
+      id_kmen_clen      INTEGER,
+      poznamka          TEXT,
+      uspech            TEXT,
+      id_kat            INTEGER,
+      id_oddiel         INTEGER,
+      poznamkaPouz      TEXT
       );
 EOF;
 $db->exec($sql);
 $sql =<<<EOF
-          INSERT INTO temp(ID, meno, priezvisko, OS_I_C, CHIP, NIC, USPECH, ID_ODDIEL, KAT, POZNAMKA) SELECT POUZIVATELIA.*, PRIHLASENY.KAT, PRIHLASENY.POZNAMKA FROM POUZIVATELIA INNER JOIN PRIHLASENY ON POUZIVATELIA.ID = PRIHLASENY.ID_POUZ  WHERE (PRIHLASENY.ID_PRET = $this->ID);
+          INSERT INTO temp(id, id_nic, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka) 
+          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz  
+          WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
 $db->exec($sql);
 $sql =<<<EOF
-         SELECT temp.* FROM temp WHERE temp.CHIP in (SELECT temp.CHIP from temp GROUP BY temp.CHIP HAVING COUNT (temp.CHIP) > 1) GROUP BY temp.ID;
+         SELECT temp.* FROM temp WHERE temp.cip in (SELECT temp.cip from temp GROUP BY temp.cip HAVING COUNT (temp.cip) > 1) GROUP BY temp.id;
 EOF;
 $ret = $db->query($sql);
 $sql =<<<EOF
-         DROP TABLE TEMP;
+         DROP TABLE temp;
 EOF;
-
-
-
-
-
-
       while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-        //echo "<b>".$row['ID'],$row['MENO'],$row['PRIEZVISKO'],$row['OS_I_C'],$row['CHIP'],$row['POZNAMKA']."</b><br>";
+        echo "pomocny vypis prihlasenych s duplicitnym cipom";
+        echo "<b>".$row['id'],$row['meno'],$row['priezvisko'],$row['os_i_c'],$row['cip'],$row['poznamka']."</b><br>";
 
         echo "<tr>";
-        //echo '<td><input type="checkbox" name="incharge[]" value="'.$row['ID'].'"/></td>';
+        echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
 
         echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";      //***********************
         echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
@@ -199,38 +198,42 @@ EOF;
 public function vypis_prihlasenych_u_chip(){
     $db = napoj_db();
     $sql =<<<EOF
-           CREATE TABLE temp
-      (ID INTEGER NOT NULL,
-      MENO              TEXT    NOT NULL,
-      PRIEZVISKO        TEXT    NOT NULL,
-      OS_I_C            TEXT,
-      CHIP              TEXT,
-      POZNAMKA          TEXT,
-      USPECH            TEXT,
-      KAT               TEXT,
-      ID_ODDIEL         INTEGER,
-      NIC TEXT
+      CREATE TABLE temp
+      (id INTEGER NOT NULL,
+      id_nic            INTEGER,
+      meno              TEXT    NOT NULL,
+      priezvisko        TEXT    NOT NULL,
+      os_i_c            TEXT,
+      cip               TEXT,
+      id_kmen_clen      INTEGER,
+      poznamka          TEXT,
+      uspech            TEXT,
+      id_kat            INTEGER,
+      id_oddiel         INTEGER,
+      poznamkaPouz      TEXT
       );
 EOF;
 $db->exec($sql);
 $sql =<<<EOF
-          INSERT INTO temp(ID, meno, priezvisko, OS_I_C, CHIP, NIC, USPECH, ID_ODDIEL, KAT, POZNAMKA ) SELECT POUZIVATELIA.*, PRIHLASENY.KAT, PRIHLASENY.POZNAMKA FROM POUZIVATELIA INNER
-           JOIN PRIHLASENY ON POUZIVATELIA.ID = PRIHLASENY.ID_POUZ  WHERE (PRIHLASENY.ID_PRET = $this->ID);
+          INSERT INTO temp(id, id_nic, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka) 
+          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz  
+          WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
 $db->exec($sql);
 $sql =<<<EOF
-         SELECT temp.* FROM temp WHERE temp.CHIP in (SELECT temp.CHIP from temp GROUP BY temp.CHIP HAVING COUNT (temp.CHIP) = 1) GROUP BY temp.ID;
+         SELECT temp.* FROM temp WHERE temp.cip in (SELECT temp.cip from temp GROUP BY temp.cip HAVING COUNT (temp.cip) = 1) GROUP BY temp.id;
 EOF;
 $ret = $db->query($sql);
 $sql =<<<EOF
-         DROP TABLE TEMP;
+         DROP TABLE temp;
 EOF;
 
 
       while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-        //echo $row['ID'],$row['MENO'],$row['PRIEZVISKO'],$row['OS_I_C'],$row['CHIP'],$row['POZNAMKA']."<br>";
+        echo "pomocny vypis prihlasenych s unikatnym cipom";
+        echo $row['id'],$row['meno'],$row['priezvisko'],$row['os_i_c'],$row['cip'],$row['poznamka']."<br>";
         echo "<tr>";
-        //echo '<td><input type="checkbox" name="incharge[]" value="'.$row['ID'].'"/></td>';
+        echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
 
         echo "<td>".$row['meno']."</td>";
         echo "<td>".$row['priezvisko']."</td>";
@@ -253,29 +256,34 @@ EOF;
 public function vypis_neprihlasenych(){
     $db = napoj_db();
     $sql =<<<EOF
-           CREATE TABLE temp
-      (ID INTEGER NOT NULL,
-      MENO              TEXT    NOT NULL,
-      PRIEZVISKO        TEXT    NOT NULL,
-      OS_I_C            TEXT,
-      CHIP              TEXT,
-      POZNAMKA          TEXT,
-      USPECH            TEXT,
-      ID_ODDIEL         INTEGER
+      CREATE TABLE temp
+      (id INTEGER NOT NULL,
+      id_nic            INTEGER,
+      meno              TEXT    NOT NULL,
+      priezvisko        TEXT    NOT NULL,
+      os_i_c            TEXT,
+      cip               TEXT,
+      id_kmen_clen      INTEGER,
+      uspech            TEXT,
+      id_oddiel         INTEGER,
+      poznamkaPouz      TEXT
       );
 EOF;
 $db->exec($sql);
     $sql =<<<EOF
-        INSERT INTO temp(ID, meno, priezvisko, OS_I_C, CHIP, POZNAMKA, USPECH, ID_ODDIEL) SELECT POUZIVATELIA.* FROM POUZIVATELIA LEFT OUTER JOIN PRIHLASENY ON PRIHLASENY.ID_POUZ = POUZIVATELIA.ID
-        WHERE PRIHLASENY.ID is null
-        OR (PRIHLASENY.ID_PRET <> $this->ID AND PRIHLASENY.ID_POUZ NOT IN
-          (SELECT PRIHLASENY.ID_POUZ FROM PRIHLASENY WHERE ID_PRET = $this->ID));
+    
+        INSERT INTO temp(id, id_nic, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech) 
+        SELECT Pouzivatelia.* 
+        FROM Pouzivatelia LEFT OUTER JOIN Prihlaseni ON Prihlaseni.id_pouz = Pouzivatelia.id
+        WHERE Prihlaseni.id is null
+        OR (Prihlaseni.id_pret <> $this->ID AND Prihlaseni.id_pouz NOT IN
+          (SELECT Prihlaseni.id_pouz FROM Prihlaseni WHERE id_pret = $this->ID));
 
 
 EOF;
 $db->exec($sql);
 $sql =<<<EOF
-         SELECT temp.* FROM temp WHERE temp.ID GROUP BY temp.ID;
+         SELECT temp.* FROM temp WHERE temp.id GROUP BY temp.id;
 EOF;
 
 $ret = $db->query($sql);
@@ -285,7 +293,7 @@ EOF;
 $result = $db->query($sql);
 
 $sql =<<<EOF
-         DROP TABLE TEMP;
+         DROP TABLE temp;
 EOF;
 
       if(isset($_COOKIE['posledni_prihlaseni'])){
@@ -434,6 +442,12 @@ EOF;
         <td><a href='zhodnotenie.php?id=<?php echo $row['id']?>'>Celkové hodnotenie</a></td>
       <?php
     }
+    else{
+      ?>
+        <td></td>
+        <td></td>
+      <?php
+    }
 
     echo "</tr>";
    }
@@ -465,6 +479,8 @@ EOF;
     echo "<tr><td><a href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'green'>".$row['nazov']."</a></td>";
   }
     echo "<td>".$row['datum']."</td>";
+    echo "<td>".$row['deadline']."</td>";
+    echo "<td><a href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
 
 
     if(new DateTime($d2) < $d3){
@@ -472,6 +488,12 @@ EOF;
         <td><a href='vykon.php?id=<?php echo $row['id'];?>'>Osobný výkon</a></td>
         <td><a href='zhodnotenie.php?id=<?php echo $row['id']?>'>Celkové hodnotenie</a></td>
 
+      <?php
+    }
+    else{
+      ?>
+        <td></td>
+        <td></td>
       <?php
     }
     echo "<td><input type='submit' value='A'></td>";
@@ -611,7 +633,7 @@ EOF;
    }
    $db->close();
   }
-
+//adept na vymazanie
 static function vypis_zoznam_kategorii_table(){
 
    $db = napoj_db();
@@ -624,7 +646,7 @@ EOF;
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
 
 
-       //echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['nazov'].'"/></td>';
+       echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['nazov'].'"/></td>';
        echo '<td>'.$row['nazov'] ."</td></tr>";
 
    }
@@ -644,7 +666,7 @@ EOF;
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
 
 
-       //echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['nazov'].'" checked/></td>';
+       echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['nazov'].'" checked/></td>';
        echo '<td>'.$row['nazov'] ."</td></tr>";
 
    }
@@ -664,7 +686,7 @@ EOF;
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
 
 
-       //echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['nazov'].'"/></td>';
+       echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['nazov'].'"/></td>';
        echo '<td>'.$row['nazov'] ."</td></tr>";
 
    }

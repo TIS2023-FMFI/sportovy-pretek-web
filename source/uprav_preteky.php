@@ -101,6 +101,7 @@ if ($zobraz_form) {
 
     </tr>
 	 </table>
+   <!-- kategorie-->
    <table><?php
    if(isset($_POST['posli'])&&!isset($_POST['incharge'])){echo'<tr><td><font color="red">Musíte zadať aspoň jednu kategóriu!</font></td></tr>';}
    PRETEKY::vypis_zoznam_pretek_table(); PRETEKY::vypis_zoznam_ostatne_table(); ?></table>

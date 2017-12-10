@@ -29,7 +29,7 @@ $navodik = false;
   }
   $db = napoj_db();
   $sql = <<<EOF
-  	SELECT COUNT(*) AS POCET FROM ZHODNOTENIE WHERE ID_PRET = $pr->ID;
+  	SELECT COUNT(*) AS POCET FROM Zhodnotenie WHERE id_pret = $pr->ID;
 EOF;
 $ret = $db->query($sql);
 $row = $ret->fetchArray(SQLITE3_ASSOC);
@@ -45,7 +45,7 @@ if ($row["POCET"] <= 0){
 <?php
 $db = napoj_db();
 $sql =<<<EOF
-           SELECT * FROM PRIHLASENY JOIN POUZIVATELIA ON PRIHLASENY.ID_POUZ = POUZIVATELIA.ID WHERE PRIHLASENY.ID_PRET = $pr->ID;
+           SELECT * FROM Prihlaseni JOIN Pouzivatelia ON Prihlaseni.id_pouz = Pouzivatelia.id WHERE Prihlaseni.id_pret = $pr->ID;
 EOF;
 $ret = $db->query($sql);
 $i = 0;
@@ -53,9 +53,9 @@ echo "<table id='zhodnotenie_table'><tr><th>Meno</th><th>Priezvisko</th><th>Čas
 while($row = $ret->fetchArray(SQLITE3_ASSOC)){
   echo "<tr>";
  
-  echo "<td>".$row['MENO']."</td>"; 
+  echo "<td>".$row['meno']."</td>"; 
 
-  echo "<td>".$row['PRIEZVISKO']."</td>";
+  echo "<td>".$row['priezvisko']."</td>";
 
   echo '<td><input type="text" name="cas'.$i.'" required/><input type="hidden" name="id'.$i.'" value="'.$row["ID_POUZ"].'"/></td>';
         

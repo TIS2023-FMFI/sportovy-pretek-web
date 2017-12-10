@@ -178,8 +178,7 @@ if($navodik){
 
       <thead>
       <tr>
-
-
+        <th></th>
         <th class="prvy">Meno</th>
         <th class="prvy" id="priezvisko_button">Priezvisko</th>
         <th class="prvy">Kategória</th>

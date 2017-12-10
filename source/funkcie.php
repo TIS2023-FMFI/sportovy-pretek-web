@@ -21,7 +21,8 @@ function napoj_db(){
    }
 }
 
-function vypis_db(){
+// pouzit na export
+/*function vypis_db(){
     $db = napoj_db();
     $sql =<<<EOF
            CREATE TABLE temp
@@ -71,161 +72,7 @@ EOF;
        fclose($myfile);
        $db->close();
   }
-
-
-
-
-
-function Vytvor_tab(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      CREATE TABLE PRETEKY
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-      NAZOV           VARCHAR    NOT NULL,
-      DATUM            DATETIME     NOT NULL,
-      DEADLINE        DATETIME);
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Table created successfully<br>";
-   }
-   $db->close();
-}
-
-
-function Vytvor_tab_pouz(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      CREATE TABLE POUZIVATELIA
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-      MENO              VARCHAR    NOT NULL,
-      PRIEZVISKO        VARCHAR    NOT NULL,
-      OS_I_C            VARCHAR,
-      CHIP              INT,
-      POZNAMKA          VARCHAR);
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Table created successfully<br>";
-   }
-   $db->close();
-}
-
-function Vytvor_tab_uspech(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      CREATE TABLE USPECHY
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-      ID_POUZ  INTEGER,
-      POPIS        VARCHAR    NOT NULL,
-      FOREIGN KEY(ID_POUZ) REFERENCES POUZIVATELIA(ID));
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Table created successfully<br>";
-   }
-   $db->close();
-}
-
-
-function  Pridaj_do_tab(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      INSERT INTO PRETEKY (
-         NAZOV,DATUM,DEADLINE)
-      VALUES ('BEH KOKOTOV PRE LEZBIZKE UCELI', 06/06/1999, '06/26/1982 00:00:00');
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Records created successfully"."<br>";
-   }
-   $db->close();
-}
-
-function Select_z_tab(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      SELECT * from Preteky;
-EOF;
-
-   $ret = $db->query($sql);
-   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      echo "ID = ". $row['ID'] ."<br>";
-      echo "NAZOV = ". $row['NAZOV'] ."<br>";
-      echo "DATUM = ". $row['DATUM'] ."<br>";
-      echo "DEADLINE =  ".$row['DEADLINE'] ."<br><br>";
-   }
-   // echo "Operation done successfully"."<br>";  ////////////////////////////
-   $db->close();
-}
-
-function Vytvor_tab_pretekov(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      CREATE TABLE PRETEKY
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-      NAZOV           VARCHAR    NOT NULL,
-      DATUM            DATETIME     NOT NULL,
-      DEADLINE        DATETIME);
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Table created successfully<br>";
-   }
-   $db->close();
-}
-//skontorluj dlzky strinku backslase
-
-function Vytvor_tab_pri(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      CREATE TABLE PRIHLASENY
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-      ID_POUZ  INT  NOT NULL,
-      ID_PRET  INT  NOT NULL,
-      FOREIGN KEY(ID_POUZ) REFERENCES POUZIVATELIA(ID),
-      FOREIGN KEY(ID_PRET) REFERENCES PRETEKY(ID));
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Table created successfully<br>";
-   }
-   $db->close();
-}
-
-
+*/
 function vymaz_obrazok($id){
 if(file_exists('pictures/'.$id.'.gif')){
         $subor = 'pictures/' . $id .'.gif';
@@ -243,8 +90,6 @@ if(file_exists('pictures/'.$id.'.gif')){
         $subor = 'pictures/' . $id .'.jpeg';
          unlink($subor);
         }
-
-
 }
 
 
@@ -354,65 +199,6 @@ echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" a
 
 
   }
-
-function Vytvor_tab_pla(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      CREATE TABLE PLATBY
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-      ID_POUZ  INT  NOT NULL,
-      DATUM  DATETIME  NOT NULL,
-      SUMA INT NOT NULL,
-      FOREIGN KEY(ID_POUZ) REFERENCES POUZIVATELIA(ID));
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Table created successfully<br>";
-   }
-   $db->close();
-}
-
-function  Pridaj_do_tab_pretekov(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      INSERT INTO PRETEKY (
-         NAZOV,DATUM,DEADLINE)
-      VALUES ('BEH KOKOTOV PRE LEZBIZKE UCELI', 06/06/1999, '06/26/1982 00:00:00');
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Records created successfully"."<br>";
-   }
-   $db->close();
-}
-function  Pridaj_do_tab_prihlas(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      INSERT INTO POUZIVATELIA (
-         MENO,PRIEZVISKO,OS_I_C,CHIP,POZNAMKA)
-      VALUES ('jana', 'omg','asdasd',99,'omfg');
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   } else {
-      echo "Records created successfully"."<br>";
-   }
-   $db->close();
-}
 
 function over($text){
   return strlen($text) >0;
