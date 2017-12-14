@@ -85,18 +85,6 @@ if(isset($_POST['skry'])){
 ?>
 <!DOCTYPE HTML>
 <html>
-<script type="text/javascript" src="sorter/jquery-latest.js"></script>
-<script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-     $("#myTable").tablesorter({sortList: [[2,0]]});
-  });
-</script>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $("#myTable2").tablesorter();
-  });
-</script>
 <?php
   $pr = new PRETEKY();
   $pr=PRETEKY::vrat_pretek($_GET["id"]);
@@ -256,6 +244,19 @@ if(isset($_POST['skry'])){
     </div>
     <br><br>
   </form>   
+
+<script type="text/javascript" src="sorter/jquery-latest.js"></script>
+<script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+     $("#myTable").tablesorter({sortList: [[2,0]]});
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#myTable2").tablesorter();
+  });
+</script>
 
 <?php    
  unset($pr);
