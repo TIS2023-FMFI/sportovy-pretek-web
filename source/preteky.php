@@ -20,8 +20,8 @@ class PRETEKY{
     $this->DATUM = $DATUM;
     $this->DEADLINE = $DEADLINE;
     $this->AKTIV = $AKTIV;
-    //TO TRANSLIT//IGNORE som tam ja pridala lebo inak mi hadzalo chybu ale neriesi to situaciu. G.
-    $this->POZNAMKA = iconv('cp1252', 'UTF-8//TRANSLIT//IGNORE', html_entity_decode($POZNAMKA, ENT_QUOTES, 'cp1252'));
+    //$this->POZNAMKA = iconv('UTF-8', 'cp1252', html_entity_decode($POZNAMKA, ENT_QUOTES, 'cp1252'));
+    $this->POZNAMKA = html_entity_decode($POZNAMKA);
   }
 
   public function pridaj_pretek($NAZOV, $DATUM, $DEADLINE, $POZNAMKA){
@@ -30,7 +30,6 @@ class PRETEKY{
    $reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
    $text = $POZNAMKA;
    if(preg_match($reg_exUrl, $text, $url) && !strpos($text, "</a>") && !strpos($text, "</A>") && !strpos($text, "HREF") && !strpos($text, "href")) {
-      // make the urls hyper links
       $text = preg_replace($reg_exUrl, "<a href=".$url[0].">{$url[0]}</a> ", $text);
     }
     $POZNAMKA2 = htmlentities($text, ENT_QUOTES, 'UTF-8');
@@ -147,7 +146,7 @@ EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       echo "<tr>";
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
-      echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";      //***********************
+      echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";    
       echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
       echo "<td class='fnt'>".$row['id_kat']."</td>";
       echo "<td class='fnt'>".$row['os_i_c']."</td>";
@@ -155,7 +154,6 @@ EOF;
       echo "<td class='fnt'>".$row['poznamka']."</td>";
       echo "</tr> ";
     }
-    // echo "Operation done successfully"."<br>";   ///////////////////
     $db->exec($sql);
     $db->close();
   }
@@ -194,8 +192,6 @@ EOF;
          DROP TABLE temp;
 EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      //echo "pomocny vypis prihlasenych s unikatnym cipom";
-      //echo $row['id'],$row['meno'],$row['priezvisko'],$row['os_i_c'],$row['cip'],$row['poznamka']."<br>";
       echo "<tr>";
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
       echo "<td>".$row['meno']."</td>";
@@ -327,7 +323,6 @@ EOF;
         $pom = new PRETEKY();
         $pom->nacitaj($ID,$row['nazov'],$row['datum'],$row['deadline'], $row['aktiv'], $row['poznamka']);
       }
-      // echo "Operation done successfully"."<br>";    //////////////
       $db->close();
       return $pom;
     }
@@ -394,7 +389,6 @@ EOF;
 
     echo "</tr>";
    }
-   //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
 
@@ -439,7 +433,6 @@ EOF;
     echo "</tr>";
 
    }
-   //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
 
@@ -735,4 +728,4 @@ EOF;
   $db->close();
   }
 }
- ?>
+?>

@@ -26,32 +26,36 @@ if(isset($_POST['export'])){?>
 }
 
 if (isset($_POST['prihlas'])&&isset($_POST['incharge'])){
-  echo "bolo stlacene prihlas<br>";
-  if(is_array($_POST['incharge'])){
-    foreach($_POST['incharge'] as $val){
-      if($val!="-"){
-        $pieces = explode(":", $val);
-        $id_kat=$pieces[0];
-        echo "id_kat:".$id_kat;
-        $id_pouz=$pieces[1];
-        if (isset($_COOKIE['prihlaseni'])){
-          $cookies_prihlaseni=$_COOKIE['prihlaseni'].','.$id_pouz;
+    if(is_array($_POST['incharge'])){
+      $prihlaseni = array();
+      foreach($_POST['incharge'] as $val){
+        if($val!="-"){
+          $pieces = explode(":", $val);
+          $id_kat=$pieces[0];
+          $id_pouz=$pieces[1];
+          $p = POUZIVATELIA::vrat_pouzivatela($id_pouz);
+          array_push($prihlaseni, $p->meno." ".$p->priezvisko);
+          if (isset($_COOKIE['prihlaseni'])){
+            $cookies_prihlaseni=$_COOKIE['prihlaseni'].','.$id_pouz;
+          }
+          else{
+            $cookies_prihlaseni=$id_pouz;
+          }
+          setcookie("prihlaseni", $cookies_prihlaseni, time() + (86400 * 366),"/");
+          if (isset($_POST['poznamka'.$id_pouz])){
+            $poznamka=$_POST['poznamka'.$id_pouz];
+          }
+          else{
+            $poznamka="";
+          }
+          PRETEKY::prihlas_na_pretek($_GET["id"], $id_pouz, $id_kat,$poznamka);
         }
         else{
-          $cookies_prihlaseni=$id_pouz;
+          $_SESSION['error_kat'] = true;
         }
-        setcookie("prihlaseni", $cookies_prihlaseni, time() + (86400 * 366),"/");
-        echo $cookies_prihlaseni."<br>";
-        if (isset($_POST['poznamka'.$id_pouz])){
-          $poznamka=$_POST['poznamka'.$id_pouz];
-        }
-        else{
-          $poznamka="";
-        }
-        PRETEKY::prihlas_na_pretek($_GET["id"], $id_pouz, $id_kat,$poznamka);
       }
+      $_SESSION['prihlaseni'] = implode(", ", $prihlaseni);
     }
-  }
 }
 
 if (isset($_POST['odhlas'])){
@@ -74,17 +78,24 @@ if (isset($_POST['del'])){
 
 $po = new POUZIVATELIA();
 if (isset ($_POST['posli'])&&over($_POST['meno'])&&over($_POST['priezvisko'])){
-  $id_novy=$po->pridaj_pouzivatela ($_POST['meno'], $_POST['priezvisko'],"", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'],"");
-  if ($id_novy>-1 && isset($_POST['kategoria']) && $_POST['kategoria']!='-'){
-    PRETEKY::prihlas_na_pretek($_GET["id"], $id_novy,$_POST['kategoria'],$_POST['poznamka']);
-    if (isset($_COOKIE['prihlaseni'])){
-      setcookie("prihlaseni", $_COOKIE['prihlaseni'].','.$id_novy, time() + (86400 * 366),"/");
+  $rovnaky = $po->over_pouzivatela($_POST['meno'], $_POST['priezvisko']);
+  if($rovnaky == ""){
+    $id_novy = $po->pridaj_pouzivatela ($_POST['meno'], $_POST['priezvisko'],"", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'],"");
+    if ($id_novy>-1 && isset($_POST['kategoria']) && $_POST['kategoria']!='-'){
+      PRETEKY::prihlas_na_pretek($_GET["id"], $id_novy,$_POST['kategoria'],$_POST['poznamka']);
+      if (isset($_COOKIE['prihlaseni'])){
+        setcookie("prihlaseni", $_COOKIE['prihlaseni'].','.$id_novy, time() + (86400 * 366),"/");
+      }
+      else{
+        setcookie("prihlaseni", $id_novy, time() + (86400 * 366),"/");
+      }
     }
-    else{
-      setcookie("prihlaseni", $id_novy, time() + (86400 * 366),"/");
-    }
+    $_SESSION['novy_pouz'] = $po->meno." ".$po->priezvisko;
+    unset($po);
   }
-  unset($po);
+  else{
+    $_SESSION['rovnaky'] = $rovnaky;
+  }
 }
 
 if(isset($_POST['navodik'])){
@@ -94,7 +105,6 @@ if(isset($_POST['navodik'])){
 if(isset($_POST['skry'])){
   $navodik = false;
 }
-
 
 ?>
 <!DOCTYPE HTML>
@@ -146,7 +156,13 @@ if(isset($_POST['skry'])){
     <?php } ?>
     <div id="prihlaseny">
       <h2>Zoznam prihlásených</h2>
-      <p><input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu"></p> <br>
+      <p><input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu" style="margin-bottom: 1em;"></p>
+      <?php
+      if(isset($_SESSION['prihlaseni']) && $_SESSION['prihlaseni'] !== ""){?>
+      <p style="color:green;"><?php echo $_SESSION['prihlaseni']; ?> prihlásený/í</p>
+      <?php
+      unset($_SESSION['prihlaseni']);
+      }?>
       <table id="myTable" class="tablesorter" border="1" >
         <col class="col3" >
         <col class="col10" >
@@ -203,7 +219,7 @@ if(isset($_POST['skry'])){
       } 
       if((isset($_SESSION['admin'])&&$_SESSION['admin']==1)||(isset($pr->AKTIV)&&$pr->AKTIV==1&&isset($pr->DEADLINE))&&$d1>$d2){ 
         echo''; ?>
-        <input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning">
+        <input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning" style="margin-bottom: 1em">
         <?php 
       } 
       if (isset($_SESSION['admin'])&&$_SESSION['admin']){
@@ -211,8 +227,22 @@ if(isset($_POST['skry'])){
         <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať používateľov?');" value="Vymazať používateľa"> <!-- aj v admine kde su vsetci pouzivatelia-->
         <?php
       }
-    if((isset($_SESSION['admin'])&&$_SESSION['admin']==1) || $d1 > $d2){ ?>
-      <br><br><br>
+      if(isset($_SESSION['error_kat'])){ ?>
+        <p style="color:red">Treba zvoliť kategóriu!</p>
+        <?php 
+        unset($_SESSION['error_kat']);
+      }
+      if (isset($_SESSION['rovnaky'])){ ?>
+        <p style="color:red">Používateľ <?php echo $_SESSION['rovnaky'];?> je už zaregistrovaný!</p>
+        <?php 
+        unset($_SESSION['rovnaky']);
+      }
+      else if(isset($_SESSION['novy_pouz'])) {?>
+        <p style="color:green">Používateľ <?php echo $_SESSION['novy_pouz'];?> bol zaregistrovaný a prihlásený.</p>
+        <?php 
+        unset($_SESSION['novy_pouz']);
+      }
+    if((isset($_SESSION['admin']) && $_SESSION['admin']==1) || $d1 > $d2){ ?>
       <table  id="myTable2" class="tablesorter" border="1"> 
         <col class="col10" >
         <col class="col15" >
