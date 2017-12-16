@@ -5,6 +5,20 @@ include('pouzivatelia.php');
 include('preteky.php');
 $navodik = false;
 
+
+//vymazanie cookies typu s nazvom kat_pretekar, posledni_prihlaseni ak by mal niekto zapamatane v prehliadaci z predchadzajucej verzie
+//ale s tym uz nepracujeme tak to asi ani neni treba
+if (isset($_SERVER['HTTP_COOKIE'])) {
+    $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+    foreach($cookies as $cookie) {
+        $parts = explode('=', $cookie);
+        $name = trim($parts[0]);
+        if (strpos($name, 'kat_pretekar') !== false  || strpos($name, 'posledni_prihlasni') !== false){
+          setcookie($name, '', time() - 3600, '/');
+        }
+    }
+}
+
 //export
 if(isset($_POST['export'])){?>
   <meta http-equiv="refresh" content="0;URL=zoznam.txt" />
@@ -12,18 +26,22 @@ if(isset($_POST['export'])){?>
 }
 
 if (isset($_POST['prihlas'])&&isset($_POST['incharge'])){
-  // PHP throws a fit if we try to loop a non-array
+  echo "bolo stlacene prihlas<br>";
   if(is_array($_POST['incharge'])){
-    $cookies="";
     foreach($_POST['incharge'] as $val){
       if($val!="-"){
-        if ($cookies!=""){
-          $cookies.="#";
-        }
         $pieces = explode(":", $val);
-        $id_pouz=$pieces[1];
         $id_kat=$pieces[0];
-        $cookies.=$id_pouz;
+        echo "id_kat:".$id_kat;
+        $id_pouz=$pieces[1];
+        if (isset($_COOKIE['prihlaseni'])){
+          $cookies_prihlaseni=$_COOKIE['prihlaseni'].','.$id_pouz;
+        }
+        else{
+          $cookies_prihlaseni=$id_pouz;
+        }
+        setcookie("prihlaseni", $cookies_prihlaseni, time() + (86400 * 366),"/");
+        echo $cookies_prihlaseni."<br>";
         if (isset($_POST['poznamka'.$id_pouz])){
           $poznamka=$_POST['poznamka'.$id_pouz];
         }
@@ -33,13 +51,10 @@ if (isset($_POST['prihlas'])&&isset($_POST['incharge'])){
         PRETEKY::prihlas_na_pretek($_GET["id"], $id_pouz, $id_kat,$poznamka);
       }
     }
-    setcookie("posledni_prihlaseni", $cookies, time() + (86400 * 366),"/");
   }
 }
 
-
 if (isset($_POST['odhlas'])){
-  // PHP throws a fit if we try to loop a non-array
   if(is_array($_POST['incharge'])){
     foreach($_POST['incharge'] as $val){
       PRETEKY::odhlas_z_preteku($_GET["id"], $val);
@@ -48,7 +63,6 @@ if (isset($_POST['odhlas'])){
 }
 
 if (isset($_POST['del'])){
-  // PHP throws a fit if we try to loop a non-array
   if(is_array($_POST['incharge2'])){
     foreach($_POST['incharge2'] as $val){
       $po = new POUZIVATELIA();
@@ -63,11 +77,11 @@ if (isset ($_POST['posli'])&&over($_POST['meno'])&&over($_POST['priezvisko'])){
   $id_novy=$po->pridaj_pouzivatela ($_POST['meno'], $_POST['priezvisko'],"", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'],"");
   if ($id_novy>-1 && isset($_POST['kategoria']) && $_POST['kategoria']!='-'){
     PRETEKY::prihlas_na_pretek($_GET["id"], $id_novy,$_POST['kategoria'],$_POST['poznamka']);
-    if (isset($_COOKIE['posledni_prihlaseni'])){
-      setcookie("posledni_prihlaseni", $_COOKIE['posledni_prihlaseni']."#".$id_novy, time() + (86400 * 366),"/");
+    if (isset($_COOKIE['prihlaseni'])){
+      setcookie("prihlaseni", $_COOKIE['prihlaseni'].','.$id_novy, time() + (86400 * 366),"/");
     }
     else{
-      setcookie("posledni_prihlaseni", $id_novy, time() + (86400 * 366),"/");
+      setcookie("prihlaseni", $id_novy, time() + (86400 * 366),"/");
     }
   }
   unset($po);
@@ -111,15 +125,10 @@ if(isset($_POST['skry'])){
           </tr>
           <tr>
             <td>
-              V ľavom stĺpci je zoznam prihlásených, v pravom si vyberiete koho prihlasujete.
-              <br>
-              Ak si vás počítač zapamätal, tak tam máte tých, čo ste prihlasovali minule.
-              <br>
-              Ak sa nenájdete v pravom stĺpci, stlačte VIAC POUŽÍVATEĽOV, zoznam sa rozbalí.
-              <br>
-              Ak sa ani tak nenájdete (ste tu prvý raz), vyplňte položky v prázdnom
-              riadku, zakliknite štvorček a stlačte PRIHLÁSIŤ NA TRÉNING.
-              <br>
+              V ľavom stĺpci je zoznam prihlásených, v pravom si vyberiete koho prihlasujete. <br>
+              Ak si vás počítač zapamätal, tak tam máte tých, čo ste prihlasovali minule.<br>
+              Ak sa nenájdete v pravom stĺpci, stlačte VIAC POUŽÍVATEĽOV, zoznam sa rozbalí.<br>
+              Ak sa ani tak nenájdete (ste tu prvý raz), vyplňte položky v prázdnom riadku, zakliknite štvorček a stlačte PRIHLÁSIŤ NA TRÉNING. <br>
               Ak potrebujete poradiť, alebo sa chcete prihlásiť mailom, napíšte na adresu balogh@elf.stuba.sk
             </td>
           </tr>
@@ -173,13 +182,9 @@ if(isset($_POST['skry'])){
         <p><input name="export" type="submit" id="export" value="Export do súboru"></p>
         <?php 
       } ?> 
-      <br> <br>   <br>
-    </div>
-    
-    <!--</form>-->
 
-    <!--<form method="post">-->
-  
+      <br> <br> <br>
+    </div>  
     <div id="odhlaseny">
       <h2>Neprihlásení používatelia</h2>
     <?php
