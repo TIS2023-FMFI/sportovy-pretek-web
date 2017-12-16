@@ -101,7 +101,6 @@ EOF;
         INSERT INTO Prihlaseni (id_pouz,id_pret,id_kat,poznamka)
         VALUES ("$id_pouz","$id","$id_kat","$poz");
 EOF;
-    setcookie('kat_pretekar'.$id_pouz, $id_kat, time() + (86400 * 366),"/");
     $ret = $db->exec($sql);
     if(!$ret){
       echo $db->lastErrorMsg();
@@ -251,21 +250,18 @@ EOF;
     $sql =<<<EOF
          DROP TABLE temp;
 EOF;
-    if(isset($_COOKIE['posledni_prihlaseni'])){
-      $cookiesArray=explode("#",$_COOKIE['posledni_prihlaseni']);
+    if(isset($_COOKIE['prihlaseni'])){
+      $cookiesArray=explode(",",$_COOKIE['prihlaseni']);
     }
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      if ((isset($_GET['cookies'])&&!$_GET['cookies'])||(!isset($_COOKIE['posledni_prihlaseni']) || in_array($row['id'],$cookiesArray))){
+      if ((isset($_GET['cookies'])&&!$_GET['cookies'])||(!isset($_COOKIE['prihlaseni']) || in_array($row['id'],$cookiesArray))){
         echo "<tr>";
         echo '<td><input type="checkbox" name="incharge2[]" value="'.$row['id'].'"/></td>';
         echo '<td><select name="incharge[]">';
         echo '<option value="-">-</option>';
         while($row1 = $result->fetchArray(SQLITE3_ASSOC) ){
           echo '<option value="'.$row1['id_kat'].':'.$row['id'].'" ';
-          if (isset($_COOKIE['kat_pretekar'.$row['id']]) && $_COOKIE['kat_pretekar'.$row['id']]==$row1['nazov']){
-            echo "selected";
-          }
-          echo '>'.$row1['nazov'].'</option>';
+           echo '>'.$row1['nazov'].'</option>';
 
         }
         echo "</select></td>";
@@ -303,7 +299,6 @@ EOF;
     <td><input type="text" name="poznamka" id="poznamka" size="10" value=""></td>
     </tr>
     <?php
-    // echo "Operation done successfully"."<br>";       ////////////////////////
     $db->exec($sql);
     $db->close();
   }
