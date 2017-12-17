@@ -40,13 +40,6 @@ else{
         </table>
         </div>         
         <?php 
-        if(isset($_GET['aktiv'])){
-          PRETEKY::aktivuj($_GET['id']);
-        }
-        if(isset($_GET['zmaz'])){
-          PRETEKY::vymaz_pretek($_GET['id']);
-          echo '<meta http-equiv="refresh" content="0; URL=index.php">';
-        }
       }
       else{?>
         </tr>
@@ -56,7 +49,6 @@ else{
         <br><br>
         <?php
       }
-
 
 paticka();        
 ?>

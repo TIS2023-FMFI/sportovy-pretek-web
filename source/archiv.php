@@ -1,3 +1,4 @@
+
 <?php
 include('funkcie.php');
 include('pouzivatelia.php');
@@ -55,7 +56,7 @@ else{
         <br><br>
         <?php
       }
-////////////////////////////////
+
 
 paticka();        
 ?>
