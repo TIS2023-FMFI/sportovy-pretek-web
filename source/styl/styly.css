@@ -182,9 +182,6 @@ footer {
 form {
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
-#prihlas{
-	margin-bottom: 1em;
-}
 #prihlaseny{
 	float: left;
 	width: 500px;
@@ -320,6 +317,7 @@ table.n td{
 .grey{
   color:grey;
 }
+
 /*-------------------------------- vsetci_pouzivatelia.php, platby.php --------------------------------*/
 
 #vsetci_pouzivatelia, #tab_platby{

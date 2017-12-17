@@ -159,7 +159,7 @@ function hlavicka($meno=""){
   <?php
   if (isset($_SESSION["admin"]) && $_SESSION["admin"]){
     ?>
-    <a href="?odhlas=1">Archív</a>
+    <a href="archiv.php">Archív</a>
     <a href="?odhlas=1">Kmeňoví členovia</a>
     <a href="?odhlas=1">Odhlásenie</a>
     <?php
