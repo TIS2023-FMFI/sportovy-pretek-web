@@ -727,5 +727,60 @@ EOF;
   $db->exec($sql);
   $db->close();
   }
+
+  static function updateExport($retazec){
+    $db = napoj_db();
+    $sql =<<<EOF
+    UPDATE Exporty SET retazec = "$retazec";
+EOF;
+    $ret = $db->exec($sql);
+    $db->close();
+  }
+
+  static function exportuj($id_pret){
+    $prepis = array("meno"=>"MENO","priezvisko"=>"PRIEZVISKO","os_i_c"=>"OS.ČÍSLO","cip"=>"ČIP","nazov"=>"KATEGÓRIA","poznamka"=>"POZNÁMKA");
+    $myfile = fopen("zoznam.txt", "w") or die("Nedá sa otvoriť súbor. Skontrolujte, či sa v priečinku source nachádza súbor zoznam.txt ak nie vytvorte ho.");
+    header('Pragma: public');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Content-Description: File Transfer');
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename=zoznam.csv;');
+    header('Content-Transfer-Encoding: binary'); 
+    $myfilecsv = fopen('php://output', 'w');
+    fputs($myfilecsv, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF)  ));
+    $db = napoj_db();
+    $sql =<<<EOF
+    SELECT * FROM Exporty;
+EOF;
+    $ret = $db->query($sql);
+    $vyber = "";
+    if ($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      $vyber = $row['retazec'];
+    }
+    $stlpce = explode(",", $vyber);
+    $hlavicka = array();
+    foreach ($stlpce as $s) {
+      array_push($hlavicka, $prepis[$s]);
+    }
+    fputcsv($myfile,$hlavicka,";");
+    fputcsv($myfilecsv,$hlavicka,";");
+    $sql =<<<EOF
+      SELECT $vyber 
+      FROM Prihlaseni JOIN (SELECT id,meno,priezvisko,os_i_c,cip FROM Pouzivatelia) as pouz
+      ON Prihlaseni.id_pouz = pouz.id 
+      JOIN Kategorie ON Prihlaseni.id_kat = Kategorie.id
+      WHERE id_pret = $id_pret;
+EOF;
+    $ret = $db->query($sql);
+    while ($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      fputcsv($myfile,$row,";");
+      fputcsv($myfilecsv,$row,";");
+    }
+    exit;
+    $db->close();
+    fclose($myfile);
+    fclose($myfilecsv);
+  }
 }
 ?>

@@ -46,13 +46,13 @@ EOF;
     return $ret;
   }
 
- function bezDiakritiky($text){
+  function bezDiakritiky($text){
     $trans = array(
     'á'=>'a','ä'=>'a','Á'=>'A','Ä'=>'A','Č'=>'C','č'=>'c','Ď'=>'D','ď'=>'d','É'=>'E','é'=>'e','í'=>'i','Í'=>'I','ĺ'=>'l','Ĺ'=>'L','ľ'=>'l','Ľ'=>'L',
     'Ň'=>'N','ň'=>'n','Ó'=>'O','Ô'=>'O','ó'=>'o','ô'=>'o','Ŕ'=>'R','ŕ'=>'r','Š'=>'S','š'=>'s','Ť'=>'T','ť'=>'t','Ú'=>'U','ú'=>'u','ý'=>'y','Ý'=>'Y',
     'Ž'=>'Z','ž'=>'z');
   return strtr($text, $trans);
-}
+  }
 
   function over_pouzivatela($meno,$priezvisko){
     $db = napoj_db();
