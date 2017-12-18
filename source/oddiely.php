@@ -95,6 +95,6 @@ if ($zobraz_form) {
 
 <?php
 paticka();
-}
+
 ?>
 </html>
