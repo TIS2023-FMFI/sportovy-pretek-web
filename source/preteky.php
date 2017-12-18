@@ -146,11 +146,7 @@ EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       echo "<tr>";
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
-<<<<<<< HEAD
       echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";
-=======
-      echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";      //***********************
->>>>>>> LiviaImpl
       echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
       echo "<td class='fnt'>".$row['id_kat']."</td>";
       echo "<td class='fnt'>".$row['os_i_c']."</td>";
