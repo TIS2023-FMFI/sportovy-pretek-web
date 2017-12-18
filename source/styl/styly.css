@@ -211,6 +211,9 @@ footer {
 form {
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
+#prihlas{
+	margin-bottom: 1em;
+}
 #prihlaseny{
 	float: left;
 	width: 500px;
@@ -346,7 +349,6 @@ table.n td{
 .grey{
   color:grey;
 }
-
 /*-------------------------------- vsetci_pouzivatelia.php, platby.php --------------------------------*/
 
 #vsetci_pouzivatelia, #tab_platby{
@@ -366,7 +368,9 @@ table.n td{
 #kat_stl_1{
     margin-right: 5%;
 }
-
+#kat_stl_2{
+    margin-bottom: 5%;
+}
 
 #vsetci_pouzivatelia table, #tab_platby table {border-width: 1px; font-size:medium; padding: 10px; }
 #vsetci_pouzivatelia a, #tab_platby a{ text-decoration: none; color:#4169e1; }

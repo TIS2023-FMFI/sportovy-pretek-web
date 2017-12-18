@@ -111,7 +111,7 @@ else{
   <script>
   $('#datetimepicker').datetimepicker({
     dayOfWeekStart : 1,
-    format:'d-m-Y H:i',
+    format:'Y-m-d H:i',
     lang:'sk',
     showAnim: "show"
   });
@@ -119,7 +119,7 @@ else{
   <script>
   $('#datetimepicker1').datetimepicker({
     dayOfWeekStart : 1,
-    format:'d-m-Y H:i',
+    format:'Y-m-d H:i',
     lang:'sk',
     showAnim: "show"
   });
