@@ -22,7 +22,7 @@ else{
 
 if ((isset($_POST['posli'])) && (over ($_POST['nazov']))) {
    PRETEKY::pridaj_oddiel($_POST['nazov']);
-   echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
+   echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=kategorie.php">';
 }
 
 
