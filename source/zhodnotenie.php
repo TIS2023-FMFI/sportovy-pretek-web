@@ -53,7 +53,7 @@ EOF;
             echo "<tr>";
             echo "<td>".$row['meno']."</td>"; 
             echo "<td>".$row['priezvisko']."</td>";
-            echo '<td><input type="text" name="cas'.$i.'" required/><input type="hidden" name="id'.$i.'" value="'.$row["ID_POUZ"].'"/></td>';
+            echo '<td><input type="text" name="cas'.$i.'" required/><input type="hidden" name="id'.$i.'" value="'.$row["id_pouz"].'"/></td>';
             echo "</tr>";
             $i++;
           }
