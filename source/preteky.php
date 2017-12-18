@@ -438,6 +438,8 @@ EOF;
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
       echo "<td><a href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
+      echo "<td><a href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
+      echo "<td><a href='zhodnotenie.php?id=". $row['id']."'>Celkové hodnotenie</a></td>";
       
       echo "<form  action='' method='get'>
         <td><input type='submit' value='A/D' name='aktiv'>
