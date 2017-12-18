@@ -72,7 +72,7 @@ EOF;
     $ret = $db->exec($sql);
     if(!$ret){
       echo $db->lastErrorMsg();
-    } 
+    }
    $db->close();
   }
 
@@ -131,8 +131,8 @@ EOF;
 EOF;
     $db->exec($sql);
     $sql =<<<EOF
-          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka) 
-          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz  
+          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka)
+          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz
           WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
     $db->exec($sql);
@@ -146,7 +146,7 @@ EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       echo "<tr>";
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
-      echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";    
+      echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";
       echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
       echo "<td class='fnt'>".$row['id_kat']."</td>";
       echo "<td class='fnt'>".$row['os_i_c']."</td>";
@@ -179,8 +179,8 @@ EOF;
 EOF;
     $db->exec($sql);
     $sql =<<<EOF
-          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka) 
-          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz  
+          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka)
+          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz
           WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
     $db->exec($sql);
@@ -226,8 +226,8 @@ EOF;
 EOF;
     $db->exec($sql);
     $sql =<<<EOF
-      INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech) 
-      SELECT Pouzivatelia.* 
+      INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech)
+      SELECT Pouzivatelia.*
       FROM Pouzivatelia LEFT OUTER JOIN Prihlaseni ON Prihlaseni.id_pouz = Pouzivatelia.id
       WHERE Prihlaseni.id is null
       OR (Prihlaseni.id_pret <> $this->ID AND Prihlaseni.id_pouz NOT IN
@@ -472,14 +472,51 @@ EOF;
 
 static function vypis_zoznam_kategorii(){
    $db = napoj_db();
+
+   $pocet = 0;
+   //select na zitenie poctu kategorii
+   $sql =<<<EOF
+      SELECT count(*) as poc from Kategorie;
+EOF;
+   $ret = $db->query($sql);
+  $pocet= $ret->fetchArray(SQLITE3_ASSOC)['poc'];
+
+   //select na vypisanie kategorii
    $sql =<<<EOF
       SELECT * from Kategorie;
 EOF;
    $ret = $db->query($sql);
-   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+
+   $hlavicka_tab_kat = '<table border="1" style="width:100%">
+          <tr>
+            <td class="prvy"></td>
+            <td class="prvy">ID kategórie</td>
+            <td class="prvy">Názov</td>
+          </tr>';
+
+   //vypis laveho stlpca
+   echo '<div id="kat_stl_1">';
+   echo $hlavicka_tab_kat;
+   $i=0;
+   while($i<$pocet/2 and $row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      $i++;
      echo '<tr><td><input type="radio" name="incharge[]" value="'.$row['id'].'"/></td>';
      echo '<td>'.$row['id'].'</td><td>'.$row['nazov'] ."</td></tr>";
    }
+   echo '</table>';
+   echo '</div>';
+
+   //vypis praveho stlpca
+   echo '<div id="kat_stl_2">';
+   echo $hlavicka_tab_kat;
+   $i=0;
+   while($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      $i++;
+     echo '<tr><td><input type="radio" name="incharge[]" value="'.$row['id'].'"/></td>';
+     echo '<td>'.$row['id'].'</td><td>'.$row['nazov'] ."</td></tr>";
+   }
+   echo '</table>';
+   echo '</div>';
    //echo "Operation done successfully"."<br>";
    $db->close();
 }
@@ -636,11 +673,11 @@ EOF;
 static function exportuj_zhodnotenie($id){
   $db = napoj_db();
     $sql =<<<EOF
-      SELECT * 
-      FROM Zhodnotenie JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id 
-                       JOIN Prihlaseni ON Prihlaseni.id_pouz=Pouzivatelia.id 
+      SELECT *
+      FROM Zhodnotenie JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id
+                       JOIN Prihlaseni ON Prihlaseni.id_pouz=Pouzivatelia.id
                        JOIN Kategorie ON Zhodnotenie.id_kat = Kategorie.id
-      WHERE Zhodnotenie.id_pret = $id 
+      WHERE Zhodnotenie.id_pret = $id
       ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
 EOF;
   $ret = $db->query($sql);
@@ -655,10 +692,10 @@ EOF;
 static function vypis_zhodnotenie($ID_PRET){
   $db = napoj_db();
     $sql =<<<EOF
-      SELECT * FROM Zhodnotenie JOIN Prihlaseni ON Prihlaseni.id_pouz=Zhodnotenie.id_pouz AND Prihlaseni.id_pret=Zhodnotenie.id_pret 
-      JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id 
+      SELECT * FROM Zhodnotenie JOIN Prihlaseni ON Prihlaseni.id_pouz=Zhodnotenie.id_pouz AND Prihlaseni.id_pret=Zhodnotenie.id_pret
+      JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id
       JOIN Kategorie ON Kategorie.id = Zhodnotenie.id_kat
-      WHERE Zhodnotenie.id_pret = $ID_PRET  
+      WHERE Zhodnotenie.id_pret = $ID_PRET
       ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
 EOF;
 
@@ -689,7 +726,7 @@ EOF;
     echo '<td><input type="text" name="cas'.$i.'" value = "';
     if (isset($_POST["cas".$i])){
       echo $_POST["cas".$i];
-    } 
+    }
     else{
       echo $row["cas"];
     }
@@ -746,7 +783,7 @@ EOF;
     header('Content-Description: File Transfer');
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename=zoznam.csv;');
-    header('Content-Transfer-Encoding: binary'); 
+    header('Content-Transfer-Encoding: binary');
     $myfilecsv = fopen('php://output', 'w');
     fputs($myfilecsv, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF)  ));
     $db = napoj_db();
@@ -766,9 +803,9 @@ EOF;
     fputcsv($myfile,$hlavicka,";");
     fputcsv($myfilecsv,$hlavicka,";");
     $sql =<<<EOF
-      SELECT $vyber 
+      SELECT $vyber
       FROM Prihlaseni JOIN (SELECT id,meno,priezvisko,os_i_c,cip FROM Pouzivatelia) as pouz
-      ON Prihlaseni.id_pouz = pouz.id 
+      ON Prihlaseni.id_pouz = pouz.id
       JOIN Kategorie ON Prihlaseni.id_kat = Kategorie.id
       WHERE id_pret = $id_pret;
 EOF;
