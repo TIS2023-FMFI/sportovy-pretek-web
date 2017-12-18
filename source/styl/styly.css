@@ -339,7 +339,9 @@ table.n td{
 #kat_stl_1{
     margin-right: 5%;
 }
-
+#kat_stl_2{
+    margin-bottom: 5%;
+}
 
 #vsetci_pouzivatelia table, #tab_platby table {border-width: 1px; font-size:medium; padding: 10px; }
 #vsetci_pouzivatelia a, #tab_platby a{ text-decoration: none; color:#4169e1; }

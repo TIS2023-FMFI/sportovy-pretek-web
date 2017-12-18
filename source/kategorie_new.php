@@ -12,51 +12,19 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']){
   echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';
 }
 else{
-  hlavicka("Kateórie");
+  hlavicka("Nová kategória");
   ?>
   <section>
-  <div id="tab_platby">
-    <form method="post">
-      <h2>Kategórie</h2>
-        <?php
-        $pl = new PRETEKY();
-        PRETEKY::vypis_zoznam_kategorii();
-          //unset($pl);
-        ?>
-    <p>
 
-    <a href="kategorie_new.php"><input type="button" value="Nová kategória"></a>
-    <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať kategóriu?');" value="Vymazať kategóriu">
-    </p>
-    </form>
-    <br><br> <br> <br>
-  </div>
-
-  <br>
   <?php
-  $zobraz_form = false;
 
-  if ((isset($_POST['del']) && (isset($_POST['incharge'])) )){
-    // PHP throws a fit if we try to loop a non-array
-    if(is_array($_POST['incharge'])){
-      foreach($_POST['incharge'] as $val) {
-        PRETEKY::vymaz_kategoriu($val);
-        echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
-      }
-    }
-  }
 
-  if (isset($_POST['novy']) || isset($_POST['posli'])){
-    $zobraz_form = true;
-  }
   if ((isset($_POST['posli'])) && (over ($_POST['nazov']))) {
     PRETEKY::pridaj_kategoriu($_POST['nazov']);
-    echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
+    echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=kategorie.php">';
   }
-  if (isset($_POST['cancel'])) {
-    $zobraz_form = false;
-  }
-  if ($zobraz_form) {
+
+
     ?>
     <div id="novy_pouzivatel">
   	  <form method="post" enctype="multipart/form-data">
@@ -69,12 +37,11 @@ else{
   		    </tr>
         </table>
   	  	<p id="buttons">
-          <input type="submit" name="posli" value="Pridaj">
-          <input type="submit" name="cancel" value="Koniec">
+          <input type="submit" name="posli" value="Pridaj" onclick="console.log('log')">
         </p>
       </form>
     </div>
-  <?php } ?>
+
   </section>
   <br><br>
 
