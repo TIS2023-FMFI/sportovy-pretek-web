@@ -79,6 +79,40 @@ function pridaj_obrazok($id){
   }
 }
 
+function pridaj_kmenovy_clen($id){
+$db = napoj_db();
+$sql =<<<EOF
+          INSERT INTO Kmenovi_clenovia DEFAULT VALUES;
+EOF;
+$id=$_GET['id'];
+$db->exec($sql);
+$sql =<<<EOF
+          SELECT last_insert_rowid() AS id;
+EOF;
+
+$ret = $db->query($sql);
+$row = $ret->fetchArray(SQLITE3_ASSOC);
+$kmenovi_id = $row['id'];
+$db->exec($sql);
+$sql =<<<EOF
+          UPDATE Pouzivatelia SET id_kmen_clen = $kmenovi_id WHERE id = $id;
+EOF;
+$db->exec($sql);
+$db->close();
+}
+
+function je_kmenovy($id){
+$db = napoj_db();
+$sql =<<<EOF
+          SELECT count(id) as c FROM Pouzivatelia WHERE id = $id AND id_kmen_clen NOT NULL;
+EOF;
+$ret = $db->query($sql);
+$row = $ret->fetchArray(SQLITE3_ASSOC);
+$p=$row['c'];
+$db->exec($sql);
+if ($p > 0) return true;
+return false;
+}
 
 function zobraz_obrazok($id){
   if(file_exists('pictures/'.$id.'.gif')){
@@ -134,6 +168,25 @@ function zobraz_obrazok($id){
   }
 }
 
+
+function vrat_cestu_obrazka($id){
+  if(file_exists('pictures/'.$id.'.gif')){
+    return 'pictures/' . $id .'.gif';
+  }
+  else  if(file_exists('pictures/'.$id.'.png')){
+    return 'pictures/' . $id .'.png';
+  }
+  else  if(file_exists('pictures/'.$id.'.jpg')){
+    return 'pictures/' . $id .'.jpg';
+  }
+  else  if(file_exists('pictures/'.$id.'.jpeg')){
+    return 'pictures/' . $id .'.jpeg';
+  }
+  else{
+    return "pictures/no_photo.jpg";
+  }
+}
+
 function over($text){
   return strlen($text) >0;
 }
@@ -150,6 +203,7 @@ function hlavicka($meno=""){
   <link rel="stylesheet" href="styl/styly.css">
   <link rel="stylesheet" href="sorter/themes/blue/style.css">
   <link rel="stylesheet" href="thumbnailviewer.css">
+  <script type="text/javascript" src="js/script.js"></script>
   </head>
   <body>
   <header>
@@ -160,7 +214,7 @@ function hlavicka($meno=""){
   if (isset($_SESSION["admin"]) && $_SESSION["admin"]){
     ?>
     <a href="?odhlas=1">Archív</a>
-    <a href="?odhlas=1">Kmeňoví členovia</a>
+    <a href="kmenovi_clenovia.php">Kmeňoví členovia</a>
     <a href="?odhlas=1">Odhlásenie</a>
     <?php
   }
