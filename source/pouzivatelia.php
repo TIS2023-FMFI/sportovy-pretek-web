@@ -8,6 +8,19 @@ class POUZIVATELIA{
   public $chip;
   public $poznamka;
   public $uspech;
+  //kmenovy_clen
+  public $pohlavie;
+  public $narodenie;
+  public $krajina_narodenia;
+  public $statna_prislusnost;
+  public $krajina_trvaleho_pobytu;
+  public $ulica;
+  public $cislo_domu;
+  public $psc;
+  public $mesto;
+  public $telefon;
+  public $mail;
+  public $id_kmen_clen;
 
   function __construct(){ }
 
@@ -20,7 +33,24 @@ class POUZIVATELIA{
     $this->chip = $chip;
     $this->poznamka = $poznamka;
     $this->uspech = stripslashes($uspech);
+    }
+    
+  function nacitaj_kmenove_info($pohlavie, $narodenie,$krajina_narodenia,$statna_prislusnost,$krajina_trvaleho_pobytu,$ulica,$cislo_domu,$psc,$mesto,$telefon,$mail, $id_kmen_clen){
+    $this->pohlavie = $pohlavie;
+    $this->narodenie = $narodenie;  
+    $this->krajina_narodenia = $krajina_narodenia;
+    $this->statna_prislusnost = $statna_prislusnost;
+    $this->krajina_trvaleho_pobytu = $krajina_trvaleho_pobytu;
+    $this->ulica = $ulica;
+    $this->cislo_domu = $cislo_domu;
+    $this->psc = $psc;
+    $this->mesto = $mesto;
+    $this->telefon = $telefon;
+    $this->mail = $mail;
+    $this->id_kmen_clen = $id_kmen_clen;
   }
+
+
 
   function pridaj_pouzivatela($meno,$prezvisko,$oddiel,$os_i_c,$chip,$poznamka,$uspech){
     $meno2 = $meno;
@@ -72,6 +102,7 @@ EOF;
   }
 
   static function vrat_pouzivatela($ID){
+    $sql2 = NULL;
     $db = napoj_db();
     $sql =<<<EOF
        SELECT * FROM Pouzivatelia WHERE id = $ID;
@@ -79,16 +110,29 @@ EOF;
     $sql1 =<<<EOF
        SELECT * FROM Pouzivatelia WHERE id = $ID;
 EOF;
+    if(isset($_SESSION['admin'])&&$_SESSION['admin'] ==1 ){
+    $sql2 =<<<EOF
+       SELECT * from Kmenovi_clenovia AS k JOIN Pouzivatelia AS p ON p.id_kmen_clen = k.id WHERE p.id = $ID;
+EOF;
+   
+    }
     $count = 0;
     if(is_numeric($ID)){
       $ret = $db->query($sql);
       $ret2 = $db->query($sql1);
+      $ret3 = $db->query($sql2);
       $count = $ret2->fetchArray(PDO::FETCH_NUM);
     }
     if($count>0){
       while($row = $ret->fetchArray(SQLITE3_ASSOC)){
         $p = new self();
         $p->nacitaj($row['id'], $row['meno'], $row['priezvisko'],$row['id_oddiel'], $row['os_i_c'], $row['cip'], $row['poznamka'], $row['uspech']);
+        if(isset($_SESSION['admin'])&&$_SESSION['admin'] ==1 ){
+          while($row = $ret3->fetchArray(SQLITE3_ASSOC)){
+        
+            $p->nacitaj_kmenove_info($row['pohlavie'], $row['datum_narodenia'], $row['krajina_narodenia'],$row['statna_prislusnost'], $row['krajina_trvaleho_pobytu'], $row['ulica'], $row['cislo_domu'], $row['psc'], $row['mesto'], $row['telefon'], $row['mail'], $row['id_kmen_clen']);
+          } 
+        }
         return $p;
       }
       $db->close();
@@ -209,5 +253,26 @@ EOF;
     $db->close();
   }
 
+function uprav_kmenove_info($pohlavie, $narodenie,$krajina_narodenia,$statna_prislusnost,$krajina_trvaleho_pobytu,$ulica,$cislo_domu,$psc,$mesto,$telefon,$mail){
+    $db = napoj_db();
+    $sql =<<<EOF
+        UPDATE Kmenovi_clenovia set pohlavie = "$pohlavie" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set datum_narodenia = "$narodenie" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set krajina_narodenia = "$krajina_narodenia" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set statna_prislusnost = "$statna_prislusnost" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set krajina_trvaleho_pobytu = "$krajina_trvaleho_pobytu" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set ulica = "$ulica" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set cislo_domu = "$cislo_domu" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set psc = "$psc" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set mesto = "$mesto" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set telefon = "$telefon" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set mail = "$mail" where id="$this->id_kmen_clen";
+EOF;
+    $ret = $db->exec($sql);
+    if(!$ret){
+      echo $db->lastErrorMsg();
+    }
+    $db->close();
+  }
 }
 ?>

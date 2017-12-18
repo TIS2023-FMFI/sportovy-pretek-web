@@ -69,6 +69,6 @@ if ((isset($_POST['del']) && (isset($_POST['incharge'])))){
 
 <?php
 paticka();
-}
+
 ?>
 </html>

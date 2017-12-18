@@ -13,6 +13,35 @@
 	background-color:#5A5;
 }
 
+.tabulkaVykonou tr .tooltiptext{
+	visibility: hidden;
+	position: absolute;
+    z-index: 1;
+    opacity: 0;
+    margin-top:20px;
+    transition: opacity 1s;
+}
+
+.tabulkaVykonou tr .tooltiptext::after{
+	content: "";
+    position: absolute;
+}
+
+
+
+.tabulkaVykonou tr:hover .tooltiptext{
+	visibility: visible;
+	opacity: 1;
+
+}
+
+.tabulkaVykonou { border:solid 1px; width:100% } 
+.tabulkaVykonou td { border:solid 1px; } 
+.tabulkaVykonou .cellEditing { padding: 0; } 
+.tabulkaVykonou .cellEditing input[type=text]{ width:100%; border:0; background-color:rgb(255,253,210); }
+
+Read more: http://mrbool.com/how-to-create-an-editable-html-table-with-jquery/27425#ixzz51ZRDuBYb
+
 html,body{
 	height: 100%;
 	width: 100%;
@@ -790,3 +819,59 @@ position:relative;
 	max-width: 200px;
 
 }
+
+/*-------------------------------- kmenovi_clenovia.php -------------------------------*/
+/*.tooltip .tooltiptext{
+	visibility: hidden;
+    width: 120px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+
+.tooltip:hover .tooltiptext{
+	visibility: visible;
+    opacity: 1;
+}*/
+
+#mouseOver {
+    display: inline;
+    position: relative;
+}
+
+#mouseOver img {
+	display:none;
+	max-width: 250;
+	max-height: 200;
+    /*position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    bottom: 1em;
+    opacity: 0;
+    pointer-events: none;
+    transition-duration: 800ms;*/    
+}
+
+#mouseOver:hover img {
+	display:block;
+    opacity: 1;
+    transition-duration: 400ms;
+}
+
