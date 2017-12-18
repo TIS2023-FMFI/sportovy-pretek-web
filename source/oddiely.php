@@ -13,32 +13,32 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']){
 }
 else{
   hlavicka("Oddiely");
-  ?> 
+  ?>
   <section>
-  <div id="tab_platby">  
+  <div id="tab_platby">
     <form method="post">
       <h2>Oddiely</h2>
       <table border="1" style="width:100%">
         <tr>
           <td class="prvy"></td>
           <td class="prvy">ID oddielu</td>
-          <td class="prvy">Názov</td>     
+          <td class="prvy">Názov</td>
         </tr>
         <?php
         $pl = new PRETEKY();
         PRETEKY::vypis_zoznam_oddiely();
-        ?>  
+        ?>
       </table>
       <p>
-        <input name="novy" type="submit" id="novy" value="Nový oddiel">
-        <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať oddiel?');" value="Vymazať oddiel"> 
+        <a href="oddiely_new.php"><input type="button" value="Nový oddiel"></a>
+        <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať oddiel?');" value="Vymazať oddiel">
       </p>
     </form>
-    <br><br> <br> <br>  
+    <br><br> <br> <br>
 </div>
 <br>
-<?php 
-$zobraz_form = false;
+<?php
+
 
 
 if ((isset($_POST['del']) && (isset($_POST['incharge'])))){
@@ -50,38 +50,12 @@ if ((isset($_POST['del']) && (isset($_POST['incharge'])))){
       }
     }
   }
-}
-if (isset($_POST['novy']) || isset($_POST['posli'])) {
-  $zobraz_form = true;            
-}
-if ((isset($_POST['posli'])) && (over ($_POST['nazov']))) {
-   PRETEKY::pridaj_oddiel($_POST['nazov']);
-   echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
-}
-if (isset($_POST['cancel'])) {
-  $zobraz_form = false;
-}
-if ($zobraz_form) {
-?>
-  <div id="novy_pouzivatel">
-	  <form method="post" enctype="multipart/form-data">
-      <h2>Pridať oddiel</h2>
-	    <table>
-        <?php if(isset($_POST['nazov']) && !over($_POST['nazov'])){echo'<tr><td><font color="red">Nevyplnili ste názov!</font></td></tr>';} ?>
-        <tr>
-          <td><label for="nazov">Názov:</label></td>
-		      <td><input type="text" name="nazov" id="nazov" size="30" value="<?php if(isset($_POST['nazov'])){echo $_POST['nazov'];} ?>"></td>
-		    </tr>
-      </table>       
-	  	<p id="buttons">
-        <input type="submit" name="posli" value="Pridaj">
-        <input type="submit" name="cancel" value="Koniec">
-		  </p>       
-    </form>
-  </div>
-<?php } ?>
+
+
+
+ ?>
 </section>
-    
+
 <script src="js/jquery.js"></script>
 <script src="js/jquery.datetimepicker.js"></script>
 <script>
@@ -91,7 +65,7 @@ if ($zobraz_form) {
   lang:'sk',
   showAnim: "show"
   });
-</script> 
+</script>
 
 <?php
 paticka();
