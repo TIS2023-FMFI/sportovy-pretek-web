@@ -35,7 +35,8 @@ if(isset($_POST['ulozFormu']) && isset($_POST['ex'])){
   PRETEKY::updateExport(implode(",",$map));
 }
 
-if (isset($_POST['prihlas'])&&isset($_POST['incharge'])){
+if (isset($_POST['prihlas'])&&isset($_POST['checked'])){
+    $selected = array();
     if(is_array($_POST['incharge'])){
       $prihlaseni = array();
       foreach($_POST['incharge'] as $val){
@@ -43,29 +44,35 @@ if (isset($_POST['prihlas'])&&isset($_POST['incharge'])){
           $pieces = explode(":", $val);
           $id_kat=$pieces[0];
           $id_pouz=$pieces[1];
-          $p = POUZIVATELIA::vrat_pouzivatela($id_pouz);
-          array_push($prihlaseni, $p->meno." ".$p->priezvisko);
-          if (isset($_COOKIE['prihlaseni'])){
-            $cookies_prihlaseni=$_COOKIE['prihlaseni'].','.$id_pouz;
+          array_push($selected, $id_pouz);
+          if(in_array($id_pouz, $_POST['checked'])){
+            $p = POUZIVATELIA::vrat_pouzivatela($id_pouz);
+            array_push($prihlaseni, $p->meno." ".$p->priezvisko);
+            if (isset($_COOKIE['prihlaseni'])){
+              $cookies_prihlaseni=$_COOKIE['prihlaseni'].','.$id_pouz;
+            }
+            else{
+              $cookies_prihlaseni=$id_pouz;
+            }
+            setcookie("prihlaseni", $cookies_prihlaseni, time() + (86400 * 366),"/");
+            if (isset($_POST['poznamka'.$id_pouz])){
+              $poznamka=$_POST['poznamka'.$id_pouz];
+            }
+            else{
+              $poznamka="";
+            }
+            PRETEKY::prihlas_na_pretek($_GET["id"], $id_pouz, $id_kat,$poznamka);
           }
-          else{
-            $cookies_prihlaseni=$id_pouz;
-          }
-          setcookie("prihlaseni", $cookies_prihlaseni, time() + (86400 * 366),"/");
-          if (isset($_POST['poznamka'.$id_pouz])){
-            $poznamka=$_POST['poznamka'.$id_pouz];
-          }
-          else{
-            $poznamka="";
-          }
-          PRETEKY::prihlas_na_pretek($_GET["id"], $id_pouz, $id_kat,$poznamka);
-        }
-        else{
-          $_SESSION['error_kat'] = true;
         }
       }
-      $_SESSION['prihlaseni'] = implode(", ", $prihlaseni);
+      foreach ($_POST['checked'] as $ch) {
+        if(!in_array($ch, $selected)){
+           $_SESSION['error_kat'] = true;
+           break;
+        }
+      }
     }
+    $_SESSION['prihlaseni'] = implode(", ", $prihlaseni);
 }
 
 if (isset($_POST['odhlas'])){
@@ -77,8 +84,8 @@ if (isset($_POST['odhlas'])){
 }
 
 if (isset($_POST['del'])){
-  if(is_array($_POST['incharge2'])){
-    foreach($_POST['incharge2'] as $val){
+  if(is_array($_POST['checked'])){
+    foreach($_POST['checked'] as $val){
       $po = new POUZIVATELIA();
       $po->vymaz_pouzivatela($val);
       unset($po);
