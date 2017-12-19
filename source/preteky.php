@@ -406,7 +406,7 @@ EOF;
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
       echo "<td><a href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
-      
+
       echo "<form  action='' method='get'>
         <td><input type='submit' value='A/D' name='aktiv'>
             <input type='hidden' value=".$row['id']." name='id'>
@@ -422,7 +422,7 @@ EOF;
             <input type='hidden' value=".$row['id']." name='id'>
         </td>
       </form>";
-      echo "</tr>";   
+      echo "</tr>";
    }
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
@@ -440,7 +440,7 @@ EOF;
       echo "<td><a href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
       echo "<td><a href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
       echo "<td><a href='zhodnotenie.php?id=". $row['id']."'>Celkové hodnotenie</a></td>";
-      
+
       echo "<form  action='' method='get'>
         <td><input type='submit' value='A/D' name='aktiv'>
             <input type='hidden' value=".$row['id']." name='id'>
@@ -456,7 +456,7 @@ EOF;
             <input type='hidden' value=".$row['id']." name='id'>
         </td>
       </form>";
-      echo "</tr>";   
+      echo "</tr>";
    }
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
@@ -465,7 +465,7 @@ EOF;
 *Aktivuje alebo deaktivuje pretek podla sucasneho stavu
 */
 static function aktivuj($ID){
-   $db = napoj_db(); 
+   $db = napoj_db();
    $pretek = new PRETEKY();
    $pretek = PRETEKY::vrat_pretek($ID);
    if($pretek->AKTIV=='0'){
@@ -518,7 +518,9 @@ static function vypis_zoznam_kategorii(){
       SELECT count(*) as poc from Kategorie;
 EOF;
    $ret = $db->query($sql);
-   $pocet= $ret->fetchArray(SQLITE3_ASSOC)['poc'];
+   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    $pocet= $row['poc'];
+   }
 
    //select na vypisanie kategorii
    $sql =<<<EOF
