@@ -19,8 +19,8 @@ class PRETEKY{
     $this->DATUM = $DATUM;
     $this->DEADLINE = $DEADLINE;
     $this->AKTIV = $AKTIV;
-    //TO TRANSLIT//IGNORE som tam ja pridala lebo inak mi hadzalo chybu ale neriesi to situaciu. G.
-    $this->POZNAMKA = iconv('cp1252', 'UTF-8//TRANSLIT//IGNORE', html_entity_decode($POZNAMKA, ENT_QUOTES, 'cp1252'));
+    //$this->POZNAMKA = iconv('cp1252', 'UTF-8//TRANSLIT//IGNORE', html_entity_decode($POZNAMKA, ENT_QUOTES, 'cp1252'));
+    $this->POZNAMKA = html_entity_decode($POZNAMKA);
   }
 
   public function pridaj_pretek($NAZOV, $DATUM, $DEADLINE, $POZNAMKA){
@@ -255,7 +255,7 @@ EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       if ((isset($_GET['cookies'])&&!$_GET['cookies'])||(!isset($_COOKIE['prihlaseni']) || in_array($row['id'],$cookiesArray))){
         echo "<tr>";
-        echo '<td><input type="checkbox" name="incharge2[]" value="'.$row['id'].'"/></td>';
+        echo '<td><input type="checkbox" name="checked[]" value="'.$row['id'].'"/></td>';
         echo '<td><select name="incharge[]">';
         echo '<option value="-">-</option>';
         while($row1 = $result->fetchArray(SQLITE3_ASSOC) ){
@@ -518,7 +518,7 @@ static function vypis_zoznam_kategorii(){
       SELECT count(*) as poc from Kategorie;
 EOF;
    $ret = $db->query($sql);
-  $pocet= $ret->fetchArray(SQLITE3_ASSOC)['poc'];
+   $pocet= $ret->fetchArray(SQLITE3_ASSOC)['poc'];
 
    //select na vypisanie kategorii
    $sql =<<<EOF
