@@ -113,6 +113,8 @@ EOF;
 */
 
   public function vypis_prihlasenych_d_chip(){
+    $deadline = new DateTime($this->DEADLINE);
+    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
       CREATE TABLE temp
@@ -145,7 +147,12 @@ EOF;
 EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       echo "<tr>";
+      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
+      }
+      else{
+        echo '<td></td>';
+      }
       echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";
       echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
       echo "<td class='fnt'>".$row['id_kat']."</td>";
@@ -162,6 +169,8 @@ EOF;
 *vrati zoznam pouzivatelov pruhlasenych na pretek s unikatnym chipom
 */
   public function vypis_prihlasenych_u_chip(){
+    $deadline = new DateTime($this->DEADLINE);
+    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
       CREATE TABLE temp
@@ -193,10 +202,13 @@ EOF;
          DROP TABLE temp;
 EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      //echo "pomocny vypis prihlasenych s unikatnym cipom";
-      //echo $row['id'],$row['meno'],$row['priezvisko'],$row['os_i_c'],$row['cip'],$row['poznamka']."<br>";
       echo "<tr>";
+      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
+      }
+      else{
+        echo '<td></td>';
+      }
       echo "<td>".$row['meno']."</td>";
       echo "<td>".$row['priezvisko']."</td>";
       echo "<td>".$row['id_kat']."</td>";
