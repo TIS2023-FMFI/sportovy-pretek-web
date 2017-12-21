@@ -28,17 +28,19 @@ else{
     <input type="submit" onclick="location.href='kategorie.php';" value="Kategórie">
     <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely"> 
   <?php } ?>
-  <table border="1" style="width:100%;">  
+  <table border="1" id="archiv" class="tablesorter" style="width:100%;">  
+    <thead>
     <tr>
-      <td class="prvy">Typ tréningu</td>
-      <td class="prvy">Dátum konania</td> 
-      <td class="prvy">Prihlasovanie do</td>
-        
+      <th class="prvy">Typ tréningu</td>
+      <th class="prvy">Dátum konania</td> 
+      <th class="prvy">Prihlasovanie do</td>
+    </tr>
+  </thead>
+  <tbody>
       <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
-        <td class="prvy"></td>
-        </tr>
         <?php PRETEKY::vypis_archiv();?>
-        </table>
+  </tbody>
+  </table>
         </div>         
         <?php 
         if(isset($_GET['aktiv'])){
@@ -56,8 +58,15 @@ else{
         <br><br>
         <?php
       }
-
-
+?>
+<script type="text/javascript" src="sorter/jquery-latest.js"></script>
+<script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+     $("#archiv").tablesorter({dateFormat: "uk"});
+  });
+</script>
+<?php
 paticka();        
 ?>
 </html>

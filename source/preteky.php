@@ -113,8 +113,6 @@ EOF;
 */
 
   public function vypis_prihlasenych_d_chip(){
-    $deadline = new DateTime($this->DEADLINE);
-    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
       CREATE TABLE temp
@@ -147,12 +145,7 @@ EOF;
 EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       echo "<tr>";
-      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
-      }
-      else{
-        echo '<td></td>';
-      }
       echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";
       echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
       echo "<td class='fnt'>".$row['id_kat']."</td>";
@@ -169,8 +162,6 @@ EOF;
 *vrati zoznam pouzivatelov pruhlasenych na pretek s unikatnym chipom
 */
   public function vypis_prihlasenych_u_chip(){
-    $deadline = new DateTime($this->DEADLINE);
-    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
       CREATE TABLE temp
@@ -202,13 +193,10 @@ EOF;
          DROP TABLE temp;
 EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      //echo "pomocny vypis prihlasenych s unikatnym cipom";
+      //echo $row['id'],$row['meno'],$row['priezvisko'],$row['os_i_c'],$row['cip'],$row['poznamka']."<br>";
       echo "<tr>";
-      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
-      }
-      else{
-        echo '<td></td>';
-      }
       echo "<td>".$row['meno']."</td>";
       echo "<td>".$row['priezvisko']."</td>";
       echo "<td>".$row['id_kat']."</td>";
@@ -376,18 +364,21 @@ EOF;
 static function vypis_zoznam(){
   $db = napoj_db();
   $sql =<<<EOF
-    SELECT * from Preteky WHERE datetime(datum) > datetime('now','localtime') ORDER BY datum DESC;
+    SELECT * from Preteky WHERE datetime(datum) >= datetime('now','localtime') ORDER BY datum DESC;
 EOF;
   $ret = $db->query($sql);
   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
     $d1 = $row['deadline'];
     $d2 = $row['datum'];
     $d3 = new DateTime(date("Y-m-d H:i:s"));
-    if(strtotime($d1) < strtotime('1 days') && strtotime($d1) > strtotime('0 days')){
+    if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
       echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='red'>".$row['nazov']."</a></td>";
     }
     if(strtotime($d1) > strtotime('1 days')){
       echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='green'>".$row['nazov']."</a></td>";
+    }
+    else{
+      echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
     }
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
@@ -409,11 +400,14 @@ EOF;
       $d1 = $row['deadline'];
       $d2 = $row['datum'];
       $d3 = new DateTime(date("Y-m-d H:i:s"));
-      if(strtotime($d1) < strtotime('1 days') && strtotime($d1) > strtotime('0 days')){
+      if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
         echo "<tr><td><a href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'red'>".$row['nazov']."</a></td>";
       }
       if(strtotime($d1) > strtotime('1 days')){
         echo "<tr><td><a href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'green'>".$row['nazov']."</a></td>";
+      }
+      else{
+      echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
       }
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
@@ -639,7 +633,7 @@ static function vypis_zoznam_pretek_table(){
   $db = napoj_db();
   $cislo = $_GET['id'];
   $sql =<<<EOF
-      SELECT Kategorie.nazov,Kategorie.id from Kategorie_pre JOIN Kategorie ON Kategorie_pre.id_kat = Kategorie.id WHERE id_pret = "$cislo";
+      SELECT DISTINCT Kategorie.nazov,Kategorie.id from Kategorie_pre JOIN Kategorie ON Kategorie_pre.id_kat = Kategorie.id WHERE id_pret = "$cislo";
 EOF;
   $ret = $db->query($sql);
   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
