@@ -170,16 +170,25 @@ if(isset($_POST['skry'])){
         <tr><td><?php echo $pr->POZNAMKA; ?></td></tr>
       </table>
     </div>  
-    <?php } ?>
-    <div id="prihlaseny">
-      <h2>Zoznam prihlásených</h2>
+    <?php
+   } 
+   ?>
+  <div id="prihlaseny">
+    <h2>Zoznam prihlásených</h2>
+    <?php
+      $pr = new PRETEKY();
+      $pr=PRETEKY::vrat_pretek($_GET["id"]);
+      $deadline = new DateTime($pr->DEADLINE);
+      $now = new DateTime(date("Y-m-d H:i:s"));
+    if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $pr->AKTIV == 1)) ) {?>
       <p><input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu" style="margin-bottom: 1em;"></p>
       <?php
-      if(isset($_SESSION['prihlaseni']) && $_SESSION['prihlaseni'] !== ""){?>
+    } 
+    if(isset($_SESSION['prihlaseni']) && $_SESSION['prihlaseni'] !== ""){?>
       <p style="color:green;"><?php echo $_SESSION['prihlaseni']; ?> prihlásený/í</p>
       <?php
       unset($_SESSION['prihlaseni']);
-      }?>
+    }?>
       <table id="myTable" class="tablesorter" border="1" >
         <col class="col3" >
         <col class="col10" >
@@ -207,7 +216,6 @@ if(isset($_POST['skry'])){
           ?>
         </tbody>
       </table>
-      <p><input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu"></p> <br> 
       <?php 
       if(isset($_SESSION['admin'])&&$_SESSION['admin'] ==1 ){ 
         if(isset($_GET['exp']) && $_GET['exp'] == 1){
@@ -300,23 +308,20 @@ if(isset($_POST['skry'])){
     <div id="odhlaseny">
       <h2>Neprihlásení používatelia</h2>
     <?php
-
-    $d1 = new DateTime($pr->DEADLINE);
-    $d2 = new DateTime(date("Y-m-d H:i:s"));
-          if (!isset($_GET['cookies'])){?>
-        <?php $link="'pretek.php?id=".$_GET['id']."&cookies=0'"; ?>
-        <input onclick="window.location.href =<?php echo $link;?>" type='button' value='Viac používateľov'>
-        <?php 
-      } 
-      else{
-        $link="'pretek.php?id=".$_GET['id']."'"; ?>
-        <input onclick="window.location.href =<?php echo $link;?>" type='button' value='Menej používateľov'>
-        <?php
-      } 
-      if((isset($_SESSION['admin'])&&$_SESSION['admin']==1)||(isset($pr->AKTIV)&&$pr->AKTIV==1&&isset($pr->DEADLINE))&&$d1>$d2){ 
+      if((isset($_SESSION['admin'])&&$_SESSION['admin']==1)||(isset($pr->AKTIV)&&$pr->AKTIV==1&&isset($pr->DEADLINE))&&$deadline>$now){ 
         echo''; ?>
         <input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning" style="margin-bottom: 1em">
         <?php 
+        if (!isset($_GET['cookies'])){?>
+          <?php $link="'pretek.php?id=".$_GET['id']."&cookies=0'"; ?>
+          <input onclick="window.location.href =<?php echo $link;?>" type='button' value='Viac používateľov'>
+          <?php 
+        } 
+        else{
+          $link="'pretek.php?id=".$_GET['id']."'"; ?>
+          <input onclick="window.location.href =<?php echo $link;?>" type='button' value='Menej používateľov'>
+          <?php
+        } 
       } 
       if (isset($_SESSION['admin'])&&$_SESSION['admin']){
         ?>
@@ -338,7 +343,7 @@ if(isset($_POST['skry'])){
         <?php 
         unset($_SESSION['novy_pouz']);
       }
-    if((isset($_SESSION['admin']) && $_SESSION['admin']==1) || $d1 > $d2){ ?>
+    if((isset($_SESSION['admin']) && $_SESSION['admin']==1) || $deadline > $now){ ?>
       <table  id="myTable2" class="tablesorter" border="1"> 
         <col class="col10" >
         <col class="col15" >
