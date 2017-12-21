@@ -1,3 +1,9 @@
+<script
+              src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+              integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+              crossorigin="anonymous">
+            
+</script>
 <?php
 session_start();
 include('funkcie.php');
@@ -6,7 +12,7 @@ include('preteky.php');
 ?>
 
 <!DOCTYPE HTML>
-<html>
+<html onclick='klik()'>
 <?php
 hlavicka("Kmeňoví členovia");
 if(isset($_POST["vymaz"])){
@@ -20,8 +26,8 @@ vypis_kmenovych_clenov();
 paticka();
 ?>
 
+</html>     
 
-</html>
 
 
 <?php
@@ -31,7 +37,7 @@ function vypis_kmenovych_clenov(){
         ?>
         <div>
         <h1 style="text-align:center;">Kmeňoví členovia</h1>
-        <table style="width:100%;" border=1 class="tabulkaVykonou">
+        <table style="width:100%;" border=1 class="tabulkaVykonou" id="tabulkaKmenovychClenov">
         <tr>
                 <th class="prvy">Meno</th>
                 <th class="prvy">Priezisko</th>
@@ -62,35 +68,35 @@ EOF;
     $cesta_obrazok = vrat_cestu_obrazka($row['id']);
     echo "<tr>";
             
-            echo "<td>".$row['meno']."<span class='tooltiptext'><img src='".$cesta_obrazok."' alt='fotka' height='400' width='450'></span></td>";
-           
-            echo "<td>".$row['priezvisko']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['meno']."<span class='tooltiptext'><img src='".$cesta_obrazok."' alt='fotka' height='400' width='450'></span></td>";
             
-            echo "<td>".$row['pohlavie']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable onclick='klik()' id='td_priezvisko'>".$row['priezvisko']."</td>";
             
-            echo "<td contenteditable>".$row['datum_narodenia']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['pohlavie']."</td>";
             
-            echo "<td contenteditable>".$row['krajina_narodenia']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable onclick='klik()' onkeypress='save(event, ".$row['meno'].",".$row['priezvisko'].",".$row['id_oddiel'].",".$row['os_i_c'].", ".$row['cip'].", ".$row['poznamka'].",".$row['uspech'].", ".$row['pohlavie'].", ".$row['datum_narodenia'].",".$row['krajina_narodenia'].",".$row['statna_prislusnost'].",".$row['krajina_trvaleho_pobytu'].",".$row['ulica'].",".$row['cislo_domu'].",".$row['psc'].",".$row['mesto'].",".$row['telefon'].",".$row['mail'].")'>".$row['datum_narodenia']."</td>";
             
-            echo "<td contenteditable>".$row['statna_prislusnost']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['krajina_narodenia']."</td>";
             
-            echo "<td contenteditable>".$row['krajina_trvaleho_pobytu']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['statna_prislusnost']."</td>";
             
-            echo "<td contenteditable>".$row['ulica']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['krajina_trvaleho_pobytu']."</td>";
             
-            echo "<td contenteditable>".$row['cislo_domu']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['ulica']."</td>";
             
-            echo "<td contenteditable>".$row['psc']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['cislo_domu']."</td>";
             
-            echo "<td contenteditable>".$row['mesto']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['psc']."</td>";
             
-            echo "<td contenteditable>".$row['telefon']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['mesto']."</td>";
             
-            echo "<td contenteditable>".$row['mail']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['telefon']."</td>";
             
-            echo "<td contenteditable>".$row['cip']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['mail']."</td>";
             
-            echo "<td contenteditable>".$row['os_i_c']."<input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'></td>";
+            echo "<td contenteditable>".$row['cip']."</td>";
+            
+            echo "<td contenteditable>".$row['os_i_c']."</td>";
             
             echo "<td><form method='post'><input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'><input type='submit' name='vymaz' value='Vymaž'></form></td>";
     echo "</tr>";
@@ -128,33 +134,61 @@ EOF;
     return false;
 }
 
-/*echo "<script>
-   $('.profilovka').hover(function(){
-        $(this).find('.tooltip').stop().fadeIn();
-
-    },
-    function(){
-        $(this).find('.tooltip').stop().fadeOut();
-    })
-</script>";*/
-
+function vyprint(){
+    $db = napoj_db();
+    if ($db) {
+        $sql = <<<EOF
+          DELETE FROM Kmenovi_clenovia WHERE id = 1;
+EOF;
+        $db->exec($sql);
+        $db->close();
+        }
+    return true;
+}
 
 ?>
-<script src="http://code.jquery.com/jquery-1.11.3.min.js">
-$(function () { $("td").dblclick(function () { 
-log("double"); 
- var OriginalContent = $(this).text();
- $(this).addClass("cellEditing"); 
- $(this).html("<input type='text' value='" + OriginalContent + "' />"); 
- $(this).children().first().focus(); 
- 
 
- $(this).children().first().keypress(function (e) { 
-    if (e.which == 13) { var newContent = $(this).val(); 
-        $(this).parent().text(newContesnt); $(this).parent().removeClass("cellEditing"); } }); 
-        $(this).children().first().blur(function(){ 
-            $(this).parent().text(OriginalContent); 
-            $(this).parent().removeClass("cellEditing"); }); 
-        }); 
-    });
+<script>
+
+
+var timer = null;
+$('#tabulkaKmenovychClenov').keydown(function(){
+       clearTimeout(timer); 
+       timer = setTimeout(doStuff, 1000)
+});
+
+function doStuff() {
+    //alert('Databáza sa aktualizovala.');
+}
+
+function klik(){
+            console.log('klikaaaam');
+        };
+
+function save(e, MENO, PRIEZVISKO, oddiel, OS_I_C, CHIP, POZNAMKA, uspech, pohlavie, narodenie,krajina_narodenia,statna_prislusnost,krajina_trvaleho_pobytu,ulica,cislo_domu,psc,mesto,telefon,mail){
+            console.log('stacila som');
+            if (e.keyCode == 13) {
+                console.log('savujem');
+
+            var table = document.getElementById('tabulkaKmenovychClenov');
+            var t = document.getElementById('td_priezvisko');
+            /*for (var r = 0, n = table.rows.length; r < n; r++) {
+                for (var c = 0, m = table.rows[r].cells.length; c < m-1; c++) {
+                    console.log(table.rows[r].cells[c].innerHTML);
+                }
+            }*/
+            console.log(t.innerHTML);
+            var x=document.getElementById('tabulkaKmenovychClenov');
+            var c ='<?php 
+            echo uprav_pouzivatel(MENO, PRIEZVISKO, oddiel, OS_I_C, CHIP, POZNAMKA, uspech);
+            echo uprav_kmen_clen(pohlavie, narodenie,krajina_narodenia,statna_prislusnost,krajina_trvaleho_pobytu,ulica,cislo_domu,psc,mesto,telefon,mail); 
+            ?>';
+            alert(c);
+            }
+    }
+
+
 </script>
+
+
+
