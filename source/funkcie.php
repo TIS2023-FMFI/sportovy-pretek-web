@@ -5,14 +5,14 @@ class MyDB extends SQLite3{
   function __construct(){
     $this->open('databaseNew.db');
   }
-}  
+}
 
 function napoj_db(){
   $db = new MyDB();
   if(!$db){
     echo $db->lastErrorMsg();
     return false;
-  } 
+  }
   else {
     return $db;
   }
@@ -38,8 +38,7 @@ function vymaz_obrazok($id){
 }
 
 function pridaj_obrazok($id){
-  if(($_FILES['obrazok']['type'] != 'image/png') && ($_FILES['obrazok']['type'] != 'image/jpg') && ($_FILES['obrazok']['type'] != 'image/jpeg')
-  && ($_FILES['obrazok']['type'] != 'image/gif') && ($_FILES['obrazok']['type'] != 'image/bmp')) { }
+  if(($_FILES['obrazok']['type'] != 'image/png') && ($_FILES['obrazok']['type'] != 'image/jpg') && ($_FILES['obrazok']['type'] != 'image/jpeg')) {}
   else{
     $type = $_FILES['obrazok']['type'];
     $pripona = explode("/",$type);
@@ -55,11 +54,6 @@ function pridaj_obrazok($id){
     }
     else if(file_exists('pictures/'.$id.'.jpeg')){
       $subor = 'pictures/' . $id .'.jpeg';
-      unlink($subor);
-      pridaj_obrazok($id);
-    }
-    else if(file_exists('pictures/'.$id.'.gif')){
-      $subor = 'pictures/' . $id .'.gif';
       unlink($subor);
       pridaj_obrazok($id);
     }
@@ -115,18 +109,7 @@ return false;
 }
 
 function zobraz_obrazok($id){
-  if(file_exists('pictures/'.$id.'.gif')){
-    $subor = 'pictures/' . $id .'.gif';
-    echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" alt="" /></a>';
-    ?>
-    <label for="obrazok">Pridaj foto:</label>
-    <br>
-    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
-    <input type="submit" name="vymaz" onclick="return confirm('Naozaj chcete vymazať fotku?');" value="Vymaž foto"><br>
-    <input type="submit" name="posli3" value="Zmeň foto"> <br>
-    <?php
-  }
-  else  if(file_exists('pictures/'.$id.'.png')){
+  if(file_exists('pictures/'.$id.'.png')){
     $subor = 'pictures/' . $id .'.png';
     echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" alt="" /></a>';
     ?>
@@ -213,7 +196,7 @@ function hlavicka($meno=""){
   <?php
   if (isset($_SESSION["admin"]) && $_SESSION["admin"]){
     ?>
-    <a href="?odhlas=1">Archív</a>
+    <a href="archiv.php">Archív</a>
     <a href="kmenovi_clenovia.php">Kmeňoví členovia</a>
     <a href="?odhlas=1">Odhlásenie</a>
     <?php
