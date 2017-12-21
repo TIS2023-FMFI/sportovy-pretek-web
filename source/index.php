@@ -64,7 +64,7 @@ else{
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-     $("#treningy").tablesorter();
+     $("#treningy").tablesorter({dateFormat: "uk"});
   });
 </script>
 <?php
