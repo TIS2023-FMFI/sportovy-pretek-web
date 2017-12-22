@@ -203,7 +203,6 @@ function hlavicka($meno=""){
   <link rel="stylesheet" href="styl/styly.css">
   <link rel="stylesheet" href="sorter/themes/blue/style.css">
   <link rel="stylesheet" href="thumbnailviewer.css">
-  <script type="text/javascript" src="js/script.js"></script>
   </head>
   <body>
   <header>

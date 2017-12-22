@@ -31,14 +31,50 @@ if(isset($_POST['vymaz'])){
 	    <?php 
 	    $po = new POUZIVATELIA();
 	    $po = POUZIVATELIA::vrat_pouzivatela($_GET["id"]);
-	    echo $po->meno; 
+	    /*echo $po->meno; 
 	    echo" ";
 	    echo $po->priezvisko;
 	    echo"<br>";
 	    echo $po->uspech; 
-	    unset($po);
-	    ?>
-    </div>
+	    */
+	echo "<label for='meno'>Meno: </label><label>".$po->meno."</label><br><label for='priezvisko'>Priezvisko: <label><label>".$po->priezvisko."</label><br>
+		<label>".$po->oddiel."</label><br>
+		<label for='os_i_c'>Osobné ident. číslo: </label>
+		<label>".$po->os_i_c."</label><br>
+		<label for='poznamka'>Poznámka: </label>
+		<label>".$po->poznamka."</label><br>
+		<label for='uspechy'>Úspechy: </label>
+		<label>".$po->uspech."</label><br>";
+		
+		if(je_kmenovy($_GET['id'])){
+			echo 
+			"<label for='pohavie'>Pohlavie: </label>
+			<label>".$po->pohlavie."</label><br>
+			<label for='narodenie'>Dátum narodenia: </label>
+			<label>".$po->narodenie."</label><br>
+			<label for='krajinaN'>Krajina narodenia: </label>
+			<label>".$po->krajina_narodenia."</label><br>
+			<label for='statna'>Štátna príslušnosť: </label>
+			<label>".$po->statna_prislusnost."</label><br>
+			<label for='krajina'>Krajina trvelého bydliska: </label>
+			<label>".$po->krajina_trvaleho_pobytu."</label><br>
+			<label for='ulica'>Ulica: </label>
+			<label>".$po->ulica."</label><br>
+			<label for='cislo_domu'>Číslo domu: </label>
+			<label>".$po->cislo_domu."</label><br>
+			<label for='psc'>PSČ: </label>
+			<label>".$po->psc."</label><br>
+			<label for='mesto'>Mesto: </label>
+			<label>".$po->mesto."</label><br> 
+			<label for='telefon'>Telefón: </label>
+			<label>".$po->telefon."</label><br>
+			<label for='mail'>Mail: </label>
+			<label>".$po->mail."</label><br>
+			<label for='cip'>Číslo čipu: </label>
+			<label>".$po->chip."</label><br>
+			<label for='oddiel'>Oddiel: </label>"; 
+		}?>
+	</div>
 	</div>
 </section>
 <br><br>

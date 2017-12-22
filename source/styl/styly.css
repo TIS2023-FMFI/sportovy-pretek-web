@@ -27,8 +27,6 @@
     position: absolute;
 }
 
-
-
 .tabulkaVykonou tr:hover .tooltiptext{
 	visibility: visible;
 	opacity: 1;
