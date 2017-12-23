@@ -94,6 +94,7 @@ nav a:hover{
 	padding: 0.4em 0.5em;
 }
 
+
 .nadpis_table {
   background-color: white;
   color: black;
@@ -130,8 +131,14 @@ footer {
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
-.prvy {color: gray; border-width: 0px; border-color:black}
+.prvy {color: gray; border-width: 0px; 
+		border-color:black;
+		font-size: 12px;}
 
+section .rok a:hover {
+	color: white;
+	padding: 0.4em 0.5em;
+}
 
 /*-------------------------------- admin.php, index.php --------------------------------*/
 .upozornenie {
