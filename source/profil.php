@@ -31,14 +31,9 @@ if(isset($_POST['vymaz'])){
 	    <?php 
 	    $po = new POUZIVATELIA();
 	    $po = POUZIVATELIA::vrat_pouzivatela($_GET["id"]);
-	    /*echo $po->meno; 
-	    echo" ";
-	    echo $po->priezvisko;
-	    echo"<br>";
-	    echo $po->uspech; 
-	    */
+	    
 	echo "<label for='meno'>Meno: </label><label>".$po->meno."</label><br><label for='priezvisko'>Priezvisko: <label><label>".$po->priezvisko."</label><br>
-		<label>".$po->oddiel."</label><br>
+		<label for='meno'>Oddiel: </label><label>".$po->oddiel."</label><br>
 		<label for='os_i_c'>Osobné ident. číslo: </label>
 		<label>".$po->os_i_c."</label><br>
 		<label for='poznamka'>Poznámka: </label>

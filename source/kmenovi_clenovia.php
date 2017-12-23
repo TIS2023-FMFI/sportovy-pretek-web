@@ -1,3 +1,8 @@
+<script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+        crossorigin="anonymous"></script>
+
 <?php
 session_start();
 include('funkcie.php');
@@ -14,25 +19,41 @@ if(isset($_POST["vymaz"])){
         echo "<h4 align='center'>Člen bol odstrátený zo zoznamu kmeňových členov.</h4>";
     }
 }
-//doplnit else
+
+if ((isset($_POST['id'])) && !empty($_POST['id']) && (isset($_POST['obsah'])) && !empty($_POST['obsah']) && (isset($_POST['stlpec'])) && !empty($_POST['stlpec'])) {
+  $id = $_POST['id'];
+  $obsah = $_POST['obsah'];
+  $stlpec = $_POST['stlpec'];
+  
+  echo uprav($id, $obsah, $stlpec);
+}
+
 vypis_kmenovych_clenov();
+
+
 
 paticka();
 ?>
 
-</html>     
+
+</html>
+
 
 <?php
 // === PHP Functions ===
+$obsah = "";
+$stlpec = "";
+$id = "";
 function vypis_kmenovych_clenov(){
-        // onclick="klik()"
+
         ?>
         <div>
         <h1 style="text-align:center;">Kmeňoví členovia</h1>
-        <table style="width:100%;" border=1 class="tabulkaVykonou" id="tabulkaKmenovychClenov">
+        <table style="width:100%;" border=1 class="tabulkaVykonou">
         <tr>
+                <th class="prvy"></th>
                 <th class="prvy">Meno</th>
-                <th class="prvy ">Priezisko</th>
+                <th class="prvy">Priezisko</th>
                 <th class="prvy">Pohlavie</th>
                 <th class="prvy">Dátum narodenia</th>
                 <th class="prvy">Krajina narodenia</th>
@@ -47,7 +68,7 @@ function vypis_kmenovych_clenov(){
                 <th class="prvy">Číslo čipu</th>
                 <th class="prvy">Registračné číslo</th>
                 <th class="prvy"></th>
-          </tr>
+            </tr>
     <?php
     $db = napoj_db();
     $sql =<<<EOF
@@ -55,56 +76,56 @@ function vypis_kmenovych_clenov(){
 EOF;
     $ret = $db->query($sql);
      
-    while($row = $ret->fetchArray(SQLITE3_ASSOC)){
-    //POZNAMKA TU MA BYT????
-    
+    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
     $cesta_obrazok = vrat_cestu_obrazka($row['id']);
     $id_kmen = $row['id_kmen_clen'];
-    $datum = 'datum_narodenia';
-    
-    echo "<tr>";
-    
-            echo "<td contenteditable
-              ><a class='fntb' href='profil.php?id=".$row['id']."'>".$row['meno']."</a><span class='tooltiptext'><img src='".$cesta_obrazok."' alt='fotka' height='400' width='450'></span></td>";
-            
-            echo "<td contenteditable>".$row['priezvisko']."</td>";
-            
-            echo "<td contenteditable>".$row['pohlavie']."</td>";
-            
-            echo "<td contenteditable class='datum_narodenia' onclick='save2(event,".$datum.",".$id_kmen.")'>".$row['datum_narodenia']."</td>";
+    $datum = 'priezvisko';
 
-            echo "<td contenteditable>".$row['krajina_narodenia']."</td>";
+    echo "<tr>";
+            echo "<td><span class='tooltiptext'><img src='".$cesta_obrazok."' alt='fotka' height='400' width='450'></span><a class='fntb' href='profil.php?id=".$row['id']."'>Profil</a></td>";
+
+            echo "<td contenteditable name='meno' id='meno".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['meno']."</td>";
+           
+            echo "<td contenteditable name='priezvisko' id='priezvisko".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['priezvisko']."</td>";
             
-            echo "<td contenteditable>".$row['statna_prislusnost']."</td>";
+            echo "<td contenteditable name='pohlavie' id='pohlavie".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['pohlavie']."</td>";
             
-            echo "<td contenteditable>".$row['krajina_trvaleho_pobytu']."</td>";
+            echo "<td contenteditable name='datum_narodenia' id='datum_narodenia".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['datum_narodenia']."</td>";
             
-            echo "<td contenteditable>".$row['ulica']."</td>";
+            echo "<td contenteditable name='krajina_narodenia' id='krajina_narodenia".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['krajina_narodenia']."</td>";
             
-            echo "<td contenteditable>".$row['cislo_domu']."</td>";
+            echo "<td contenteditable name='statna_prislusnost' id='statna_prislusnost".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['statna_prislusnost']."</td>";
             
-            echo "<td contenteditable>".$row['psc']."</td>";
+            echo "<td contenteditable name='krajina_trvaleho_pobytu' id='krajina_trvaleho_pobytu".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['krajina_trvaleho_pobytu']."</td>";
             
-            echo "<td contenteditable>".$row['mesto']."</td>";
+            echo "<td contenteditable name='ulica' id='ulica".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['ulica']."</td>";
             
-            echo "<td contenteditable>".$row['telefon']."</td>";
+            echo "<td contenteditable name='cislo_domu' id='cislo_domu".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['cislo_domu']."</td>";
             
-            echo "<td contenteditable>".$row['mail']."</td>";
-          
-            echo "<td contenteditable>".$row['cip']."</td>";
+            echo "<td contenteditable name='psc' id='psc".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['psc']."</td>";
             
-            echo "<td contenteditable>".$row['os_i_c']."</td>";
+            echo "<td contenteditable name='mesto' id='mesto".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['mesto']."</td>";
+            
+            echo "<td contenteditable name='telefon' id='telefon".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['telefon']."</td>";
+            
+            echo "<td contenteditable name='mail' id='mail".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['mail']."</td>";
+            
+            echo "<td contenteditable name='cip' id='cip".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['cip']."</td>";
+            
+            echo "<td contenteditable name='os_i_c' id='os_i_c".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['os_i_c']."</td>";
             
             echo "<td><form method='post'><input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'><input type='submit' name='vymaz' value='Vymaž'></form></td>";
     echo "</tr>";
+    
     } 
     // echo "Operation done successfully"."<br>";   ///////////////////
     $db->exec($sql);
     $db->close();
-
+    
     ?>
 
         </table>
+
         </div><?php
 
         return;
@@ -128,79 +149,40 @@ EOF;
         return true;
     }
     return false;
+
 }
 
-function vyprint(){
-    $db = napoj_db();
-    if ($db) {
-        $sql = <<<EOF
-          DELETE FROM Kmenovi_clenovia WHERE id = 1;
-EOF;
-        $db->exec($sql);
-        $db->close();
-        }
-    return true;
-}
 
-function uprav($obsah, $stlpec, $id){
+
+function uprav($id, $obsah, $stlpec){
   $db = napoj_db();
-    if ($db) {
-        $sql = <<<EOF
-          UPDATE Kmenovi_clenovia SET $stlpec = $obsah WHERE id = $id;
+  //UPDATE Pouzivatelia SET $stlpec = $obsah WHERE id = $id;
+  ////UPDATE Pouzivatelia SET priezvisko = 'aaa' WHERE id = 19; 
+  //$stlpec = "meno";
+  //$obsah = "januska";
+  //$id = 10;
+  
+  //strcmp($stlpec,"meno") || strcmp($stlpec,"priezvisko") || strcmp($stlpec,"os_i_c") || strcmp($stlpec,"cip")
+  if ($stlpec == "meno" || $stlpec == "priezvisko" || $stlpec == "os_i_c" || $stlpec == "cip"){
+    $sql = <<<EOF
+          UPDATE Pouzivatelia SET $stlpec = '$obsah' WHERE id = $id; 
 EOF;
+  } 
+  else{
+    $sql = <<<EOF
+          UPDATE Kmenovi_clenovia SET $stlpec = '$obsah' WHERE id = $id; 
+EOF;
+  }
+  if ($db) {
+        
         $db->exec($sql);
         $db->close();
-        }
-    return true;
+  }
+  return true;
+       
 }
+
 
 ?>
 
-<script>
-/*console.log();
-console.log("cakam");
-var timer = null;
-$('#tabulkaKmenovychClenov').keydown(function(){
-       clearTimeout(timer); 
-       timer = setTimeout(doStuff, 100);
-});
-
-function doStuff() {
-    klik();
-}
-
-function klik(){
-    console.log('klikaaaam');
-}
-
-
-function save(e, id_pouz, id_kmen, MENO=null, PRIEZVISKO=null, oddiel=null, OS_I_C=null, CHIP=null, POZNAMKA="", uspech="", pohlavie = null, narodenie = null,krajina_narodenia  = null,statna_prislusnost  = null,krajina_trvaleho_pobytu  = null,ulica  = null,cislo_domu  = null,psc  = null,mesto  = null,telefon  = null,mail){
-            mail = (typeof mail !== 'undefined') ?  mail : null;
-            console.log('stacila som');
-            
-            var table = document.getElementById('tabulkaKmenovychClenov');
-            var t = document.getElementById('td_priezvisko');
-            console.log(t.innerHTML);
-            var x=document.getElementById('tabulkaKmenovychClenov');
-            var c ='<?php 
-            echo $po = new POUZIVATELIA();
-            echo $po->nacitaj(id, MENO, PRIEZVISKO, oddiel, OS_I_C, CHIP, POZNAMKA, uspech);
-            echo $po->nacitaj_kmenoveho(pohlavie, narodenie,krajina_narodenia,statna_prislusnost,krajina_trvaleho_pobytu,ulica,cislo_domu,psc,mesto,telefon,mail, id_kmen_clen);
-            echo $po->uprav_pouzivatela(MENO, PRIEZVISKO, oddiel, OS_I_C, CHIP, POZNAMKA, uspech);
-            echo $po->uprav_kmenove_info(pohlavie, narodenie,krajina_narodenia,statna_prislusnost,krajina_trvaleho_pobytu,ulica,cislo_domu,psc,mesto,telefon,mail); 
-            ?>';
-            alert(c);
-            
-}*/
-function save2(e, stlpec, id){
-  var table = document.getElementById('stlpec');
-  var cont = table.innerHTML;
-  var ex = '<?php 
-    echo uprav(cont, stlpec, id);
-  ?>';
-  alert(ex);
-}
-
-
-</script>
 

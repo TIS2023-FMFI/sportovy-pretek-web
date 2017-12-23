@@ -203,6 +203,8 @@ function hlavicka($meno=""){
   <link rel="stylesheet" href="styl/styly.css">
   <link rel="stylesheet" href="sorter/themes/blue/style.css">
   <link rel="stylesheet" href="thumbnailviewer.css">
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="javascript/script.js"></script>
   </head>
   <body>
   <header>
