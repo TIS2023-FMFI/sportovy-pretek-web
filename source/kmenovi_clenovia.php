@@ -84,35 +84,35 @@ EOF;
     echo "<tr>";
             echo "<td><span class='tooltiptext'><img src='".$cesta_obrazok."' alt='fotka' height='400' width='450'></span><a class='fntb' href='profil.php?id=".$row['id']."'>Profil</a></td>";
 
-            echo "<td contenteditable name='meno' id='meno".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['meno']."</td>";
+            echo "<td contenteditable name='meno' id='meno".$row['id']."' onkeyup='save2(event, this,".$row['id'].")'>".$row['meno']."</td>";
            
-            echo "<td contenteditable name='priezvisko' id='priezvisko".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['priezvisko']."</td>";
+            echo "<td contenteditable name='priezvisko' id='priezvisko".$row['id']."' onkeyup='save2(event, this,".$row['id'].")'>".$row['priezvisko']."</td>";
             
-            echo "<td contenteditable name='pohlavie' id='pohlavie".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['pohlavie']."</td>";
+            echo "<td contenteditable name='pohlavie' id='pohlavie".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['pohlavie']."</td>";
             
-            echo "<td contenteditable name='datum_narodenia' id='datum_narodenia".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['datum_narodenia']."</td>";
+            echo "<td contenteditable name='datum_narodenia' id='datum_narodenia".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['datum_narodenia']."</td>";
             
-            echo "<td contenteditable name='krajina_narodenia' id='krajina_narodenia".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['krajina_narodenia']."</td>";
+            echo "<td contenteditable name='krajina_narodenia' id='krajina_narodenia".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['krajina_narodenia']."</td>";
             
-            echo "<td contenteditable name='statna_prislusnost' id='statna_prislusnost".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['statna_prislusnost']."</td>";
+            echo "<td contenteditable name='statna_prislusnost' id='statna_prislusnost".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['statna_prislusnost']."</td>";
             
-            echo "<td contenteditable name='krajina_trvaleho_pobytu' id='krajina_trvaleho_pobytu".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['krajina_trvaleho_pobytu']."</td>";
+            echo "<td contenteditable name='krajina_trvaleho_pobytu' id='krajina_trvaleho_pobytu".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['krajina_trvaleho_pobytu']."</td>";
             
-            echo "<td contenteditable name='ulica' id='ulica".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['ulica']."</td>";
+            echo "<td contenteditable name='ulica' id='ulica".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['ulica']."</td>";
             
-            echo "<td contenteditable name='cislo_domu' id='cislo_domu".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['cislo_domu']."</td>";
+            echo "<td contenteditable name='cislo_domu' id='cislo_domu".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['cislo_domu']."</td>";
             
-            echo "<td contenteditable name='psc' id='psc".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['psc']."</td>";
+            echo "<td contenteditable name='psc' id='psc".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['psc']."</td>";
             
-            echo "<td contenteditable name='mesto' id='mesto".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['mesto']."</td>";
+            echo "<td contenteditable name='mesto' id='mesto".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['mesto']."</td>";
             
-            echo "<td contenteditable name='telefon' id='telefon".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['telefon']."</td>";
+            echo "<td contenteditable name='telefon' id='telefon".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['telefon']."</td>";
             
-            echo "<td contenteditable name='mail' id='mail".$row['id']."' onkeydown='save2(event, this,".$row['id_kmen_clen'].")'>".$row['mail']."</td>";
+            echo "<td contenteditable name='mail' id='mail".$row['id']."' onkeyup='save2(event, this,".$row['id_kmen_clen'].")'>".$row['mail']."</td>";
             
-            echo "<td contenteditable name='cip' id='cip".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['cip']."</td>";
+            echo "<td contenteditable name='cip' id='cip".$row['id']."' onkeyup='save2(event, this,".$row['id'].")'>".$row['cip']."</td>";
             
-            echo "<td contenteditable name='os_i_c' id='os_i_c".$row['id']."' onkeydown='save2(event, this,".$row['id'].")'>".$row['os_i_c']."</td>";
+            echo "<td contenteditable name='os_i_c' id='os_i_c".$row['id']."' onkeyup='save2(event, this,".$row['id'].")'>".$row['os_i_c']."</td>";
             
             echo "<td><form method='post'><input type='hidden' name='id_clen' value='".$row['id_kmen_clen']."'><input type='submit' name='vymaz' value='Vymaž'></form></td>";
     echo "</tr>";
