@@ -24,7 +24,7 @@ if ((isset($_POST['id'])) && !empty($_POST['id']) && (isset($_POST['obsah'])) &&
   $id = $_POST['id'];
   $obsah = $_POST['obsah'];
   $stlpec = $_POST['stlpec'];
-  
+
   echo uprav($id, $obsah, $stlpec);
 }
 
@@ -156,13 +156,6 @@ EOF;
 
 function uprav($id, $obsah, $stlpec){
   $db = napoj_db();
-  //UPDATE Pouzivatelia SET $stlpec = $obsah WHERE id = $id;
-  ////UPDATE Pouzivatelia SET priezvisko = 'aaa' WHERE id = 19; 
-  //$stlpec = "meno";
-  //$obsah = "januska";
-  //$id = 10;
-  
-  //strcmp($stlpec,"meno") || strcmp($stlpec,"priezvisko") || strcmp($stlpec,"os_i_c") || strcmp($stlpec,"cip")
   if ($stlpec == "meno" || $stlpec == "priezvisko" || $stlpec == "os_i_c" || $stlpec == "cip"){
     $sql = <<<EOF
           UPDATE Pouzivatelia SET $stlpec = '$obsah' WHERE id = $id; 
