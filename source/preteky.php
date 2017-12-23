@@ -113,6 +113,8 @@ EOF;
 */
 
   public function vypis_prihlasenych_d_chip(){
+    $deadline = new DateTime($this->DEADLINE);
+    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
       CREATE TABLE temp
@@ -145,7 +147,12 @@ EOF;
 EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       echo "<tr>";
+      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
+      }
+      else{
+        echo '<td></td>';
+      }
       echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";
       echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
       echo "<td class='fnt'>".$row['id_kat']."</td>";
@@ -162,6 +169,8 @@ EOF;
 *vrati zoznam pouzivatelov pruhlasenych na pretek s unikatnym chipom
 */
   public function vypis_prihlasenych_u_chip(){
+    $deadline = new DateTime($this->DEADLINE);
+    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
       CREATE TABLE temp
@@ -193,10 +202,13 @@ EOF;
          DROP TABLE temp;
 EOF;
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      //echo "pomocny vypis prihlasenych s unikatnym cipom";
-      //echo $row['id'],$row['meno'],$row['priezvisko'],$row['os_i_c'],$row['cip'],$row['poznamka']."<br>";
       echo "<tr>";
+      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
       echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
+      }
+      else{
+        echo '<td></td>';
+      }
       echo "<td>".$row['meno']."</td>";
       echo "<td>".$row['priezvisko']."</td>";
       echo "<td>".$row['id_kat']."</td>";
@@ -344,7 +356,7 @@ EOF;
        DELETE FROM Kategorie_pre WHERE id_pret = $ID;
 EOF;
     $ret = $db->exec($sql);
-    echo'<tr><td><font color="green">Pretek bol zmazaný.</font></td></tr>';
+    //echo'<tr><td><font color="green">Pretek bol zmazaný.</font></td></tr>';
     if(!$ret){
       echo $db->lastErrorMsg();
     }
@@ -372,13 +384,13 @@ EOF;
     $d2 = $row['datum'];
     $d3 = new DateTime(date("Y-m-d H:i:s"));
     if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
-      echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='red'>".$row['nazov']."</a></td>";
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='red'>".$row['nazov']."</a></td>";
     }
     if(strtotime($d1) > strtotime('1 days')){
-      echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='green'>".$row['nazov']."</a></td>";
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='green'>".$row['nazov']."</a></td>";
     }
     else{
-      echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
     }
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
@@ -401,19 +413,19 @@ EOF;
       $d2 = $row['datum'];
       $d3 = new DateTime(date("Y-m-d H:i:s"));
       if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
-        echo "<tr><td><a href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'red'>".$row['nazov']."</a></td>";
+        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'red'>".$row['nazov']."</a></td>";
       }
       if(strtotime($d1) > strtotime('1 days')){
-        echo "<tr><td><a href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'green'>".$row['nazov']."</a></td>";
+        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'green'>".$row['nazov']."</a></td>";
       }
       else{
-      echo "<tr><td><a href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
       }
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
-      echo "<td><a href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
+      echo "<td><a style='font-size:13px;' href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
 
-      echo "<form  action='' method='get'>
+      echo "<form method='post'>
         <td><input type='submit' value='A/D' name='aktiv'>
             <input type='hidden' value=".$row['id']." name='id'>
         </td>
@@ -423,7 +435,7 @@ EOF;
           <input type='hidden' value=".$row['id']." name='id'>
       </td>
       </form>";
-      echo "<form  action='' method='get'>
+      echo "<form method='post'>
         <td><input type='submit' value='X' name='zmaz'>
             <input type='hidden' value=".$row['id']." name='id'>
         </td>
@@ -433,33 +445,34 @@ EOF;
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
-static function vypis_archiv(){
+static function vypis_archiv($rok){
   $db = napoj_db();
+  $rokReg = $rok.'%';
     $sql =<<<EOF
-      SELECT * from Preteky WHERE datetime(datum) < datetime('now','localtime') ORDER BY datum DESC;
+      SELECT * from Preteky WHERE datetime(datum) < datetime('now','localtime') AND datum like "$rokReg" ORDER BY datum DESC;
 EOF;
     $ret = $db->query($sql);
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      echo "<tr><td><a href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'grey'>".$row['nazov']."</a></td>";
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'grey'>".$row['nazov']."</a></td>";
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
-      echo "<td><a href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
-      echo "<td><a href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
-      echo "<td><a href='zhodnotenie.php?id=". $row['id']."'>Celkové hodnotenie</a></td>";
+      echo "<td><a style='font-size:13px;' href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
+      echo "<td><a style='font-size:13px;' href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
+      echo "<td><a style='font-size:13px;' href='zhodnotenie.php?id=". $row['id']."'>Celkové hodnotenie</a></td>";
 
-      echo "<form  action='' method='get'>
+      echo "<form method='post'>
         <td><input type='submit' value='A/D' name='aktiv'>
             <input type='hidden' value=".$row['id']." name='id'>
         </td>
       </form>";
       echo "<form action='novy_pretek.php' method='get'>
-      <td><input name='novy' type='submit' id='novy' value='Cc'>
-          <input type='hidden' value=".$row['id']." name='id'>
+      <td><input name='novy' type='submit' value='Cc'>
+      <input type='hidden' value=".$row['id']." name='id'>
       </td>
       </form>";
-      echo "<form  action='' method='get'>
-        <td><input type='submit' value='X' name='zmaz'>
-            <input type='hidden' value=".$row['id']." name='id'>
+      echo "<form method='post'>
+      <td><input type='submit' value='X' name='zmaz'>
+      <input type='hidden' value=".$row['id']." name='id'>
         </td>
       </form>";
       echo "</tr>";
@@ -467,6 +480,19 @@ EOF;
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
+
+static function vypis_roky(){
+  $db = napoj_db();
+  $sql =<<<EOF
+    SELECT DISTINCT substr(datum,0,5) as rok from Preteky WHERE date(datum) < date('now','localtime');
+EOF;
+  $ret = $db->query($sql);
+  while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    echo "<a style='font-size:25px; text-decoration:none; background-color:rgb(85, 170, 85); color:black; margin:auto; padding:20px; display:block; width:20%; text-align:center;' href='archiv_rok.php?rok=".$row['rok']."'>".$row['rok']."</a><br>";
+  }
+  $db->close();
+}
+
 /**
 *Aktivuje alebo deaktivuje pretek podla sucasneho stavu
 */
@@ -479,14 +505,12 @@ static function aktivuj($ID){
       UPDATE Preteky set aktiv = "1" where id="$ID";
 EOF;
     $ret = $db->exec($sql);
-    echo'<tr><td><font color="green">Pretek bol aktivovaný</font></td></tr>';
   }
     else{
   $sql =<<<EOF
       UPDATE Preteky set aktiv = "0" where id="$ID";
 EOF;
     $ret = $db->exec($sql);
-    echo'<tr><td><font color="green">Pretek bol deaktivovaný</font></td></tr>';
  }
    $db->close();
 }
