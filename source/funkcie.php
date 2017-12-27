@@ -1,5 +1,7 @@
 <?php
 $heslo="olympiada";
+$mail_od="izabela.dobsovicova@gmail.com"; //moj pokusny aby som vedela ci sa posielaju maily
+$mail_komu = "izabela.dobsovicova@gmail.com";
 date_default_timezone_set('UTC');
 class MyDB extends SQLite3{
   function __construct(){
@@ -38,7 +40,14 @@ function vymaz_obrazok($id){
 }
 
 function pridaj_obrazok($id){
-  if(($_FILES['obrazok']['type'] != 'image/png') && ($_FILES['obrazok']['type'] != 'image/jpg') && ($_FILES['obrazok']['type'] != 'image/jpeg')) {}
+  if ($_FILES['obrazok']['error'] === UPLOAD_ERR_INI_SIZE) {
+    //uploading failed due to size limmit
+      echo 'blaboly lebo je obrovsky obrazok';
+      }
+
+  if(($_FILES['obrazok']['type'] != 'image/png') && ($_FILES['obrazok']['type'] != 'image/jpg') && ($_FILES['obrazok']['type'] != 'image/jpeg')) {
+    $_SESSION['zly_format'] = true;
+  }
   else{
     $type = $_FILES['obrazok']['type'];
     $pripona = explode("/",$type);
@@ -58,16 +67,22 @@ function pridaj_obrazok($id){
       pridaj_obrazok($id);
     }
     else{
+
       if (isset($_FILES['obrazok'])) {
-        $novy_nazov = '';
-        if ($_FILES['obrazok']['error'] == UPLOAD_ERR_OK) {
-          if (is_uploaded_file($_FILES['obrazok']['tmp_name'])) {
-            $novy_nazov = 'pictures/' . $id .'.'.$pripona[1].'';
-            $podarilosa = move_uploaded_file($_FILES['obrazok']['tmp_name'], $novy_nazov);
-            if ($podarilosa) { }
-            $novy_nazov = '';
+        echo 'lalala'.$_FILES['obrazok']['size'];
+        if ($_FILES['obrazok']['size'] < 8388608){
+          $novy_nazov = '';
+          if ($_FILES['obrazok']['error'] == UPLOAD_ERR_OK) {
+            if (is_uploaded_file($_FILES['obrazok']['tmp_name'])) {
+              $novy_nazov = 'pictures/' . $id .'.'.$pripona[1].'';
+              $podarilosa = move_uploaded_file($_FILES['obrazok']['tmp_name'], $novy_nazov);
+              if ($podarilosa) {}
+              else { $_SESSION['nenahralo_img'] = true;}
+              $novy_nazov = '';
+            }
           }
         }
+        else $_SESSION['nenahralo_img'] = true;
       }
     }
   }
@@ -115,7 +130,18 @@ function zobraz_obrazok($id){
     ?>
     <label for="obrazok">Pridaj foto:</label>
     <br>
-    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
+    <?php
+    if(isset($_SESSION['zly_format'])){ ?>
+      <p style="color:red">Nesprávny formát súboru!</p>
+      <?php
+      unset($_SESSION['zly_format']);
+    }
+    if(isset($_SESSION['nenahralo_img'])){ ?>
+      <p style="color:red">Obrázok sa NEPODARILO nahrat na server!</p>
+      <?php
+      unset($_SESSION['nenahralo_img']);
+    }?>
+    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/jpeg"><br>
     <input type="submit" name="vymaz" onclick="return confirm('Naozaj chcete vymazať fotku?');" value="Vymaž foto"><br>
     <input type="submit" name="posli3" value="Zmeň foto"> <br>
     <?php
@@ -144,11 +170,26 @@ function zobraz_obrazok($id){
   }
   else{
     echo'<img src="pictures/no_photo.jpg" alt="" />';?>
+    <br>
+    <?php
+    if(isset($_SESSION['zly_format'])){ ?>
+      <p style="color:red">Nesprávny formát súboru!</p>
+      <?php
+      unset($_SESSION['zly_format']);
+    }
+    if(isset($_SESSION['nenahralo_img'])){ ?>
+      <p style="color:red">Obrázok sa NEPODARILO nahrat na server!</p>
+      <?php
+      unset($_SESSION['nenahralo_img']);
+    }
+    ?>
+
     <label for="obrazok">Pridaj foto:</label>
     <br>
     <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
     <input type="submit" name="posli3" value="Pridaj"><br> <?php
   }
+  posli_heslo();
 }
 
 
@@ -174,6 +215,26 @@ function over($text){
   return strlen($text) >0;
 }
 
+
+function posli_heslo($pass, $pass_od, $pass_komu){
+  echo 'zavolana funkcia';
+
+  $to = $pass_komu;
+  $subject = "Do Not Respond";
+  $txt = "Vaše heslo je: ".$pass;
+  $header = "From: ".$pass_od." \r\n";
+  $header .= "MIME-Version: 1.0\r\n";
+  $header .= "Content-type: text/html\r\n";
+
+  $retval = mail ($to,$subject,$txt,$header);
+
+  if( $retval == true ) {
+    echo "Message sent successfully...";
+  }else {
+    echo "Message could not be sent...";
+  }
+}
+
 function hlavicka($meno=""){
   if (isset($_GET['odhlas'])){
     $_SESSION['admin']=0;
@@ -186,7 +247,9 @@ function hlavicka($meno=""){
   <link rel="stylesheet" href="styl/styly.css">
   <link rel="stylesheet" href="sorter/themes/blue/style.css">
   <link rel="stylesheet" href="thumbnailviewer.css">
-  <script type="text/javascript" src="js/script.js"></script>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="javascript/script.js"></script>
   </head>
   <body>
   <header>

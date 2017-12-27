@@ -35,9 +35,9 @@
 
 }
 
-.tabulkaVykonou { border:solid 1px; width:100% } 
-.tabulkaVykonou td { border:solid 1px; } 
-.tabulkaVykonou .cellEditing { padding: 0; } 
+.tabulkaVykonou { border:solid 1px; width:100% }
+.tabulkaVykonou td { border:solid 1px; }
+.tabulkaVykonou .cellEditing { padding: 0; }
 .tabulkaVykonou .cellEditing input[type=text]{ width:100%; border:0; background-color:rgb(255,253,210); }
 
 Read more: http://mrbool.com/how-to-create-an-editable-html-table-with-jquery/27425#ixzz51ZRDuBYb
@@ -296,20 +296,21 @@ table.n td{
 #profil img{
    height: 200px;
    float: left;
-   margin:0 10px 0 0;
+   margin:0 40px 0 0; /*mozno hlupost tam davat natvrdo vela pixelov aby hadzalo text pod fotku*/
 }
 #profil {
   position: relative;
   float:left;
   left:10%;
+  top: 70px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 15%;
   text-align: left;
   border-style: outset;
   width: 50%;
   min-height: 250px;
   height: auto;
-  top: 200px;
   padding: 10px 10px 10px 10px;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
@@ -866,7 +867,7 @@ position:relative;
     bottom: 1em;
     opacity: 0;
     pointer-events: none;
-    transition-duration: 800ms;*/    
+    transition-duration: 800ms;*/
 }
 
 #mouseOver:hover img {
