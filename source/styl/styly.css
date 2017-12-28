@@ -113,10 +113,6 @@ section{
 
 }
 
-#pretekSection{
-	/* overflow: auto;*/
-}
-
 footer {
     position:fixed;
     padding: 5px;
@@ -152,6 +148,12 @@ footer {
 #prihlasenieAdministratora td{
 	border: none;
 	padding: 5px;
+}
+#poslatHeslo{
+    text-decoration: underline;
+}
+#poslatHeslo:hover{
+    cursor: pointer;
 }
 /*---Spravovanie vykonu---*/
 .spravaVykonu{

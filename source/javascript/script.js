@@ -21,7 +21,7 @@ function save2(event, item, idcko){
 
 }
 
-function posli(heslo, od, komu){
+function posli(){
 
     var ajaxurl = 'prihlasenie.php';
 
@@ -29,9 +29,7 @@ function posli(heslo, od, komu){
       url: ajaxurl,
       type: "post",
       cache: "false",
-      data: {ajax_heslo: heslo,
-        od: od,
-        komu: komu},
+      data: {ajax_heslo: true},
       success: function(data) {
            alert("Heslo bolo poslané na mail administrátora!");
       },

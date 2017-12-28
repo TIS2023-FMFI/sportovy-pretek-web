@@ -11,7 +11,7 @@ session_start();
 hlavicka("Prihlásenie administrátora");
 
 if (isset($_POST['ajax_heslo'])) {
-   posli_heslo($_POST['ajax_heslo'], $_POST['od'], $_POST['komu']);
+   posli_heslo($heslo, $mail_od, $mail_komu);
 }
 
 if (isset($_POST['heslo'])&&$_POST['heslo']==$heslo){
@@ -36,8 +36,7 @@ else{
           </tr>
         <?php } ?>
         <tr>
-          <!--bude to treba lepsie vymysliet..taktov noci mi napada md5, ale mozno by bolo lepsie si to neposielat ako parameter-->
-          <td><div id="poslatHeslo" onclick="posli('<?php echo $heslo; ?>', '<?php echo $mail_od; ?>', '<?php echo $mail_komu; ?>')">Zabudol som heslo</div></td>
+          <td><div id="poslatHeslo" onclick="posli()">Zabudol som heslo</div></td>
           <td><input type=submit name="prihlas" id="prihlas" value="Prihlásiť"></td>
         </tr>
       </table>
@@ -50,26 +49,4 @@ paticka();
 
 </html>
 
-<script>
-/*
-  $('#poslatHeslo').click(function(){
-    console.log('klik');
 
-        var ajaxurl = 'ajax.php',
-        data =  {action: 'ahoj'};
-
-        $.ajax({
-          url: ajaxurl,
-          type: "post",
-          cache: "false",
-          data: {action: 'ahoj'},
-          success: function(data) {
-               alert("Heslo bolo poslané administrátorovi!");
-          },
-          error: function(){
-              alert("Heslo sa nepodarilo poslat!");
-          }
-        });
-
-    });*/
-</script>

@@ -215,7 +215,6 @@ function over($text){
   return strlen($text) >0;
 }
 
-
 function posli_heslo($pass, $pass_od, $pass_komu){
   echo 'zavolana funkcia';
 
