@@ -1,7 +1,7 @@
 <?php
 $heslo="olympiada";
-$mail_od="izabela.dobsovicova@gmail.com"; //moj pokusny aby som vedela ci sa posielaju maily
-$mail_komu = "izabela.dobsovicova@gmail.com";
+$mail_od="sksandberg@ap.urk.fei.stuba.sk"; //mail z ktoreho sa posielaju spravy
+$mail_komu = "balogh@elf.stuba.sk"; // mail, na ktory pride sprava s heslo
 date_default_timezone_set('UTC');
 class MyDB extends SQLite3{
   function __construct(){
@@ -189,7 +189,7 @@ function zobraz_obrazok($id){
     <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
     <input type="submit" name="posli3" value="Pridaj"><br> <?php
   }
-  posli_heslo();
+
 }
 
 
@@ -216,22 +216,16 @@ function over($text){
 }
 
 function posli_heslo($pass, $pass_od, $pass_komu){
-  echo 'zavolana funkcia';
 
   $to = $pass_komu;
   $subject = "Do Not Respond";
-  $txt = "Vaše heslo je: ".$pass;
+  $txt = "Vaše heslo do administrátorského režímu na stránke Tréningy ŠK Sandberg je: ".$pass;
   $header = "From: ".$pass_od." \r\n";
   $header .= "MIME-Version: 1.0\r\n";
   $header .= "Content-type: text/html\r\n";
 
   $retval = mail ($to,$subject,$txt,$header);
 
-  if( $retval == true ) {
-    echo "Message sent successfully...";
-  }else {
-    echo "Message could not be sent...";
-  }
 }
 
 function hlavicka($meno=""){

@@ -31,7 +31,11 @@ function posli(){
       cache: "false",
       data: {ajax_heslo: true},
       success: function(data) {
-           alert("Heslo bolo poslané na mail administrátora!");
+        if(data.search('Warning') == -1){ //ak nenastala chyba pri posielani
+          alert("Heslo bolo poslané na mail administrátora!")
+        } else{
+          alert("Heslo sa nepodarilo poslat!");
+        }
       },
       error: function(){
           alert("Heslo sa nepodarilo poslat!");
