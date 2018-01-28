@@ -22,7 +22,8 @@ else{
 
 <div id="zoz_pretekov_uzivatel">
   <h2>Zoznam tréningov</h2>
-  <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
+  <?php 
+  if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
     <input name="novy" type="submit" id="novy" onclick="location.href='novy_pretek.php';" value="Nové preteky">
     <input type="submit" onclick="location.href='kategorie.php';" value="Kategórie">
     <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely">
@@ -70,7 +71,7 @@ else{
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-     $("#treningy").tablesorter();
+     $("#treningy").tablesorter({dateFormat: "uk"});
   });
 </script>
 <?php
