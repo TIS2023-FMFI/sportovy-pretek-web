@@ -26,21 +26,26 @@ else{
   <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
     <input name="novy" type="submit" id="novy" onclick="location.href='novy_pretek.php';" value="Nové preteky">
     <input type="submit" onclick="location.href='kategorie.php';" value="Kategórie">
-    <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely"> 
+    <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely">
   <?php } ?>
-  <table border="1" style="width:100%;">  
-    <tr>
-      <td class="prvy">Typ tréningu</td>
-      <td class="prvy">Dátum konania</td> 
-      <td class="prvy">Prihlasovanie do</td>
-        
+  <table style="width:100%;">
+    <thead><tr>
+      <th class="prvy">Typ tréningu</th>
+      <th class="prvy">Dátum konania</th>
+      <th class="prvy">Prihlasovanie do</th>
+
       <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
-        <td class="prvy"></td>
-        </tr>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        </tr></thead>
         <?php PRETEKY::vypis_archiv();?>
         </table>
-        </div>         
-        <?php 
+        </div>
+        <?php
         if(isset($_GET['aktiv'])){
           PRETEKY::aktivuj($_GET['id']);
         }
@@ -50,14 +55,14 @@ else{
         }
       }
       else{
-        echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';?>       
-        </table> 
+        echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';?>
+        </table>
         </div>
         <br><br>
         <?php
       }
 
 
-paticka();        
+paticka();
 ?>
 </html>

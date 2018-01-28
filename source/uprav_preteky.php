@@ -15,7 +15,7 @@ else{
   if(isset($_POST['deaktivuj'])){
     PRETEKY::deaktivuj($_GET['id']);
   }
-  if ((isset ($_POST['posli'])) && 
+  if ((isset ($_POST['posli'])) &&
     over($_POST['nazov']) &&
     over($_POST['datum']) &&
     over($_POST['deadline'])&&
@@ -59,7 +59,7 @@ else{
       $po = PRETEKY::vrat_pretek($_GET["id"]);
       ?>
   	  <form method="post" enctype="multipart/form-data">
-  	    <table>
+  	    <table id="tabulka_uprav_pretek">
          <?php if(isset($_POST['nazov']) && !over($_POST['nazov'])){echo'<tr><td><font color="red">Nevyplnili ste názov!</font></td></tr>';} ?>
   		   <tr>
           <td><label for="nazov">Názov pretekov</label></td>
@@ -81,7 +81,7 @@ else{
         </tr>
   	  </table>
       <!-- kategorie-->
-      <table><?php
+      <table id="tabulka_uprav_pretek_kategotie"><?php
         if(isset($_POST['posli'])&&!isset($_POST['incharge'])){
           echo'<tr><td><font color="red">Musíte zadať aspoň jednu kategóriu!</font></td></tr>';
         }

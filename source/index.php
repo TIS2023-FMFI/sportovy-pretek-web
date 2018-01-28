@@ -25,14 +25,20 @@ else{
   <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
     <input name="novy" type="submit" id="novy" onclick="location.href='novy_pretek.php';" value="Nové preteky">
     <input type="submit" onclick="location.href='kategorie.php';" value="Kategórie">
-    <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely"> 
+    <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely">
     <?php } ?>
-    <table border="1" id="treningy" class="tablesorter" style="width:100%;">  
+    <table border="1" id="treningy" class="tablesorter" style="width:100%;">
       <thead>
         <tr>
           <th class="prvy">Typ tréningu</th>
-          <th class="prvy">Dátum konania</th> 
+          <th class="prvy">Dátum konania</th>
           <th class="prvy">Prihlasovanie do</th>
+          <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
+          <th class="prvy"></th>
+          <th class="prvy"></th>
+          <th class="prvy"></th>
+          <th class="prvy"></th>
+          <?php } ?>
         </tr>
       </thead>
       <tbody>
@@ -40,8 +46,8 @@ else{
           <?php PRETEKY::vypis_zoznam_admin();?>
           </tbody>
         </table>
-      </div>         
-        <?php 
+      </div>
+        <?php
         if(isset($_GET['aktiv'])){
           PRETEKY::aktivuj($_GET['id']);
         }
@@ -52,9 +58,9 @@ else{
       }
       else{?>
         </tr>
-        <?php PRETEKY::vypis_zoznam();?>       
+        <?php PRETEKY::vypis_zoznam();?>
           </tbody>
-        </table> 
+        </table>
         </div>
         <br><br>
         <?php
@@ -68,6 +74,6 @@ else{
   });
 </script>
 <?php
-paticka();        
+paticka();
 ?>
 </html>

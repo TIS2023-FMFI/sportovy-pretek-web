@@ -22,9 +22,7 @@ function save2(event, item, idcko){
 }
 
 function posli(){
-
     var ajaxurl = 'prihlasenie.php';
-
     $.ajax({
       url: ajaxurl,
       type: "post",
@@ -41,5 +39,16 @@ function posli(){
           alert("Heslo sa nepodarilo poslat!");
       }
     });
-
 }
+
+$(function() {
+  $('#obrazok').change(function() {
+    if($('#obrazok')[0].files[0].size >= 2000000){
+      alert( "Vybraný obrázok je príliš veľký!" );
+      $('#obrazok')[0].value = null;
+    }
+  });
+});
+
+
+
