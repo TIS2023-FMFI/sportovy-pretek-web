@@ -20,9 +20,9 @@ else{
       <h2>Oddiely</h2>
       <table border="1" style="width:100%">
         <tr>
-          <td class="prvy"></td>
-          <td class="prvy">ID oddielu</td>
-          <td class="prvy">Názov</td>
+          <th class="prvy"></th>
+          <th class="prvy">ID oddielu</th>
+          <th class="prvy">Názov</th>
         </tr>
         <?php
         $pl = new PRETEKY();

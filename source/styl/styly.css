@@ -34,9 +34,9 @@
 
 }
 
-.tabulkaVykonou { border:solid 1px; width:100% } 
-.tabulkaVykonou td { border:solid 1px; } 
-.tabulkaVykonou .cellEditing { padding: 0; } 
+.tabulkaVykonou { border:solid 1px; width:100% }
+.tabulkaVykonou td { border:solid 1px; }
+.tabulkaVykonou .cellEditing { padding: 0; }
 .tabulkaVykonou .cellEditing input[type=text]{ width:100%; border:0; background-color:rgb(255,253,210); }
 
 Read more: http://mrbool.com/how-to-create-an-editable-html-table-with-jquery/27425#ixzz51ZRDuBYb
@@ -113,10 +113,6 @@ section{
 
 }
 
-#pretekSection{
-	/* overflow: auto;*/
-}
-
 footer {
     position:fixed;
     padding: 5px;
@@ -130,9 +126,7 @@ footer {
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
-.prvy {color: gray; border-width: 0px; 
-		border-color:black;
-		font-size: 12px;}
+.prvy {border-width: 0px; border-color:black}
 
 section .rok a:hover {
 	color: white;
@@ -158,6 +152,12 @@ section .rok a:hover {
 #prihlasenieAdministratora td{
 	border: none;
 	padding: 5px;
+}
+#poslatHeslo{
+    text-decoration: underline;
+}
+#poslatHeslo:hover{
+    cursor: pointer;
 }
 /*---Spravovanie vykonu---*/
 .spravaVykonu{
@@ -188,7 +188,14 @@ section .rok a:hover {
 	position: relative;
 	font-size: small;
 }
-#zoz_pretekov_uzivatel table{ border-width: 1px; 	padding: 10px; margin-top: 5px; margin-bottom: 100px;}
+#zoz_pretekov_uzivatel table{
+    border-width: 0px;
+    background-color: #ddd;
+    border-radius: 3px;
+    margin-top: 5px;
+    margin-bottom: 100px;
+    box-shadow: 0px 0px 9px -1px #ddd;
+}
 #zoz_pretekov_uzivatel a{ text-decoration: none; }
 #zoz_pretekov_uzivatel a:hover{color:#003c75; }
 #zoz_pretekov_uzivatel td{
@@ -200,16 +207,24 @@ section .rok a:hover {
 
 /*-------------------------------- uprav_preteky.php --------------------------------*/
 
-#uprav_preteky{
+.uprav_preteky{
 	top:60px;
 	width: 30%;
 	position: relative;
 	left: 36%;
 	font-size: large;
 }
-#uprav_preteky td{padding:5px;}
+.uprav_preteky td{padding:5px;}
 #buttons{float:right; right: 4%; position: relative;margin-bottom: 50px;}
 .chyba{color:green;}
+
+.uprav_preteky tr:hover{ background-color: white; }
+.uprav_preteky tr:nth-child(2n) {background-color: white;}
+.uprav_preteky td {border: none;}
+/*
+#uprav_pretek_kategotie tr:hover{ background-color: white; }
+#tabulka_uprav_pretek_kategotie tr:nth-child(2n) {background-color: white;}
+#tabulka_uprav_pretek_kategotie td {border: none;}*/
 
 
 /*-------------------------------- pretek.php --------------------------------*/
@@ -235,7 +250,13 @@ form {
 	margin-bottom: 10%;
 	margin-top: 0;
 }
-#prihlaseny table, #odhlaseny table { border-width: 1px; 	padding: 10px;}
+#prihlaseny table, #odhlaseny table {
+    border-width: 0px;
+    background-color: #ddd;
+    border-radius: 3px;
+    box-shadow: 0px 0px 9px -1px #ddd;
+    margin-bottom: 35px;
+}
 #prihlaseny a, #odhlaseny a{ text-decoration: none; color:#4169e1; }
 #prihlaseny a:hover, #odhlaseny a:hover{color:#003c75; }
 #prihlaseny td, #odhlaseny td{
@@ -244,25 +265,25 @@ form {
 	border-top: 0px;
 	padding: 5px;
 }
-#novy_pouzivatel{
+.novy_pouzivatel{
 	width: 34%;
 	position: relative;
 	left: 33%;
 	font-size: large;
 }
-#novy_pouzivatel table{
+.novy_pouzivatel table{
 	margin: 40px 10px 10px 40px;
 	background-color: gray;
 	width:90%;
 }
-#novy_pouzivatel td{
+.novy_pouzivatel td{
 	padding: 6px 40px 6px 6px;
 	background-color: gray;
 	color: white;
 	width: 100%;
 }
-#novy_pouzivatel form{background-color: gray;}
-#novy_pouzivatel h2{color: white; padding-left: 40px;}
+.novy_pouzivatel form{background-color: gray;}
+.novy_pouzivatel h2{color: white; padding-left: 40px;}
 
 #upozornenie table.u{
 	color:red;
@@ -300,22 +321,21 @@ table.n td{
 /*-------------------------------- uprav.php --------------------------------*/
 
 #profil img{
-   height: 200px;
-   float: left;
-   margin:0 10px 0 0;
+    object-fit: cover;
 }
 #profil {
   position: relative;
   float:left;
   left:10%;
+  top: 70px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 15%;
   text-align: left;
   border-style: outset;
   width: 50%;
   min-height: 250px;
   height: auto;
-  top: 200px;
   padding: 10px 10px 10px 10px;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
@@ -328,7 +348,6 @@ table.n td{
   right: 10%;
   width: 25%;
   text-align: left;
-  top:200px;
 }
 #f td{ padding: 5px;}
 
@@ -378,7 +397,14 @@ table.n td{
     margin-bottom: 5%;
 }
 
-#vsetci_pouzivatelia table, #tab_platby table {border-width: 1px; font-size:medium; padding: 10px; }
+#vsetci_pouzivatelia table, #tab_platby table {
+    border-width: 0px;
+    background-color: #ddd;
+    border-radius: 3px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0px 0px 9px -1px #ddd;
+}
 #vsetci_pouzivatelia a, #tab_platby a{ text-decoration: none; color:#4169e1; }
 #vsetci_pouzivatelia a:hover, #tab_platby a:hover{color:#003c75; }
 #vsetci_pouzivatelia td, #tab_platby td{
@@ -814,16 +840,18 @@ position:relative;
 }
 
 #foto{
-
 	position: relative;
 	float: left;
+    width: 200px;
 }
 
 #obsah{
 	position: relative;
 	float: right;
-	max-width: 200px;
-
+}
+.obsah_stl {
+    float: left;
+    margin: 10px;
 }
 
 /*-------------------------------- kmenovi_clenovia.php -------------------------------*/
@@ -872,7 +900,7 @@ position:relative;
     bottom: 1em;
     opacity: 0;
     pointer-events: none;
-    transition-duration: 800ms;*/    
+    transition-duration: 800ms;*/
 }
 
 #mouseOver:hover img {
@@ -881,3 +909,25 @@ position:relative;
     transition-duration: 400ms;
 }
 
+td, th {
+    border: 1px solid #ddd;
+    border-radius: 1.5px;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+#prihlasenieAdministratora tr:nth-child(even){background-color: white;}
+.spravaVykonu tr:nth-child(even){background-color: white;}
+
+tr:hover {background-color: #d3d3d3;}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#odhlaseny th {background-color: rgb(235,0,15)}
+#table_export th  {background-color: #4169e1}

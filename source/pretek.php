@@ -143,7 +143,7 @@ if(isset($_POST['skry'])){
     <div id="navod"> <input name="navodik" type="submit" id="navodik" value="Návod"> </div>
     <?php }else { ?>
     <div id="skry"> <input name="skry" type="submit" id="skry" value="Skryť"> </div><br>
-    <?php } 
+    <?php }
     if($navodik){?>
       <div id="navod">
         <table class="n">
@@ -161,7 +161,7 @@ if(isset($_POST['skry'])){
           </tr>
         </table>
       </div>
-  <?php } 
+  <?php }
   if(over($pr->POZNAMKA)){ ?>
     <br>
     <div id="upozornenie">
@@ -169,9 +169,9 @@ if(isset($_POST['skry'])){
         <tr><td style="font-weight:bold;">Pokyny</td></tr>
         <tr><td><?php echo $pr->POZNAMKA; ?></td></tr>
       </table>
-    </div>  
+    </div>
     <?php
-   } 
+   }
    ?>
   <div id="prihlaseny">
     <h2>Zoznam prihlásených</h2>
@@ -183,13 +183,13 @@ if(isset($_POST['skry'])){
     if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $pr->AKTIV == 1)) ) {?>
       <p><input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu" style="margin-bottom: 1em;"></p>
       <?php
-    } 
+    }
     if(isset($_SESSION['prihlaseni']) && $_SESSION['prihlaseni'] !== ""){?>
       <p style="color:green;"><?php echo $_SESSION['prihlaseni']; ?> prihlásený/í</p>
       <?php
       unset($_SESSION['prihlaseni']);
-    }?>
-      <table id="myTable" class="tablesorter" border="1" >
+      }?>
+      <table id="myTable" class="tablesorter">
         <col class="col3" >
         <col class="col10" >
         <col class="col14" >
@@ -216,14 +216,14 @@ if(isset($_POST['skry'])){
           ?>
         </tbody>
       </table>
-      <?php 
-      if(isset($_SESSION['admin'])&&$_SESSION['admin'] ==1 ){ 
+      <?php
+      if(isset($_SESSION['admin'])&&$_SESSION['admin'] ==1 ){
         if(isset($_GET['exp']) && $_GET['exp'] == 1){
           echo "<a href='pretek.php?id=".$pretekId."&exp=0'>Skryť nastavenie exportu ^</a>";
           ?>
           <div id="formaExportu" style="border: solid 2px #4169e1; padding-left: 20px; width: 280px;">
             <h3>Forma exportu</h3>
-            <table>
+            <table id="table_export">
               <tr>
                 <th>Zvoliť</th><th>Stĺpec</th><th>Poradie</th>
               </tr>
@@ -247,7 +247,7 @@ if(isset($_POST['skry'])){
                   <option value="4">4.</option>
                   <option value="5">5.</option>
                   <option value="6">6.</option>
-                </select></td> 
+                </select></td>
               </tr>
               <tr>
                 <td><input type="checkbox" name="ex[]" value="nazov"></td><td>Kategória</td>
@@ -269,7 +269,7 @@ if(isset($_POST['skry'])){
                   <option value="4">4.</option>
                   <option value="5">5.</option>
                   <option value="6">6.</option>
-                </select><td>
+                </select></td>
               </tr>
               <tr>
                 <td><input type="checkbox" name="ex[]" value="cip"></td><td>Čip</td>
@@ -280,7 +280,7 @@ if(isset($_POST['skry'])){
                   <option value="4">4.</option>
                   <option value="5">5.</option>
                   <option value="6">6.</option>
-                </select></td> 
+                </select></td>
               </tr>
               <tr>
                 <td><input type="checkbox" name="ex[]" value="poznamka"></td><td>Poznámka</td>
@@ -298,53 +298,54 @@ if(isset($_POST['skry'])){
           </div>
           <?php
         }
-        else{ 
+        else{
           echo "<a href='pretek.php?id=".$pretekId."&exp=1'>Zobraziť nastavenie exportu v</a>";
-        } 
+        }
       }?>
       <p><input name="export" type="submit" id="export" value="Export do súboru"></p>
       <br><br><br>
-    </div>  
+    </div>
     <div id="odhlaseny">
       <h2>Neprihlásení používatelia</h2>
     <?php
-      if((isset($_SESSION['admin'])&&$_SESSION['admin']==1)||(isset($pr->AKTIV)&&$pr->AKTIV==1&&isset($pr->DEADLINE))&&$deadline>$now){ 
+      if((isset($_SESSION['admin'])&&$_SESSION['admin']==1)||(isset($pr->AKTIV)&&$pr->AKTIV==1&&isset($pr->DEADLINE))&&$deadline>$now){
         echo''; ?>
-        <input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning" style="margin-bottom: 1em">
-        <?php 
+        <p><input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning" style="margin-bottom: 1em">
+        <?php
         if (!isset($_GET['cookies'])){?>
           <?php $link="'pretek.php?id=".$_GET['id']."&cookies=0'"; ?>
           <input onclick="window.location.href =<?php echo $link;?>" type='button' value='Viac používateľov'>
-          <?php 
-        } 
+          <?php
+        }
         else{
           $link="'pretek.php?id=".$_GET['id']."'"; ?>
           <input onclick="window.location.href =<?php echo $link;?>" type='button' value='Menej používateľov'>
           <?php
-        } 
-      } 
+        }
+      }
       if (isset($_SESSION['admin'])&&$_SESSION['admin']){
         ?>
-        <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať používateľov?');" value="Vymazať používateľa"> <!-- aj v admine kde su vsetci pouzivatelia-->
+        <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať používateľov?');" value="Vymazať používateľa"></p> <!-- aj v admine kde su vsetci pouzivatelia-->
         <?php
       }
       if(isset($_SESSION['error_kat'])){ ?>
         <p style="color:red">Treba zvoliť kategóriu!</p>
-        <?php 
+        <?php
         unset($_SESSION['error_kat']);
       }
       if (isset($_SESSION['rovnaky'])){ ?>
         <p style="color:red">Používateľ <?php echo $_SESSION['rovnaky'];?> je už zaregistrovaný!</p>
-        <?php 
+        <?php
         unset($_SESSION['rovnaky']);
       }
       else if(isset($_SESSION['novy_pouz'])) {?>
         <p style="color:green">Používateľ <?php echo $_SESSION['novy_pouz'];?> bol zaregistrovaný a prihlásený.</p>
-        <?php 
+        <?php
         unset($_SESSION['novy_pouz']);
       }
+
     if((isset($_SESSION['admin']) && $_SESSION['admin']==1) || $deadline > $now){ ?>
-      <table  id="myTable2" class="tablesorter" border="1"> 
+      <table  id="myTable2" class="tablesorter">
         <col class="col10" >
         <col class="col15" >
         <col class="col14" >
@@ -357,12 +358,11 @@ if(isset($_POST['skry'])){
         <tr>
         <th class="prvy"></th>
         <th class="prvy">Kategória</th>
-        <th class="prvy">Meno</th> 
-        <th class="prvy">Priezvisko</th>       
+        <th class="prvy">Meno</th>
+        <th class="prvy">Priezvisko</th>
         <th class="prvy">Osobné číslo</th>
         <th class="prvy">Čip</th>
         <th class="prvy">Poznámka</th>
-        <th class="prvy"></th>
         <th class="prvy"></th>
         </tr>
         </thead>
@@ -372,14 +372,16 @@ if(isset($_POST['skry'])){
           ?>
         </tbody>
       </table>
-      <?php 
-    } 
+      <?php
+    }
     else{
       echo "<p>Prihlasovanie na tento tréning bolo uzatvorené</p>";
     } ?>
     </div>
     <br><br>
-  </form>   
+  </form>
+
+</section>
 
 <script type="text/javascript" src="sorter/jquery-latest.js"></script>
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
@@ -394,7 +396,7 @@ if(isset($_POST['skry'])){
   });
 </script>
 
-<?php    
+<?php
  unset($pr);
  paticka();
 ?>

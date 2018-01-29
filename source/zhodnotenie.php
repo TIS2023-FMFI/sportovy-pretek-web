@@ -9,7 +9,7 @@ $navodik = false;
 <!DOCTYPE HTML>
 <html>
   <script type="text/javascript" src="sorter/jquery-latest.js"></script>
-  <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script> 
+  <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
   <?php
   $pr = new PRETEKY();
   $pr=PRETEKY::vrat_pretek($_GET["id"]);
@@ -37,9 +37,9 @@ EOF;
   if ($row["POCET"] <= 0){
   	if (!isset($_SESSION["admin"]) || !$_SESSION["admin"]){
   		echo "<section><h2>Ešte nebolo pridané hodnotenie tréningu.</h2></section>";
-  	} 
+  	}
     else{  ?>
-      <section id="zhodnotenie_table"> 
+      <section id="zhodnotenie_tabl">
         <form method="post" >
           <?php
           $db = napoj_db();
@@ -51,7 +51,7 @@ EOF;
           echo "<table id='zhodnotenie_table'><tr><th>Meno</th><th>Priezvisko</th><th>Čas</th></tr>";
           while($row = $ret->fetchArray(SQLITE3_ASSOC)){
             echo "<tr>";
-            echo "<td>".$row['meno']."</td>"; 
+            echo "<td>".$row['meno']."</td>";
             echo "<td>".$row['priezvisko']."</td>";
             echo '<td><input type="text" name="cas'.$i.'" required/><input type="hidden" name="id'.$i.'" value="'.$row["id_pouz"].'"/></td>';
             echo "</tr>";
@@ -66,10 +66,10 @@ EOF;
           echo "</table>";
           ?>
         </form>
-      </section>   
-      <?php   
+      </section>
+      <?php
     }
-  } 
+  }
   else{
    	?>
   	<section>
@@ -88,7 +88,7 @@ EOF;
       </table>
     </section>
   	<?php
-  } 
+  }
   unset($pr);
   paticka();
   ?>

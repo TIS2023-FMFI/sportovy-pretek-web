@@ -1,81 +1,22 @@
 <?php
 $heslo="olympiada";
+$mail_od="sksandberg@ap.urk.fei.stuba.sk"; //mail z ktoreho sa posielaju spravy
+$mail_komu = "balogh@elf.stuba.sk"; // mail, na ktory pride sprava s heslo
 date_default_timezone_set('UTC');
 class MyDB extends SQLite3{
   function __construct(){
     $this->open('databaseNew.db');
   }
-}  
+}
 
 function napoj_db(){
   $db = new MyDB();
   if(!$db){
     echo $db->lastErrorMsg();
     return false;
-  } 
+  }
   else {
     return $db;
-  }
-}
-
-function vymaz_obrazok($id){
-  if(file_exists('pictures/'.$id.'.gif')){
-    $subor = 'pictures/' . $id .'.gif';
-    unlink($subor);
-  }
-  if(file_exists('pictures/'.$id.'.png')){
-    $subor = 'pictures/' . $id .'.png';
-    unlink($subor);
-  }
-  if(file_exists('pictures/'.$id.'.jpg')){
-    $subor = 'pictures/' . $id .'.jpg';
-    unlink($subor);
-  }
-  if(file_exists('pictures/'.$id.'.jpeg')){
-    $subor = 'pictures/' . $id .'.jpeg';
-    unlink($subor);
-  }
-}
-
-function pridaj_obrazok($id){
-  if(($_FILES['obrazok']['type'] != 'image/png') && ($_FILES['obrazok']['type'] != 'image/jpg') && ($_FILES['obrazok']['type'] != 'image/jpeg')
-  && ($_FILES['obrazok']['type'] != 'image/gif') && ($_FILES['obrazok']['type'] != 'image/bmp')) { }
-  else{
-    $type = $_FILES['obrazok']['type'];
-    $pripona = explode("/",$type);
-    if(file_exists('pictures/'.$id.'.png')){
-      $subor = 'pictures/' . $id .'.png';
-      unlink($subor);
-      pridaj_obrazok($id);
-    }
-    else if(file_exists('pictures/'.$id.'.jpg')){
-      $subor = 'pictures/' . $id .'.jpg';
-      unlink($subor);
-      pridaj_obrazok($id);
-    }
-    else if(file_exists('pictures/'.$id.'.jpeg')){
-      $subor = 'pictures/' . $id .'.jpeg';
-      unlink($subor);
-      pridaj_obrazok($id);
-    }
-    else if(file_exists('pictures/'.$id.'.gif')){
-      $subor = 'pictures/' . $id .'.gif';
-      unlink($subor);
-      pridaj_obrazok($id);
-    }
-    else{
-      if (isset($_FILES['obrazok'])) {
-        $novy_nazov = '';
-        if ($_FILES['obrazok']['error'] == UPLOAD_ERR_OK) {
-          if (is_uploaded_file($_FILES['obrazok']['tmp_name'])) {
-            $novy_nazov = 'pictures/' . $id .'.'.$pripona[1].'';
-            $podarilosa = move_uploaded_file($_FILES['obrazok']['tmp_name'], $novy_nazov);
-            if ($podarilosa) { }
-            $novy_nazov = '';
-          }
-        }
-      }
-    }
   }
 }
 
@@ -114,55 +55,113 @@ if ($p > 0) return true;
 return false;
 }
 
-function zobraz_obrazok($id){
-  if(file_exists('pictures/'.$id.'.gif')){
-    $subor = 'pictures/' . $id .'.gif';
-    echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" alt="" /></a>';
-    ?>
-    <label for="obrazok">Pridaj foto:</label>
-    <br>
-    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
-    <input type="submit" name="vymaz" onclick="return confirm('Naozaj chcete vymazať fotku?');" value="Vymaž foto"><br>
-    <input type="submit" name="posli3" value="Zmeň foto"> <br>
-    <?php
-  }
-  else  if(file_exists('pictures/'.$id.'.png')){
+function vymaz_obrazok($id){
+  if(file_exists('pictures/'.$id.'.png')){
     $subor = 'pictures/' . $id .'.png';
-    echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" alt="" /></a>';
-    ?>
-    <label for="obrazok">Pridaj foto:</label>
-    <br>
-    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
-    <input type="submit" name="vymaz" onclick="return confirm('Naozaj chcete vymazať fotku?');" value="Vymaž foto"><br>
-    <input type="submit" name="posli3" value="Zmeň foto"> <br>
-    <?php
+    unlink($subor);
   }
-  else  if(file_exists('pictures/'.$id.'.jpg')){
+  if(file_exists('pictures/'.$id.'.jpg')){
     $subor = 'pictures/' . $id .'.jpg';
-    echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" alt="" /></a>';
-    ?>
-    <label for="obrazok">Pridaj foto:</label>
-    <br>
-    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
-    <input type="submit" name="vymaz" onclick="return confirm('Naozaj chcete vymazať fotku?');" value="Vymaž foto"><br>
-    <input type="submit" name="posli3" value="Zmeň foto"> <br>
-    <?php
+    unlink($subor);
   }
-  else  if(file_exists('pictures/'.$id.'.jpeg')){
+  if(file_exists('pictures/'.$id.'.jpeg')){
     $subor = 'pictures/' . $id .'.jpeg';
-    echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" src="'.$subor.'" alt="" /></a>';
-    ?>
-    <label for="obrazok">Pridaj foto:</label>
-    <br>
-    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
-    <input type="submit" name="vymaz" onclick="return confirm('Naozaj chcete vymazať fotku?');" value="Vymaž foto"><br>
-    <input type="submit" name="posli3" value="Zmeň foto"> <br>
-    <?php
+    unlink($subor);
+  }
+}
+
+function pridaj_obrazok($id){
+
+  if(($_FILES['obrazok']['type'] != 'image/png') && ($_FILES['obrazok']['type'] != 'image/jpg') && ($_FILES['obrazok']['type'] != 'image/jpeg')) {
+    $_SESSION['zly_format'] = true;
   }
   else{
-    echo'<img src="pictures/no_photo.jpg" alt="" />';?>
+    $type = $_FILES['obrazok']['type'];
+    $pripona = explode("/",$type);
+    if(file_exists('pictures/'.$id.'.png')){
+      $subor = 'pictures/' . $id .'.png';
+      unlink($subor);
+      pridaj_obrazok($id);
+    }
+    else if(file_exists('pictures/'.$id.'.jpg')){
+      $subor = 'pictures/' . $id .'.jpg';
+      unlink($subor);
+      pridaj_obrazok($id);
+    }
+    else if(file_exists('pictures/'.$id.'.jpeg')){
+      $subor = 'pictures/' . $id .'.jpeg';
+      unlink($subor);
+      pridaj_obrazok($id);
+    }
+    else{
+
+      if (isset($_FILES['obrazok'])) {
+        $novy_nazov = '';
+        if ($_FILES['obrazok']['error'] == UPLOAD_ERR_OK) {
+          if (is_uploaded_file($_FILES['obrazok']['tmp_name'])) {
+            $novy_nazov = 'pictures/' . $id .'.'.$pripona[1].'';
+            $podarilosa = move_uploaded_file($_FILES['obrazok']['tmp_name'], $novy_nazov);
+            if ($podarilosa) {}
+            else { $_SESSION['nenahralo_img'] = true;}
+            $novy_nazov = '';
+          }
+        }
+        else $_SESSION['nenahralo_img'] = true;
+      }
+    }
+  }
+}
+
+
+
+function zobraz_obrazok($id){
+  //ak uz je nejaky obrazok
+  if(file_exists('pictures/'.$id.'.png') || file_exists('pictures/'.$id.'.jpg') || file_exists('pictures/'.$id.'.jpeg')){
+    if(file_exists('pictures/'.$id.'.png')){
+      $subor = 'pictures/' . $id .'.png';
+    }
+    else  if(file_exists('pictures/'.$id.'.jpg')){
+      $subor = 'pictures/' . $id .'.jpg';
+    }
+    else  if(file_exists('pictures/'.$id.'.jpeg')){
+      $subor = 'pictures/' . $id .'.jpeg';
+    }
+    echo'<a href="'.$subor.'" class="thumbnail" ><img class="img" width="200" height="200" src="'.$subor.'" alt="" /></a>';
+
+    if(isset($_SESSION['zly_format'])){ ?>
+      <p style="color:red">Nesprávny formát súboru!</p>
+      <?php
+      unset($_SESSION['zly_format']);
+    }
+    if(isset($_SESSION['nenahralo_img'])){ ?>
+      <p style="color:red">Obrázok sa NEPODARILO nahrat na server!</p>
+      <?php
+      unset($_SESSION['nenahralo_img']);
+    }
+    ?>
     <label for="obrazok">Pridaj foto:</label>
+    <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/jpeg"><br>
+    <input type="submit" name="vymaz" onclick="return confirm('Naozaj chcete vymazať fotku?');" value="Vymaž foto"><br>
+    <input type="submit" name="posli3" value="Zmeň foto"> <br>
+    <?php
+  }
+  //ak nie je ziadny obrazok
+  else{
+    echo'<img src="pictures/no_photo.jpg" alt="" />';?>
     <br>
+    <?php
+    if(isset($_SESSION['zly_format'])){ ?>
+      <p style="color:red">Nesprávny formát súboru!</p>
+      <?php
+      unset($_SESSION['zly_format']);
+    }
+    if(isset($_SESSION['nenahralo_img'])){ ?>
+      <p style="color:red">Obrázok sa NEPODARILO nahrat na server!</p>
+      <?php
+      unset($_SESSION['nenahralo_img']);
+    }
+    ?>
+    <label for="obrazok">Pridaj foto:</label>
     <input type="file" name="obrazok" id="obrazok" accept="image/png, image/jpg, image/gif, image/jpeg"><br>
     <input type="submit" name="posli3" value="Pridaj"><br> <?php
   }
@@ -170,10 +169,7 @@ function zobraz_obrazok($id){
 
 
 function vrat_cestu_obrazka($id){
-  if(file_exists('pictures/'.$id.'.gif')){
-    return 'pictures/' . $id .'.gif';
-  }
-  else  if(file_exists('pictures/'.$id.'.png')){
+  if(file_exists('pictures/'.$id.'.png')){
     return 'pictures/' . $id .'.png';
   }
   else  if(file_exists('pictures/'.$id.'.jpg')){
@@ -189,6 +185,19 @@ function vrat_cestu_obrazka($id){
 
 function over($text){
   return strlen($text) >0;
+}
+
+function posli_heslo($pass, $pass_od, $pass_komu){
+
+  $to = $pass_komu;
+  $subject = "Do Not Respond";
+  $txt = "Vaše heslo do administrátorského režímu na stránke Tréningy ŠK Sandberg je: ".$pass;
+  $header = "From: ".$pass_od." \r\n";
+  $header .= "MIME-Version: 1.0\r\n";
+  $header .= "Content-type: text/html\r\n";
+
+  $retval = mail ($to,$subject,$txt,$header);
+
 }
 
 function hlavicka($meno=""){

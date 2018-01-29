@@ -26,7 +26,7 @@ else{
 
 
     ?>
-    <div id="novy_pouzivatel">
+    <div class="novy_pouzivatel">
   	  <form method="post" enctype="multipart/form-data">
         <h2>Pridať kategóriu</h2>
   	    <table>

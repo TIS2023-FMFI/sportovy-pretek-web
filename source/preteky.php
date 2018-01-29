@@ -308,6 +308,7 @@ EOF;
     <td><input type="text" name="oscislo" id="oscislo" size="10" value=""></td>
     <td><input type="text" name="cip" id="cip" size="10" value=""></td>
     <td><input type="text" name="poznamka" id="poznamka" size="10" value=""></td>
+    <td></td>
     </tr>
     <?php
     $db->exec($sql);
@@ -431,7 +432,7 @@ EOF;
         </td>
       </form>";
       echo "<form action='novy_pretek.php' method='get'>
-      <td><input name='novy' type='submit' id='novy' value='Cc'>
+      <td><input name='novy' type='submit' class='novy' value='Cc'>
           <input type='hidden' value=".$row['id']." name='id'>
       </td>
       </form>";
@@ -560,9 +561,9 @@ EOF;
 
    $hlavicka_tab_kat = '<table border="1" style="width:100%">
           <tr>
-            <td class="prvy"></td>
-            <td class="prvy">ID kategórie</td>
-            <td class="prvy">Názov</td>
+            <th class="prvy"></th>
+            <th class="prvy">ID kategórie</th>
+            <th class="prvy">Názov</th>
           </tr>';
 
    //vypis laveho stlpca

@@ -10,6 +10,10 @@ session_start();
 <?php
 hlavicka("Prihlásenie administrátora");
 
+if (isset($_POST['ajax_heslo'])) {
+   posli_heslo($heslo, $mail_od, $mail_komu);
+}
+
 if (isset($_POST['heslo'])&&$_POST['heslo']==$heslo){
   $_SESSION['admin']=1;
   echo "<META http-equiv='refresh' content='0;URL=index.php'>";
@@ -19,28 +23,30 @@ else{
   <form method="post">
     <div id="prihlasenieAdministratora">
       <h2>Prihlásenie administrátora</h2>
-      <table style="width:100%;">  
+      <table style="width:100%;">
         <tr>
           <td><label for="heslo">Heslo:</label></td>
           <td><input type=password name="heslo" id="heslo"></td>
         </tr>
         <?php
-        if(isset($_POST["heslo"])){?>      
+        if(isset($_POST["heslo"])){?>
           <tr>
             <td></td>
             <td class="upozornenie">Ľutujeme, zadali ste zlé heslo</td>
           </tr>
         <?php } ?>
         <tr>
-          <td></td>
+          <td><div id="poslatHeslo" onclick="posli()">Zabudol som heslo</div></td>
           <td><input type=submit name="prihlas" id="prihlas" value="Prihlásiť"></td>
         </tr>
-      </table> 
+      </table>
     </div>
 </form>
 <?php
 }
-paticka();        
+paticka();
 ?>
 
 </html>
+
+

@@ -48,19 +48,25 @@ else{
       $_SESSION['zmazany'] = $nazov;
     }
   ?>
-  <table border="1" id="archiv" class="tablesorter" style="width:100%;">  
+  <table border="1" id="archiv" class="tablesorter" style="width:100%;">
     <thead>
       <tr>
-        <th class="prvy">Typ tréningu</td>
-        <th class="prvy">Dátum konania</td> 
-        <th class="prvy">Prihlasovanie do</td>
+        <th class="prvy header">Typ tréningu</th>
+        <th class="prvy header">Dátum konania</th>
+        <th class="prvy">Prihlasovanie do</th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
+        <th class="prvy"></th>
       </tr>
     </thead>
     <tbody>
-      <?php 
-        PRETEKY::vypis_archiv($_GET['rok']);     
+      <?php
+        PRETEKY::vypis_archiv($_GET['rok']);
       ?>
-  </table> 
+  </table>
 </div>
 <br><br>
 
@@ -73,6 +79,6 @@ else{
   });
 </script>
 <?php
-paticka();        
+paticka();
 ?>
 </html>

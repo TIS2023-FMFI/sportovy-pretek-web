@@ -27,7 +27,7 @@ if ((isset($_POST['posli'])) && (over ($_POST['nazov']))) {
 
 
 ?>
-  <div id="novy_pouzivatel">
+  <div class="novy_pouzivatel">
 	  <form method="post" enctype="multipart/form-data">
       <h2>Pridať oddiel</h2>
 	    <table>
