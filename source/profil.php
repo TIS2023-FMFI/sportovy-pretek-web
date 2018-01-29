@@ -23,60 +23,50 @@ if(isset($_POST['vymaz'])){
 <section id="uprav">
  	<div id="profil">
 		<div id="foto">
-      <form method="post" enctype="multipart/form-data">
-        <?php zobraz_obrazok($_GET['id']); ?>
-      </form>
-    </div>
-    <div id="obsah">
-	    <?php 
-	    $po = new POUZIVATELIA();
-	    $po = POUZIVATELIA::vrat_pouzivatela($_GET["id"]);
-	    
-	echo "<label for='meno'>Meno: </label><label>".$po->meno."</label><br><label for='priezvisko'>Priezvisko: <label><label>".$po->priezvisko."</label><br>
-		<label for='meno'>Oddiel: </label><label>".$po->oddiel."</label><br>
-		<label for='os_i_c'>Osobné ident. číslo: </label>
-		<label>".$po->os_i_c."</label><br>
-		<label for='poznamka'>Poznámka: </label>
-		<label>".$po->poznamka."</label><br>
-		<label for='uspechy'>Úspechy: </label>
-		<label>".$po->uspech."</label><br>";
-		
-		if(je_kmenovy($_GET['id'])){
-			echo 
-			"<label for='pohavie'>Pohlavie: </label>
-			<label>".$po->pohlavie."</label><br>
-			<label for='narodenie'>Dátum narodenia: </label>
-			<label>".$po->narodenie."</label><br>
-			<label for='krajinaN'>Krajina narodenia: </label>
-			<label>".$po->krajina_narodenia."</label><br>
-			<label for='statna'>Štátna príslušnosť: </label>
-			<label>".$po->statna_prislusnost."</label><br>
-			<label for='krajina'>Krajina trvelého bydliska: </label>
-			<label>".$po->krajina_trvaleho_pobytu."</label><br>
-			<label for='ulica'>Ulica: </label>
-			<label>".$po->ulica."</label><br>
-			<label for='cislo_domu'>Číslo domu: </label>
-			<label>".$po->cislo_domu."</label><br>
-			<label for='psc'>PSČ: </label>
-			<label>".$po->psc."</label><br>
-			<label for='mesto'>Mesto: </label>
-			<label>".$po->mesto."</label><br> 
-			<label for='telefon'>Telefón: </label>
-			<label>".$po->telefon."</label><br>
-			<label for='mail'>Mail: </label>
-			<label>".$po->mail."</label><br>
-			<label for='cip'>Číslo čipu: </label>
-			<label>".$po->chip."</label><br>
-			<label for='oddiel'>Oddiel: </label>"; 
-		}?>
-	</div>
+      		<form method="post" enctype="multipart/form-data">
+        		<?php zobraz_obrazok($_GET['id']); ?>
+      		</form>
+    	</div>
+
+    	<div id="obsah">
+    		<div class="obsah_stl">
+			    <?php
+			    $po = new POUZIVATELIA();
+			    $po = POUZIVATELIA::vrat_pouzivatela($_GET["id"]);
+
+				echo "Meno: ".$po->meno."<br>
+				Priezvisko: ".$po->priezvisko."<br>
+				Oddiel: ".$po->oddiel."<br>
+				Osobné ident. číslo: ".$po->os_i_c."<br>
+				Poznámka: ".$po->poznamka."<br>
+				Úspechy: ".$po->uspech."<br>"; ?>
+			</div>
+
+			<div class="obsah_stl">
+				<?php
+				if(je_kmenovy($_GET['id']) && isset($_SESSION['admin']) && $_SESSION['admin']){
+					echo "Pohlavie: ".$po->pohlavie."<br>
+					Dátum narodenia: ".$po->narodenie."<br>
+					Krajina narodenia: ".$po->krajina_narodenia."<br>
+					Štátna príslušnosť: ".$po->statna_prislusnost."<br>
+					Krajina trvelého bydliska: ".$po->krajina_trvaleho_pobytu."<br>
+					Ulica: ".$po->ulica."<br>
+					Číslo domu: ".$po->cislo_domu."<br>
+					PSČ: ".$po->psc."<br>
+					Mesto: ".$po->mesto."<br>
+					Telefón: ".$po->telefon."<br>
+					Mail: ".$po->mail."<br>
+					Číslo čipu: ".$po->chip;
+				}?>
+			</div>
+		</div>
 	</div>
 </section>
 <br><br>
 
-<script src="thumbnailviewer.js" type="text/javascript"></script>  
+<script src="thumbnailviewer.js" type="text/javascript"></script>
 
-<?php 
+<?php
 unset($po);
 paticka();
 ?>

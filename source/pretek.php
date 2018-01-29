@@ -223,7 +223,7 @@ if(isset($_POST['skry'])){
           ?>
           <div id="formaExportu" style="border: solid 2px #4169e1; padding-left: 20px; width: 280px;">
             <h3>Forma exportu</h3>
-            <table>
+            <table id="table_export">
               <tr>
                 <th>Zvoliť</th><th>Stĺpec</th><th>Poradie</th>
               </tr>
@@ -269,7 +269,7 @@ if(isset($_POST['skry'])){
                   <option value="4">4.</option>
                   <option value="5">5.</option>
                   <option value="6">6.</option>
-                </select><td>
+                </select></td>
               </tr>
               <tr>
                 <td><input type="checkbox" name="ex[]" value="cip"></td><td>Čip</td>
@@ -310,7 +310,7 @@ if(isset($_POST['skry'])){
     <?php
       if((isset($_SESSION['admin'])&&$_SESSION['admin']==1)||(isset($pr->AKTIV)&&$pr->AKTIV==1&&isset($pr->DEADLINE))&&$deadline>$now){
         echo''; ?>
-        <input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning" style="margin-bottom: 1em">
+        <p><input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning" style="margin-bottom: 1em">
         <?php
         if (!isset($_GET['cookies'])){?>
           <?php $link="'pretek.php?id=".$_GET['id']."&cookies=0'"; ?>
@@ -325,7 +325,7 @@ if(isset($_POST['skry'])){
       }
       if (isset($_SESSION['admin'])&&$_SESSION['admin']){
         ?>
-        <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať používateľov?');" value="Vymazať používateľa"> <!-- aj v admine kde su vsetci pouzivatelia-->
+        <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať používateľov?');" value="Vymazať používateľa"></p> <!-- aj v admine kde su vsetci pouzivatelia-->
         <?php
       }
       if(isset($_SESSION['error_kat'])){ ?>
@@ -364,7 +364,6 @@ if(isset($_POST['skry'])){
         <th class="prvy">Čip</th>
         <th class="prvy">Poznámka</th>
         <th class="prvy"></th>
-        <th class="prvy"></th>
         </tr>
         </thead>
         <tbody>
@@ -381,6 +380,8 @@ if(isset($_POST['skry'])){
     </div>
     <br><br>
   </form>
+
+</section>
 
 <script type="text/javascript" src="sorter/jquery-latest.js"></script>
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>

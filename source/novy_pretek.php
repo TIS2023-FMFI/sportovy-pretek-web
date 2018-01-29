@@ -31,9 +31,9 @@ else{
       $po = new PRETEKY();
       $po = PRETEKY::vrat_pretek($_GET["id"]);
       ?>
-      <section id="uprav_preteky">
+      <section class="uprav_preteky">
       <form method="post" enctype="multipart/form-data">
-        <table>
+        <table id="novy_pretek_table">
          <?php if(isset($_POST['nazov']) && !over($_POST['nazov'])){echo'<tr><td><font color="red">Nevyplnili ste názov!</font></td></tr>';} ?>
          <tr>
           <td><label for="nazov">Názov pretekov</label></td>
@@ -68,7 +68,7 @@ else{
   }
 else{
 ?>
-<section id="uprav_preteky">
+<section class="uprav_preteky">
 	<form method="post" enctype="multipart/form-data">
 	  <table>
       <?php if(isset($_POST['nazov']) && !over($_POST['nazov'])){echo'<tr><td><font color="red">Nevyplnili ste názov!</font></td></tr>';} ?>
@@ -103,8 +103,8 @@ else{
     </p>
   </form>
 </section>
-<?php 
-} 
+<?php
+}
 ?>
 
 <script src="js/jquery.js"></script>
