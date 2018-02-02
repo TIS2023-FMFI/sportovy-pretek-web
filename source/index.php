@@ -10,149 +10,84 @@ if (isset($_GET['odhlas'])){
 ?>
 
 <!DOCTYPE HTML>
-
 <html>
 <?php
 if (isset($_SESSION['admin'])&&$_SESSION['admin']){
   hlavicka("Admin");
-}else{
+}
+else{
   hlavicka("Tréningy ŠK Sandberg");
 }
 ?>
 
-<section id="uprav_preteky">
-<?php
-$zobraz_form = false;
-
-if (isset($_POST['novy'])){
-  $zobraz_form = true;
-
-}
-if (isset($_POST['end'])){
-  $zobraz_form = false;
-}
-
-
-if ( (isset ($_POST['posli'])) &&
-
-    isset ($_POST['nazov']) &&
-    isset ($_POST['datum']) &&
-    isset ($_POST['deadline']) )  {
-
-
-
-  $p = new PRETEKY();
-  $p->pridaj_pretek($_POST['nazov'],$_POST['datum'],$_POST['deadline']);
-  echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
-  unset($p);
-
-
-  ?>
-
-  <?php
-  echo '<p class="chyba">Upravene!</p>';
-}
-
-if ($zobraz_form) {
-?>
-  <form method="post" enctype="multipart/form-data">
-    <input type="submit" name="kopir" value="Nakopírovať tréning">
-   <table>
-    <?php if(isset($_POST['nazov']) && !over($_POST['nazov'])){echo'<tr><td><font color="red">Nevyplnili ste názov!</font></td></tr>';} ?>
-    <tr>
-
-      <td><label for="nazov">Názov pretekov</label></td>
-      <td><input type="text" name="nazov" id="nazov" size="30" > </td>
-    </tr>
-    <?php if(isset($_POST['datum']) && !over($_POST['datum'])){echo'<tr><td><font color="red">Nevyplnili ste dátum!</font></td></tr>';} ?>
-    <tr>
-
-      <td><label for="datetimepicker">Dátum konania</label>  </td>
-      <td><input type="text" name="datum" id="datetimepicker" size="30" ></td>
-    </tr>
-    <?php if(isset($_POST['deadline']) && !over($_POST['deadline'])){echo'<tr><td><font color="red">Nevyplnili ste deadline!</font></td></tr>';} ?>
-    <tr>
-
-      <td><label for="datetimepicker1">Deadline prihlásenia</label>    </td>
-      <td><input type="text" name="deadline" id="datetimepicker1" size="30"> </td>
-    </tr>
-    <tr>
-       <td> <label for="poznamka">Poznámka</label> </td>
-       <td> <textarea cols="80" rows="15" name="poznamka" id="poznamka"></textarea></td>
-
-    </tr>
-   </table>
-   <table><?php
-   if(isset($_POST['posli'])&&!isset($_POST['incharge'])){echo'<tr><td><font color="red">Musíte zadať aspoň jednu kategóriu!</font></td></tr>';}
-   PRETEKY::vypis_zoznam_ostatne_table(); ?></table>
-
-   <p id="buttons">
-   <input type="submit" name="posli" value="Pridaj">
-   <input type="submit" name="end" value="Koniec">
-   <br><br>
-   </p>
-  </form>
-  <?php
-  }
-  ?>
-</section>
-
 <div id="zoz_pretekov_uzivatel">
-    <h2>Zoznam tréningov</h2>
-
-    <form class="nove_preteky" method="post">
-      <input name="novy" type="submit" id="novy" value="Nové preteky">
-    </form>
+  <h2>Zoznam tréningov</h2>
+  <?php
+  if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
+    <input class="novy" type="submit" id="novy" onclick="location.href='novy_pretek.php';" value="Nové preteky">
     <input type="submit" onclick="location.href='kategorie.php';" value="Kategórie">
     <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely">
-
-    <table border="1" style="width:100%;">
-      <tr>
-        <td class="prvy">Typ tréningu</td>
-        <td class="prvy">Dátum konania</td>
-        <td class="prvy">Prihlasovanie do</td>
-
-<?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
-        <td class="prvy"></td>
-      </tr>
-      <?php PRETEKY::vypis_zoznam_admin();?>
-    </table>
-
-</div>
-
-<script src="js/jquery.js"></script>
-  <script src="js/jquery.datetimepicker.js"></script>
-  <script>
-  $('#datetimepicker1').datetimepicker({
-  dayOfWeekStart : 1,
-  format:'d-m-Y H:i',
-  lang:'sk'
-  });
-
-
-  </script>
-  <script>
-  $('#datetimepicker2').datetimepicker({
-  dayOfWeekStart : 1,
-  format:'d-m-Y H:i',
-  lang:'sk',
-  showAnim: "show"
-  });
-
-
-  </script>
-
-<?php }else{?>
-      </tr>
-      <?php PRETEKY::vypis_zoznam();?>
+    <?php
+  }
+  if(isset($_SESSION['zmazany'])){
+    echo '<strong style="color:green; font-size:15px; margin-left:30px;">Pretek '.$_SESSION['zmazany'].' bol zmazaný.</strong>';
+    unset($_SESSION['zmazany']);
+  }
+  if(isset($_POST['aktiv'])){
+    PRETEKY::aktivuj($_POST['id']);
+    $pr = new PRETEKY();
+    $pr=PRETEKY::vrat_pretek($_POST["id"]);
+    if($pr->AKTIV == 1){
+      echo '<strong style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol aktivovaný.</strong>';
+    }
+    else{
+      echo '<strong  style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol deaktivovaný.</strong>';
+    }
+  }
+  if(isset($_POST['zmaz'])){
+    $pr = new PRETEKY();
+    $pr=PRETEKY::vrat_pretek($_POST["id"]);
+    $nazov = $pr->NAZOV;
+    PRETEKY::vymaz_pretek($_POST['id']);
+    echo '<meta http-equiv="refresh" content="0; URL=index.php">';
+    $_SESSION['zmazany'] = $nazov;
+  }
+  ?>
+    <table border="1" id="treningy" class="tablesorter" style="width:100%;">
+      <thead>
+        <tr>
+          <th class="prvy">Typ tréningu</th>
+          <th class="prvy">Dátum konania</th>
+          <th class="prvy">Prihlasovanie do</th>
+          <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
+          <th class="prvy"></th>
+          <th class="prvy"></th>
+          <th class="prvy"></th>
+          <th class="prvy"></th>
+          <?php } ?>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        if(isset($_SESSION['admin'])&&$_SESSION['admin']){
+          PRETEKY::vypis_zoznam_admin();
+        }
+        else{
+          PRETEKY::vypis_zoznam();
+        }
+        ?>
+      </tbody>
     </table>
 </div>
 <br><br>
+<script type="text/javascript" src="sorter/jquery-latest.js"></script>
+<script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+     $("#treningy").tablesorter({dateFormat: "uk"});
+  });
+</script>
 <?php
-}
 paticka();
 ?>
-
-
-
 </html>

@@ -1,10 +1,8 @@
 <?php
-
 /*
 * Trieda PRETEK ktoru pouzijeme na udrzovanie udajov o pretekoch.
 */
-class PRETEKY
-{
+class PRETEKY{
   public $ID;
   public $NAZOV;
   public $DATUM;
@@ -15,14 +13,15 @@ class PRETEKY
   *Prida udaje objektu preteky do databazy
   */
 
-    public function nacitaj($ID,$NAZOV,$DATUM,$DEADLINE,$AKTIV,$POZNAMKA){
-        $this->ID = $ID;
-        $this->NAZOV = $NAZOV;
-        $this->DATUM = $DATUM;
-        $this->DEADLINE = $DEADLINE;
-        $this->AKTIV = $AKTIV;
-        $this->POZNAMKA = iconv('cp1252', 'UTF-8', html_entity_decode($POZNAMKA, ENT_QUOTES, 'cp1252'));
-    }
+  public function nacitaj($ID,$NAZOV,$DATUM,$DEADLINE,$AKTIV,$POZNAMKA){
+    $this->ID = $ID;
+    $this->NAZOV = $NAZOV;
+    $this->DATUM = $DATUM;
+    $this->DEADLINE = $DEADLINE;
+    $this->AKTIV = $AKTIV;
+    //$this->POZNAMKA = iconv('cp1252', 'UTF-8//TRANSLIT//IGNORE', html_entity_decode($POZNAMKA, ENT_QUOTES, 'cp1252'));
+    $this->POZNAMKA = html_entity_decode($POZNAMKA);
+  }
 
   public function pridaj_pretek($NAZOV, $DATUM, $DEADLINE, $POZNAMKA){
    $db = napoj_db();
@@ -30,106 +29,79 @@ class PRETEKY
    $reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
    $text = $POZNAMKA;
    if(preg_match($reg_exUrl, $text, $url) && !strpos($text, "</a>") && !strpos($text, "</A>") && !strpos($text, "HREF") && !strpos($text, "href")) {
-
-       // make the urls hyper links
+      // make the urls hyper links
       $text = preg_replace($reg_exUrl, "<a href=".$url[0].">{$url[0]}</a> ", $text);
-
-}
-
-   $POZNAMKA2 = htmlentities($text, ENT_QUOTES, 'UTF-8');
-
-   $sql =<<<EOF
-      INSERT INTO PRETEKY (
-         NAZOV,DATUM,DEADLINE,AKTIV,POZNAMKA)
+    }
+    $POZNAMKA2 = htmlentities($text, ENT_QUOTES, 'UTF-8');
+    $sql =<<<EOF
+      INSERT INTO Preteky (nazov,datum,deadline,aktiv,poznamka)
       VALUES ("$NAZOV2", "$DATUM", "$DEADLINE","1","$POZNAMKA2");
 EOF;
-
-   $ret = $db->exec($sql);
-
-$sql0 = "SELECT max(id) as bubulak FROM PRETEKY";
+    $ret = $db->exec($sql);
+    $sql0 = "SELECT max(id) as maxId FROM Preteky";
     $ret0=$db->query($sql0);
     $row = $ret0->fetchArray(SQLITE3_ASSOC);
-    $cislo = $row['bubulak'];
-
-$sql1 =<<<EOF
-      CREATE TABLE KATEGORIE_PRE_$cislo
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-       NAZOV    TEXT
-       );
-EOF;
-$ret = $db->exec($sql1);
-
-   $db->close();
+    $cislo = $row['maxId'];
+    $db->close();
+    return $cislo;
   }
 
 /**
-*upravy pretek v databaze podla aktualneho id objektu preteky
+*upravi pretek v databaze podla aktualneho id objektu preteky
 */
   function uprav_pretek ($NAZOV, $DATUM, $DEADLINE,$POZNAMKA){
-  if(!$this->ID){
-    return false;
-  }
-  $NAZOV2 = htmlentities($NAZOV, ENT_QUOTES, 'UTF-8');
-  $reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
-   $text = $POZNAMKA;
-
-   if(preg_match($reg_exUrl, $text, $url) && !strpos($text, "</a>") && !strpos($text, "</A>") && !strpos($text, "HREF") && !strpos($text, "href")) {
-
-       // make the urls hyper links
+    if(!$this->ID){
+      return false;
+    }
+    $NAZOV2 = htmlentities($NAZOV, ENT_QUOTES, 'UTF-8');
+    $reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
+    $text = $POZNAMKA;
+    if(preg_match($reg_exUrl, $text, $url) && !strpos($text, "</a>") && !strpos($text, "</A>") && !strpos($text, "HREF") && !strpos($text, "href")) {
+      // make the urls hyper links
       $text = preg_replace($reg_exUrl, "<a href=".$url[0].">{$url[0]}</a> ", $text);
-
-}
-
-   $POZNAMKA2 = htmlentities($text, ENT_QUOTES, 'UTF-8');
+    }
+    $POZNAMKA2 = htmlentities($text, ENT_QUOTES, 'UTF-8');
     $db = napoj_db();
     $sql =<<<EOF
-       UPDATE PRETEKY set NAZOV = "$NAZOV2" where ID="$this->ID";
-       UPDATE PRETEKY set DATUM = "$DATUM" where ID="$this->ID";
-       UPDATE PRETEKY set DEADLINE = "$DEADLINE" where ID="$this->ID";
-       UPDATE PRETEKY set POZNAMKA = "$POZNAMKA2" where ID="$this->ID";
-       DELETE FROM KATEGORIE_PRE_$this->ID;
+       UPDATE Preteky set nazov = "$NAZOV2" where id="$this->ID";
+       UPDATE Preteky set datum = "$DATUM" where id="$this->ID";
+       UPDATE Preteky set deadline = "$DEADLINE" where id="$this->ID";
+       UPDATE Preteky set poznamka = "$POZNAMKA2" where id="$this->ID";
+       DELETE FROM Kategorie_pre WHERE id_pret = "$this->ID";
 EOF;
     $ret = $db->exec($sql);
     if(!$ret){
-       echo $db->lastErrorMsg();
-    } else {
-
+      echo $db->lastErrorMsg();
     }
    $db->close();
   }
 
 /**
-*prihlasy pouzivatela na pretek
+*odhlasi pouzivatela na pretek
 */
-static function odhlas_z_preteku($ID,$ID_pouz){
-  $db = napoj_db();
-
-   $sql =<<<EOF
-      DELETE FROM PRIHLASENY WHERE ID_POUZ = "$ID_pouz" AND ID_PRET="$ID";
+  static function odhlas_z_preteku($ID,$ID_pouz){
+    $db = napoj_db();
+    $sql =<<<EOF
+      DELETE FROM Prihlaseni WHERE id_pouz = "$ID_pouz" AND id_pret="$ID";
 EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
+    $ret = $db->exec($sql);
+    if(!$ret){
       echo $db->lastErrorMsg();
-   } else {
-
-   }
-   $db->close();
-}
+    }
+    $db->close();
+  }
 
 /**
-*odhlasy pouzivatela na pretek
+*prihlasi pouzivatela na pretek
 */
-static function prihlas_na_pretek($ID,$ID_pouz,$kat,$poz){
-  $db = napoj_db();
+  static function prihlas_na_pretek($id,$id_pouz,$id_kat,$poz){
+    $db = napoj_db();
     $sql =<<<EOF
-      INSERT INTO PRIHLASENY (
-         ID_POUZ,ID_PRET,KAT,POZNAMKA)
-      VALUES ("$ID_pouz","$ID","$kat","$poz");
+        INSERT INTO Prihlaseni (id_pouz,id_pret,id_kat,poznamka)
+        VALUES ("$id_pouz","$id","$id_kat","$poz");
 EOF;
-  setcookie('kat_pretekar'.$ID_pouz, $kat, time() + (86400 * 366),"/");
-   $ret = $db->exec($sql);
-   if(!$ret){
+    $ret = $db->exec($sql);
+    if(!$ret){
       echo $db->lastErrorMsg();
     }
     $db->close();
@@ -140,212 +112,208 @@ EOF;
 *vrati zoznam pouzivatelov pruhlasenych na pretek s duplicitnym chipom
 */
 
-public function vypis_prihlasenych_d_chip(){
+  public function vypis_prihlasenych_d_chip(){
+    $deadline = new DateTime($this->DEADLINE);
+    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
-           CREATE TABLE temp
-      (ID INTEGER NOT NULL,
-      MENO              TEXT    NOT NULL,
-      PRIEZVISKO        TEXT    NOT NULL,
-      OS_I_C            TEXT,
-      CHIP              TEXT,
-      POZNAMKA          TEXT,
-      USPECH            TEXT,
-      KAT               TEXT,
-      ID_ODDIEL         INTEGER,
-      NIC TEXT
+      CREATE TABLE temp
+      (id INTEGER NOT NULL,
+      meno              TEXT    NOT NULL,
+      priezvisko        TEXT    NOT NULL,
+      os_i_c            TEXT,
+      cip               TEXT,
+      id_kmen_clen      INTEGER,
+      poznamka          TEXT,
+      uspech            TEXT,
+      id_kat            INTEGER,
+      id_oddiel         INTEGER,
+      poznamkaPouz      TEXT
       );
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-          INSERT INTO temp(ID, meno, priezvisko, OS_I_C, CHIP, NIC, USPECH, ID_ODDIEL, KAT, POZNAMKA) SELECT POUZIVATELIA.*, PRIHLASENY.KAT, PRIHLASENY.POZNAMKA FROM POUZIVATELIA INNER JOIN PRIHLASENY ON POUZIVATELIA.ID = PRIHLASENY.ID_POUZ  WHERE (PRIHLASENY.ID_PRET = $this->ID);
+    $db->exec($sql);
+    $sql =<<<EOF
+          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka)
+          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz
+          WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-         SELECT temp.* FROM temp WHERE temp.CHIP in (SELECT temp.CHIP from temp GROUP BY temp.CHIP HAVING COUNT (temp.CHIP) > 1) GROUP BY temp.ID;
+    $db->exec($sql);
+    $sql =<<<EOF
+         SELECT temp.* FROM temp WHERE temp.cip in (SELECT temp.cip from temp GROUP BY temp.cip HAVING COUNT (temp.cip) > 1) GROUP BY temp.id;
 EOF;
-$ret = $db->query($sql);
-$sql =<<<EOF
-         DROP TABLE TEMP;
+    $ret = $db->query($sql);
+    $sql =<<<EOF
+         DROP TABLE temp;
 EOF;
-
-
-
-
-
-
-      while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-        //echo "<b>".$row['ID'],$row['MENO'],$row['PRIEZVISKO'],$row['OS_I_C'],$row['CHIP'],$row['POZNAMKA']."</b><br>";
-
-        echo "<tr>";
-        //echo '<td><input type="checkbox" name="incharge[]" value="'.$row['ID'].'"/></td>';
-
-        echo "<td class='fnt'><strong class=upozornenie>".$row['MENO']."</strong></td>";      //***********************
-        echo "<td class='fnt'><strong class=upozornenie>".$row['PRIEZVISKO']."</strong></td>";
-        echo "<td class='fnt'>".$row['KAT']."</td>";
-        echo "<td class='fnt'>".$row['OS_I_C']."</td>";
-        echo "<td class='fnt'><strong class=upozornenie>".$row['CHIP']."</strong></td>";
-        echo "<td class='fnt'>".$row['POZNAMKA']."</td>";
-        echo "</tr> ";
-
+    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      echo "<tr>";
+      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
+      echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
       }
-      // echo "Operation done successfully"."<br>";   ///////////////////
-       $db->exec($sql);
-       $db->close();
+      else{
+        echo '<td></td>';
+      }
+      echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";
+      echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
+      echo "<td class='fnt'>".$row['id_kat']."</td>";
+      echo "<td class='fnt'>".$row['os_i_c']."</td>";
+      echo "<td class='fnt'><strong class=upozornenie>".$row['cip']."</strong></td>";
+      echo "<td class='fnt'>".$row['poznamka']."</td>";
+      echo "</tr> ";
+    }
+    // echo "Operation done successfully"."<br>";   ///////////////////
+    $db->exec($sql);
+    $db->close();
   }
 /**
 *vrati zoznam pouzivatelov pruhlasenych na pretek s unikatnym chipom
 */
-public function vypis_prihlasenych_u_chip(){
+  public function vypis_prihlasenych_u_chip(){
+    $deadline = new DateTime($this->DEADLINE);
+    $now = new DateTime(date("Y-m-d H:i:s"));
     $db = napoj_db();
     $sql =<<<EOF
-           CREATE TABLE temp
-      (ID INTEGER NOT NULL,
-      MENO              TEXT    NOT NULL,
-      PRIEZVISKO        TEXT    NOT NULL,
-      OS_I_C            TEXT,
-      CHIP              TEXT,
-      POZNAMKA          TEXT,
-      USPECH            TEXT,
-      KAT               TEXT,
-      ID_ODDIEL         INTEGER,
-      NIC TEXT
+      CREATE TABLE temp
+      (id INTEGER NOT NULL,
+      meno              TEXT    NOT NULL,
+      priezvisko        TEXT    NOT NULL,
+      os_i_c            TEXT,
+      cip               TEXT,
+      id_kmen_clen      INTEGER,
+      poznamka          TEXT,
+      uspech            TEXT,
+      id_kat            INTEGER,
+      id_oddiel         INTEGER,
+      poznamkaPouz      TEXT
       );
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-          INSERT INTO temp(ID, meno, priezvisko, OS_I_C, CHIP, NIC, USPECH, ID_ODDIEL, KAT, POZNAMKA ) SELECT POUZIVATELIA.*, PRIHLASENY.KAT, PRIHLASENY.POZNAMKA FROM POUZIVATELIA INNER
-           JOIN PRIHLASENY ON POUZIVATELIA.ID = PRIHLASENY.ID_POUZ  WHERE (PRIHLASENY.ID_PRET = $this->ID);
+    $db->exec($sql);
+    $sql =<<<EOF
+          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka)
+          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz
+          WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-         SELECT temp.* FROM temp WHERE temp.CHIP in (SELECT temp.CHIP from temp GROUP BY temp.CHIP HAVING COUNT (temp.CHIP) = 1) GROUP BY temp.ID;
+    $db->exec($sql);
+    $sql =<<<EOF
+         SELECT temp.* FROM temp WHERE temp.cip in (SELECT temp.cip from temp GROUP BY temp.cip HAVING COUNT (temp.cip) = 1) GROUP BY temp.id;
 EOF;
-$ret = $db->query($sql);
-$sql =<<<EOF
-         DROP TABLE TEMP;
+    $ret = $db->query($sql);
+    $sql =<<<EOF
+         DROP TABLE temp;
 EOF;
-
-
-      while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-        //echo $row['ID'],$row['MENO'],$row['PRIEZVISKO'],$row['OS_I_C'],$row['CHIP'],$row['POZNAMKA']."<br>";
-        echo "<tr>";
-        //echo '<td><input type="checkbox" name="incharge[]" value="'.$row['ID'].'"/></td>';
-
-        echo "<td>".$row['MENO']."</td>";
-        echo "<td>".$row['PRIEZVISKO']."</td>";
-        echo "<td>".$row['KAT']."</td>";
-        echo "<td>".$row['OS_I_C']."</td>";
-        echo "<td>".$row['CHIP']."</td>";
-        echo "<td>".$row['POZNAMKA']."</td>";
-        echo "</tr> ";
-
+    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      echo "<tr>";
+      if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $this->AKTIV == 1))) {
+      echo '<td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
       }
-       // echo "Operation done successfully"."<br>";      ////////////////////////////
-       $db->exec($sql);
-       $db->close();
+      else{
+        echo '<td></td>';
+      }
+      echo "<td>".$row['meno']."</td>";
+      echo "<td>".$row['priezvisko']."</td>";
+      echo "<td>".$row['id_kat']."</td>";
+      echo "<td>".$row['os_i_c']."</td>";
+      echo "<td>".$row['cip']."</td>";
+      echo "<td>".$row['poznamka']."</td>";
+      echo "</tr> ";
+    }
+    $db->exec($sql);
+    $db->close();
   }
 
 /**
 *vrati zoznam neprihlasenych
 */
-
-public function vypis_neprihlasenych(){
+  public function vypis_neprihlasenych(){
     $db = napoj_db();
     $sql =<<<EOF
-           CREATE TABLE temp
-      (ID INTEGER NOT NULL,
-      MENO              TEXT    NOT NULL,
-      PRIEZVISKO        TEXT    NOT NULL,
-      OS_I_C            TEXT,
-      CHIP              TEXT,
-      POZNAMKA          TEXT,
-      USPECH            TEXT,
-      ID_ODDIEL         INTEGER
+      CREATE TABLE temp
+      (id INTEGER NOT NULL,
+      meno              TEXT    NOT NULL,
+      priezvisko        TEXT    NOT NULL,
+      os_i_c            TEXT,
+      cip               TEXT,
+      id_kmen_clen      INTEGER,
+      uspech            TEXT,
+      id_oddiel         INTEGER,
+      poznamkaPouz      TEXT
       );
 EOF;
-$db->exec($sql);
+    $db->exec($sql);
     $sql =<<<EOF
-        INSERT INTO temp(ID, meno, priezvisko, OS_I_C, CHIP, POZNAMKA, USPECH, ID_ODDIEL) SELECT POUZIVATELIA.* FROM POUZIVATELIA LEFT OUTER JOIN PRIHLASENY ON PRIHLASENY.ID_POUZ = POUZIVATELIA.ID
-        WHERE PRIHLASENY.ID is null
-        OR (PRIHLASENY.ID_PRET <> $this->ID AND PRIHLASENY.ID_POUZ NOT IN
-          (SELECT PRIHLASENY.ID_POUZ FROM PRIHLASENY WHERE ID_PRET = $this->ID));
-
-
+      INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech)
+      SELECT Pouzivatelia.*
+      FROM Pouzivatelia LEFT OUTER JOIN Prihlaseni ON Prihlaseni.id_pouz = Pouzivatelia.id
+      WHERE Prihlaseni.id is null
+      OR (Prihlaseni.id_pret <> $this->ID AND Prihlaseni.id_pouz NOT IN
+         (SELECT Prihlaseni.id_pouz FROM Prihlaseni WHERE id_pret = $this->ID));
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-         SELECT temp.* FROM temp WHERE temp.ID GROUP BY temp.ID;
-EOF;
-
-$ret = $db->query($sql);
-$sql =<<<EOF
-         SELECT * FROM KATEGORIE_PRE_$this->ID;
-EOF;
-$result = $db->query($sql);
-
-$sql =<<<EOF
-         DROP TABLE TEMP;
+    $db->exec($sql);
+    $sql =<<<EOF
+         SELECT temp.* FROM temp WHERE temp.id GROUP BY temp.id;
 EOF;
 
-      if(isset($_COOKIE['posledni_prihlaseni'])){
-        $cookiesArray=explode("#",$_COOKIE['posledni_prihlaseni']);
-      }
-      while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-        if ((isset($_GET['cookies'])&&!$_GET['cookies'])||(!isset($_COOKIE['posledni_prihlaseni']) || in_array($row['ID'],$cookiesArray))){
+    $ret = $db->query($sql);
+    $sql =<<<EOF
+         SELECT id_kat,nazov FROM Kategorie_pre JOIN Kategorie on Kategorie_pre.id_kat = Kategorie.id WHERE id_pret = $this->ID;
+EOF;
+    $result = $db->query($sql);
+    $sql =<<<EOF
+         DROP TABLE temp;
+EOF;
+    if(isset($_COOKIE['prihlaseni'])){
+      $cookiesArray=explode(",",$_COOKIE['prihlaseni']);
+    }
+    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      if ((isset($_GET['cookies'])&&!$_GET['cookies'])||(!isset($_COOKIE['prihlaseni']) || in_array($row['id'],$cookiesArray))){
         echo "<tr>";
-        //echo '<td><input type="checkbox" name="incharge2[]" value="'.$row['ID'].'"/></td>';
+        echo '<td><input type="checkbox" name="checked[]" value="'.$row['id'].'"/></td>';
         echo '<td><select name="incharge[]">';
         echo '<option value="-">-</option>';
         while($row1 = $result->fetchArray(SQLITE3_ASSOC) ){
-          echo '<option value="'.$row1['NAZOV'].':'.$row['ID'].'" ';
-          if (isset($_COOKIE['kat_pretekar'.$row['ID']]) && $_COOKIE['kat_pretekar'.$row['ID']]==$row1['NAZOV']){
-            echo "selected";
-          }
-          echo '>'.$row1['NAZOV'].'</option>';
+          echo '<option value="'.$row1['id_kat'].':'.$row['id'].'" ';
+           echo '>'.$row1['nazov'].'</option>';
 
         }
         echo "</select></td>";
-        echo "<td><a class='fntb' href='profil.php?id=".$row['ID']."&amp;pr=".$_GET["id"]."'>".$row['MENO']."</a></td>";
-        echo "<td><a class='fntb' href='profil.php?id=".$row['ID']."&amp;pr=".$_GET["id"]."'>".$row['PRIEZVISKO']."</a></td>";
-
-        echo "<td>".$row['OS_I_C']."</td>";
-        echo "<td>".$row['CHIP']."</td>";
-        echo "<td><input type='text' name=poznamka".$row['ID']." size=10 value='";
-        if (isset($_POST['poznamka'.$row['ID']])){
-          echo $_POST['poznamka'.$row['ID']];
-        }else{
-          echo $row['POZNAMKA'];
+        echo "<td><a class='fntb' href='profil.php?id=".$row['id']."&amp;pr=".$_GET["id"]."'>".$row['meno']."</a></td>";
+        echo "<td><a class='fntb' href='profil.php?id=".$row['id']."&amp;pr=".$_GET["id"]."'>".$row['priezvisko']."</a></td>";
+        echo "<td>".$row['os_i_c']."</td>";
+        echo "<td>".$row['cip']."</td>";
+        echo "<td><input type='text' name=poznamka".$row['id']." size=10 value='";
+        if (isset($_POST['poznamka'.$row['id']])){
+          echo $_POST['poznamka'.$row['id']];
+        }
+        else{
+          echo $row['poznamkaPouz'];
         }
         echo "'></td>";
         echo "<td>
-        <a class='fntb' href='uprav.php?id=".$row['ID']."&amp;pr=".$_GET["id"]."'>Uprav</a></td></tr>";
-
-        }
+        <a class='fntb' href='uprav.php?id=".$row['id']."&amp;pr=".$_GET["id"]."'>Uprav</a></td></tr>";
       }
-      ?>
-        <tr>
-          <td><input type="checkbox" name="posli"></td>
-          <?php
-          echo '<td><select name="kategoria">';
-          echo '<option value="-">-</option>';
-          while($row1 = $result->fetchArray(SQLITE3_ASSOC) ){
-            echo '<option value="'.$row1['NAZOV'].'">'.$row1['NAZOV'].'</option>';
-          }
-          echo "</select></td>";
-          ?>
-          <td><input type="text" name="meno" id="meno" size="10" value=""></td>
-          <td><input type="text" name="priezvisko" id="priezvisko" size="10" value=""></td>
-
-          <td><input type="text" name="oscislo" id="oscislo" size="10" value=""></td>
-          <td><input type="text" name="cip" id="cip" size="10" value=""></td>
-          <td><input type="text" name="poznamka" id="poznamka" size="10" value=""></td>
-        </tr>
-      <?php
-      // echo "Operation done successfully"."<br>";       ////////////////////////
-      $db->exec($sql);
-      $db->close();
-}
+    }
+    ?>
+    <tr>
+    <td><input type="checkbox" name="posli"></td>
+    <?php
+    echo '<td><select name="kategoria">';
+    echo '<option value="-">-</option>';
+    while($row1 = $result->fetchArray(SQLITE3_ASSOC) ){
+      echo '<option value="'.$row1['nazov'].'">'.$row1['nazov'].'</option>';
+    }
+    echo "</select></td>";
+    ?>
+    <td><input type="text" name="meno" id="meno" size="10" value=""></td>
+    <td><input type="text" name="priezvisko" id="priezvisko" size="10" value=""></td>
+    <td><input type="text" name="oscislo" id="oscislo" size="10" value=""></td>
+    <td><input type="text" name="cip" id="cip" size="10" value=""></td>
+    <td><input type="text" name="poznamka" id="poznamka" size="10" value=""></td>
+    <td></td>
+    </tr>
+    <?php
+    $db->exec($sql);
+    $db->close();
+  }
 
 
 
@@ -354,28 +322,28 @@ EOF;
 */
   static function vrat_pretek ($ID){
     $db = napoj_db();
-      $sql =<<<EOF
-         SELECT * from Preteky WHERE ID=$ID;
+    $sql =<<<EOF
+         SELECT * from Preteky WHERE id=$ID;
 EOF;
-$sql1 =<<<EOF
-         SELECT * from Preteky WHERE ID=$ID;
+    $sql1 =<<<EOF
+         SELECT * from Preteky WHERE id=$ID;
 EOF;
-$count = 0;
-if(is_numeric($ID)){
+    $count = 0;
+    if(is_numeric($ID)){
       $ret = $db->query($sql);
       $ret2 = $db->query($sql1);
       $count = $ret2->fetchArray(PDO::FETCH_NUM);
     }
-      if($count>0){
+    if($count>0){
       while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
         $pom = new PRETEKY();
-        $pom->nacitaj($ID,$row['NAZOV'],$row['DATUM'],$row['DEADLINE'], $row['AKTIV'], $row['POZNAMKA']);
-       }
-       // echo "Operation done successfully"."<br>";    //////////////
-       $db->close();
-       return $pom;
-     }
-       else{echo'Zvoleny pretek neexistuje';}
+        $pom->nacitaj($ID,$row['nazov'],$row['datum'],$row['deadline'], $row['aktiv'], $row['poznamka']);
+      }
+      // echo "Operation done successfully"."<br>";    //////////////
+      $db->close();
+      return $pom;
+    }
+      else{echo'Zvoleny pretek neexistuje';}
   }
 
 /**
@@ -384,358 +352,392 @@ if(is_numeric($ID)){
   static function vymaz_pretek($ID){
     $db = napoj_db();
     $sql =<<<EOF
-       DELETE FROM PRETEKY WHERE ID = $ID;
-       DELETE FROM PRIHLASENY WHERE ID_PRET = $ID;
+       DELETE FROM Preteky WHERE id = $ID;
+       DELETE FROM Prihlaseni WHERE id_pret = $ID;
+       DELETE FROM Kategorie_pre WHERE id_pret = $ID;
 EOF;
-$sql1 =<<<EOF
-       DROP TABLE KATEGORIE_PRE_$ID
-EOF;
-     $ret = $db->exec($sql);
-     $ret1 = $db->exec($sql1);
+    $ret = $db->exec($sql);
+    //echo'<tr><td><font color="green">Pretek bol zmazaný.</font></td></tr>';
     if(!$ret){
-       echo $db->lastErrorMsg();
+      echo $db->lastErrorMsg();
     }
-   $db->close();
-
+    $db->close();
   }
+  static function otoc_datum($datum){
+    $datum = explode(' ',$datum);
+    $dat = explode('-',$datum[0]);
+    return $dat[2]."-".$dat[1]."-".$dat[0]." ".$datum[1];
+  }
+
+  /**
 
 /**
-*Vrati zoznam zoznam pretekov
+*Vrati zoznam zoznam pretekov pre uzivatela
 */
 static function vypis_zoznam(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      SELECT * from Preteky WHERE AKTIV = 1 ORDER BY NAZOV ASC;
+  $db = napoj_db();
+  $sql =<<<EOF
+    SELECT * from Preteky WHERE datetime(datum) >= datetime('now','localtime') ORDER BY datum DESC;
 EOF;
-
-   $ret = $db->query($sql);
-   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-    $d1 = $row['DEADLINE'];
-    $d2 = $row['DATUM'];
+  $ret = $db->query($sql);
+  while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    $d1 = $row['deadline'];
+    $d2 = $row['datum'];
     $d3 = new DateTime(date("Y-m-d H:i:s"));
-
-    if(strtotime($d1) < strtotime('1 days') && strtotime($d1) > strtotime('0 days')){
-    echo "<tr><td><a href='pretek.php?id=".$row['ID']."' class='red'>".$row['NAZOV']."</a></td>";
-  }
-    if(strtotime($d1) < strtotime('0 days')){
-    echo "<tr><td><a href='pretek.php?id=".$row['ID']."' class='grey'>".$row['NAZOV']."</a></td>";
-  }
-  if(strtotime($d1) > strtotime('1 days')){
-    echo "<tr><td><a href='pretek.php?id=".$row['ID']."' class='green'>".$row['NAZOV']."</a></td>";
-  }
-    echo "<td>".$row['DATUM']."</td>";
-    echo "<td>".$row['DEADLINE']."</td>";
-    //echo "<td><a href='uprav_preteky.php?id=".$row['ID']."'>Uprav</a></td>";
-    if(new DateTime($d2) < $d3){
-      ?>
-        <td><a href='vykon.php?id=<?php echo $row['ID'];?>'>Osobný výkon</a></td>
-        <td><a href='zhodnotenie.php?id=<?php echo $row['ID']?>'>Celkové hodnotenie</a></td>
-      <?php
+    if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='red'>".$row['nazov']."</a></td>";
     }
-
-    echo "</tr>";
+    if(strtotime($d1) > strtotime('1 days')){
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='green'>".$row['nazov']."</a></td>";
+    }
+    else{
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+    }
+      echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
+      echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
+      echo "</tr>";
    }
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
-
-
+/**
+*Vrati zoznam zoznam pretekov pre admina
+*/
 static function vypis_zoznam_admin(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      SELECT * from Preteky ORDER BY DEADLINE DESC;
+    $db = napoj_db();
+    $sql =<<<EOF
+      SELECT * from Preteky WHERE datetime(datum) >= datetime('now','localtime') ORDER BY datum DESC;
 EOF;
+    $ret = $db->query($sql);
+    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      $d1 = $row['deadline'];
+      $d2 = $row['datum'];
+      $d3 = new DateTime(date("Y-m-d H:i:s"));
+      if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
+        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'red'>".$row['nazov']."</a></td>";
+      }
+      if(strtotime($d1) > strtotime('1 days')){
+        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'green'>".$row['nazov']."</a></td>";
+      }
+      else{
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+      }
+      echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
+      echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
+      echo "<td><a style='font-size:13px;' href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
 
-   $ret = $db->query($sql);
-   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-    $d1 = $row['DEADLINE'];
-    $d2 = $row['DATUM'];
-    $d3 = new DateTime(date("Y-m-d H:i:s"));
-    if(strtotime($d1) < strtotime('1 days') && strtotime($d1) > strtotime('0 days')){
-    echo "<tr><td><a href='pretek.php?id=".$row['ID']."&amp;ad=1' class = 'red'>".$row['NAZOV']."</a></td>";
-  }
-  if(strtotime($d1) < strtotime('0 days')){
-    echo "<tr><td><a href='pretek.php?id=".$row['ID']."&amp;ad=1' class = 'grey'>".$row['NAZOV']."</a></td>";
-  }
-  if(strtotime($d1) > strtotime('1 days')){
-    echo "<tr><td><a href='pretek.php?id=".$row['ID']."&amp;ad=1' class = 'green'>".$row['NAZOV']."</a></td>";
-  }
-    echo "<td>".$row['DATUM']."</td>";
+      echo "<form method='post'>
+        <td><input type='submit' value='A/D' name='aktiv'>
+            <input type='hidden' value=".$row['id']." name='id'>
+        </td>
+      </form>";
+      echo "<form action='novy_pretek.php' method='get'>
+      <td><input name='novy' type='submit' class='novy' value='Cc'>
+          <input type='hidden' value=".$row['id']." name='id'>
+      </td>
+      </form>";
+      echo "<form method='post'>
+        <td><input type='submit' value='X' name='zmaz'>
+            <input type='hidden' value=".$row['id']." name='id'>
+        </td>
+      </form>";
+      echo "</tr>";
+   }
+   //echo "Operation done successfully"."<br>";   ////////////////////////////////
+   $db->close();
+}
+static function vypis_archiv($rok){
+  $db = napoj_db();
+  $rokReg = $rok.'%';
+    $sql =<<<EOF
+      SELECT * from Preteky WHERE datetime(datum) < datetime('now','localtime') AND datum like "$rokReg" ORDER BY datum DESC;
+EOF;
+    $ret = $db->query($sql);
+    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'grey'>".$row['nazov']."</a></td>";
+      echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
+      echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
+      echo "<td><a style='font-size:13px;' href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
+      echo "<td><a style='font-size:13px;' href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
+      echo "<td><a style='font-size:13px;' href='zhodnotenie.php?id=". $row['id']."'>Celkové hodnotenie</a></td>";
 
-
-    if(new DateTime($d2) < $d3){
-      ?>
-        <td><a href='vykon.php?id=<?php echo $row['ID'];?>'>Osobný výkon</a></td>
-        <td><a href='zhodnotenie.php?id=<?php echo $row['ID']?>'>Celkové hodnotenie</a></td>
-
-      <?php
-    }
-    echo "<td><input type='submit' value='A'></td>";
-    echo "<td><input type='submit' value='Cc'></td>";
-    echo "<td><input type='submit' value='X'>";
-    echo "</tr>";
-
+      echo "<form method='post'>
+        <td><input type='submit' value='A/D' name='aktiv'>
+            <input type='hidden' value=".$row['id']." name='id'>
+        </td>
+      </form>";
+      echo "<form action='novy_pretek.php' method='get'>
+      <td><input name='novy' type='submit' value='Cc'>
+      <input type='hidden' value=".$row['id']." name='id'>
+      </td>
+      </form>";
+      echo "<form method='post'>
+      <td><input type='submit' value='X' name='zmaz'>
+      <input type='hidden' value=".$row['id']." name='id'>
+        </td>
+      </form>";
+      echo "</tr>";
    }
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
 
-static function aktivuj($ID){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      UPDATE PRETEKY set AKTIV = "1" where ID="$ID";
+static function vypis_roky(){
+  $db = napoj_db();
+  $sql =<<<EOF
+    SELECT DISTINCT substr(datum,0,5) as rok from Preteky WHERE date(datum) < date('now','localtime');
 EOF;
+  $ret = $db->query($sql);
+  while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    echo "<a style='font-size:25px; text-decoration:none; background-color:rgb(85, 170, 85); color:black; margin:auto; padding:20px; display:block; width:20%; text-align:center;' href='archiv_rok.php?rok=".$row['rok']."'>".$row['rok']."</a><br>";
+  }
+  $db->close();
+}
 
-   $ret = $db->exec($sql);
-
-
-   //echo "Operation done successfully"."<br>";   ////////////////////////////////
+/**
+*Aktivuje alebo deaktivuje pretek podla sucasneho stavu
+*/
+static function aktivuj($ID){
+   $db = napoj_db();
+   $pretek = new PRETEKY();
+   $pretek = PRETEKY::vrat_pretek($ID);
+   if($pretek->AKTIV=='0'){
+   $sql =<<<EOF
+      UPDATE Preteky set aktiv = "1" where id="$ID";
+EOF;
+    $ret = $db->exec($sql);
+  }
+    else{
+  $sql =<<<EOF
+      UPDATE Preteky set aktiv = "0" where id="$ID";
+EOF;
+    $ret = $db->exec($sql);
+ }
    $db->close();
 }
 
 static function deaktivuj($ID){
-
    $db = napoj_db();
-
    $sql =<<<EOF
-      UPDATE PRETEKY set AKTIV = "0" where ID="$ID";
+      UPDATE Preteky set aktiv = "0" where id="$ID";
 EOF;
-
    $ret = $db->exec($sql);
-
-
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
 
 static function vypis_zoznam_oddiely(){
-
    $db = napoj_db();
-
    $sql =<<<EOF
-      SELECT * from ODDIELY;
+      SELECT * from Oddiely;
 EOF;
-
    $ret = $db->query($sql);
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-
-
-       echo '<tr><td><input type="radio" name="incharge[]" value="'.$row['id'].'"/></td>';
-       echo '<td>'.$row['id'].'</td><td>'.$row['nazov'] ."</td></tr>";
-
+    echo '<tr><td><input type="radio" name="incharge[]" value="'.$row['id'].'"/></td>';
+    echo '<td>'.$row['id'].'</td><td>'.$row['nazov'] ."</td></tr>";
    }
    //echo "Operation done successfully"."<br>";
    $db->close();
 }
 
 static function vypis_zoznam_kategorii(){
-
    $db = napoj_db();
 
+   $pocet = 0;
+   //select na zitenie poctu kategorii
    $sql =<<<EOF
-      SELECT * from KATEGORIE;
+      SELECT count(*) as poc from Kategorie;
 EOF;
-
    $ret = $db->query($sql);
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-
-
-       echo '<tr><td><input type="radio" name="incharge[]" value="'.$row['ID'].'"/></td>';
-       echo '<td>'.$row['ID'].'</td><td>'.$row['NAZOV'] ."</td></tr>";
-
+    $pocet= $row['poc'];
    }
+
+   //select na vypisanie kategorii
+   $sql =<<<EOF
+      SELECT * from Kategorie;
+EOF;
+   $ret = $db->query($sql);
+
+   $hlavicka_tab_kat = '<table border="1" style="width:100%">
+          <tr>
+            <th class="prvy"></th>
+            <th class="prvy">ID kategórie</th>
+            <th class="prvy">Názov</th>
+          </tr>';
+
+   //vypis laveho stlpca
+   echo '<div id="kat_stl_1">';
+   echo $hlavicka_tab_kat;
+   $i=0;
+   while($i<$pocet/2 and $row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      $i++;
+     echo '<tr><td><input type="radio" name="incharge[]" value="'.$row['id'].'"/></td>';
+     echo '<td>'.$row['id'].'</td><td>'.$row['nazov'] ."</td></tr>";
+   }
+   echo '</table>';
+   echo '</div>';
+
+   //vypis praveho stlpca
+   echo '<div id="kat_stl_2">';
+   echo $hlavicka_tab_kat;
+   $i=0;
+   while($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      $i++;
+     echo '<tr><td><input type="radio" name="incharge[]" value="'.$row['id'].'"/></td>';
+     echo '<td>'.$row['id'].'</td><td>'.$row['nazov'] ."</td></tr>";
+   }
+   echo '</table>';
+   echo '</div>';
    //echo "Operation done successfully"."<br>";
    $db->close();
 }
 
 static function vymaz_kategoriu($ID){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      DELETE from KATEGORIE WHERE ID = $ID;
+  $db = napoj_db();
+  $sql =<<<EOF
+     DELETE from Kategorie WHERE id = $ID;
 EOF;
-
-   $ret = $db->exec($sql);
-
-   //echo "Operation done successfully"."<br>";
-   $db->close();
+  $ret = $db->exec($sql);
+  //echo "Operation done successfully"."<br>";
+  $db->close();
 }
 
 static function vymaz_oddiel($ID){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      DELETE from Oddiely WHERE ID = $ID;
+  $db = napoj_db();
+  $sql =<<<EOF
+    DELETE from Oddiely WHERE id = $ID;
 EOF;
-
-   $ret = $db->exec($sql);
-
-   //echo "Operation done successfully"."<br>";
-   $db->close();
+  $ret = $db->exec($sql);
+  //echo "Operation done successfully"."<br>";
+  $db->close();
 }
 
 static function pridaj_kategoriu($nazov){
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      INSERT INTO KATEGORIE (
-         NAZOV)
-      VALUES ("$nazov");
+  $db = napoj_db();
+  $sql =<<<EOF
+    INSERT INTO Kategorie (nazov)
+    VALUES ("$nazov");
 EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   }
-   $db->close();
+  $ret = $db->exec($sql);
+  if(!$ret){
+    echo $db->lastErrorMsg();
   }
+  $db->close();
+}
 
 static function pridaj_oddiel($nazov){
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      INSERT INTO oddiely (
-         nazov)
-      VALUES ("$nazov");
+  $db = napoj_db();
+  $sql =<<<EOF
+    INSERT INTO Oddiely (nazov)
+    VALUES ("$nazov");
 EOF;
 
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-   }
-   $db->close();
+  $ret = $db->exec($sql);
+  if(!$ret){
+    echo $db->lastErrorMsg();
   }
-
+  $db->close();
+}
+//adept na vymazanie
 static function vypis_zoznam_kategorii_table(){
-
-   $db = napoj_db();
-
-   $sql =<<<EOF
-      SELECT * from KATEGORIE;
+  $db = napoj_db();
+  $sql =<<<EOF
+    SELECT * from Kategorie;
 EOF;
-
-   $ret = $db->query($sql);
-   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-
-
-       //echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['NAZOV'].'"/></td>';
-       echo '<td>'.$row['NAZOV'] ."</td></tr>";
-
-   }
-   //echo "Operation done successfully"."<br>";
-   $db->close();
+  $ret = $db->query($sql);
+  while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['nazov'].'"/></td>';
+    echo '<td>'.$row['nazov'] ."</td></tr>";
+  }
+  //echo "Operation done successfully"."<br>";
+  $db->close();
 }
 
 static function vypis_zoznam_pretek_table(){
-
-   $db = napoj_db();
-   $cislo = $_GET['id'];
-   $sql =<<<EOF
-      SELECT * from KATEGORIE_PRE_$cislo;
+  $db = napoj_db();
+  $cislo = $_GET['id'];
+  $sql =<<<EOF
+      SELECT DISTINCT Kategorie.nazov,Kategorie.id from Kategorie_pre JOIN Kategorie ON Kategorie_pre.id_kat = Kategorie.id WHERE id_pret = "$cislo";
 EOF;
-
-   $ret = $db->query($sql);
-   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-
-
-       //echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['NAZOV'].'" checked/></td>';
-       echo '<td>'.$row['NAZOV'] ."</td></tr>";
-
-   }
-   //echo "Operation done successfully"."<br>";
-   $db->close();
+  $ret = $db->query($sql);
+  while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['id'].'" checked/></td>';
+    echo '<td>'.$row['nazov'] ."</td></tr>";
+  }
+  //echo "Operation done successfully"."<br>";
+  $db->close();
 }
 
 static function vypis_zoznam_ostatne_table(){
-
-   $db = napoj_db();
-   //$cislo = $_GET['id'];
-   $sql =<<<EOF
-      SELECT KATEGORIE.* from KATEGORIE;
-EOF;
-
-   $ret = $db->query($sql);
-   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-
-
-       //echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['NAZOV'].'"/></td>';
-       echo '<td>'.$row['NAZOV'] ."</td></tr>";
-
-   }
-   //echo "Operation done successfully"."<br>";
-   $db->close();
-}
-
-static function pridaj_kat_preteku($NAZOV){
-  $db = napoj_db();
-
-  $sql0 = "SELECT max(id) as bubulak FROM PRETEKY";
-    $ret0=$db->query($sql0);
-    $row = $ret0->fetchArray(SQLITE3_ASSOC);
-    $cislo = $row['bubulak'];
-    $sql =<<<EOF
-      INSERT INTO KATEGORIE_PRE_$cislo (
-         NAZOV)
-      VALUES ("$NAZOV");
-EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-    }
-    else{
-
-    }
-
-    $db->close();
-}
-
-static function uprav_kat_preteku($NAZOV){
   $db = napoj_db();
   $cislo = $_GET['id'];
-
-
-    $sql =<<<EOF
-      INSERT INTO KATEGORIE_PRE_$cislo (
-         NAZOV)
-      VALUES ("$NAZOV");
+  $sql =<<<EOF
+      SELECT * from Kategorie WHERE id NOT IN (SELECT id_kat FROM Kategorie_pre WHERE id_pret = "$cislo");
 EOF;
-
-   $ret = $db->exec($sql);
-   if(!$ret){
-      echo $db->lastErrorMsg();
-    }
-    else{
-
-    }
-
-    $db->close();
+  $ret = $db->query($sql);
+  while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
+    echo '<td>'.$row['nazov'] ."</td></tr>";
+  }
+  //echo "Operation done successfully"."<br>";
+  $db->close();
 }
 
-static function zapis_cas($ID_PRET,$ID_POUZ,$cas){
-    $db = napoj_db();
-    $sql =<<<EOF
-      INSERT INTO ZHODNOTENIE (ID_PRET,ID_POUZ,CAS) VALUES ("$ID_PRET","$ID_POUZ","$cas");
+static function vypis_vsetky_kategorie_table(){
+  $db = napoj_db();
+  $sql =<<<EOF
+    SELECT * from Kategorie;
 EOF;
+  $ret = $db->query($sql);
+  while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+    echo '<tr><td><input type="checkbox" name="incharge[]" value="'.$row['id'].'"/></td>';
+    echo '<td>'.$row['nazov'] ."</td></tr>";
+  }
+  //echo "Operation done successfully"."<br>";
+  $db->close();
+}
 
+static function pridaj_kat_preteku($id_pret, $id_kat){
+  $db = napoj_db();
+  $sql =<<<EOF
+    INSERT INTO Kategorie_pre (id_pret, id_kat)
+    VALUES ("$id_pret","$id_kat");
+EOF;
+  $ret = $db->exec($sql);
+  if(!$ret){
+    echo $db->lastErrorMsg();
+  }
+  $db->close();
+}
+
+static function zmaz_kat_preteku($id_pret){
+  $db = napoj_db();
+  $sql =<<<EOF
+    DELETE FROM Kategorie_pre WHERE id_pret = "$id_pret";
+EOF;
+  $ret = $db->exec($sql);
+  if(!$ret){
+    echo $db->lastErrorMsg();
+  }
+  $db->close();
+}
+
+
+static function zapis_cas($ID_PRET,$ID_POUZ,$cas){
+  $db = napoj_db();
+  $sql =<<<EOF
+    INSERT INTO Zhodnotenie (id_pret,id_pouz,cas) VALUES ("$ID_PRET","$ID_POUZ","$cas");
+EOF;
   $db->exec($sql);
   $db->close();
 }
 
 static function uprav_cas($ID_PRET,$ID,$cas){
-    $db = napoj_db();
-    $sql =<<<EOF
-      UPDATE ZHODNOTENIE set CAS = "$cas" WHERE ID_ZHOD = $ID;
+  $db = napoj_db();
+  $sql =<<<EOF
+    UPDATE Zhodnotenie set cas = "$cas" WHERE id = $ID;
 EOF;
-
   $db->exec($sql);
   $db->close();
 }
@@ -743,13 +745,18 @@ EOF;
 static function exportuj_zhodnotenie($id){
   $db = napoj_db();
     $sql =<<<EOF
-      SELECT * FROM ZHODNOTENIE JOIN POUZIVATELIA ON ZHODNOTENIE.ID_POUZ = POUZIVATELIA.ID JOIN PRIHLASENY ON PRIHLASENY.ID_POUZ=POUZIVATELIA.ID WHERE ZHODNOTENIE.ID_PRET = $id ORDER BY PRIHLASENY.KAT,ZHODNOTENIE.CAS ASC;
+      SELECT *
+      FROM Zhodnotenie JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id
+                       JOIN Prihlaseni ON Prihlaseni.id_pouz=Pouzivatelia.id
+                       JOIN Kategorie ON Zhodnotenie.id_kat = Kategorie.id
+      WHERE Zhodnotenie.id_pret = $id
+      ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
 EOF;
   $ret = $db->query($sql);
   $myfile = fopen("zhodnotenie.csv", "w") or die("Unable to open file!");
     fputcsv($myfile, array("KATEGORIA","MENO","PRIEZVISKO","CAS"), ";");
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      fputcsv($myfile,array($row['KAT'],$row['MENO'],$row['PRIEZVISKO'],$row['CAS']),";");
+      fputcsv($myfile,array($row['nazov'],$row['meno'],$row['priezvisko'],$row['cas']),";");
     }
   echo '<meta http-equiv="refresh" content="0;URL=zhodnotenie.csv" />';
 }
@@ -757,13 +764,17 @@ EOF;
 static function vypis_zhodnotenie($ID_PRET){
   $db = napoj_db();
     $sql =<<<EOF
-      SELECT * FROM ZHODNOTENIE JOIN PRIHLASENY ON PRIHLASENY.ID_POUZ=ZHODNOTENIE.ID_POUZ AND PRIHLASENY.ID_PRET=ZHODNOTENIE.ID_PRET JOIN POUZIVATELIA ON ZHODNOTENIE.ID_POUZ = POUZIVATELIA.ID WHERE ZHODNOTENIE.ID_PRET = $ID_PRET  ORDER BY PRIHLASENY.KAT,ZHODNOTENIE.CAS ASC;
+      SELECT * FROM Zhodnotenie JOIN Prihlaseni ON Prihlaseni.id_pouz=Zhodnotenie.id_pouz AND Prihlaseni.id_pret=Zhodnotenie.id_pret
+      JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id
+      JOIN Kategorie ON Kategorie.id = Zhodnotenie.id_kat
+      WHERE Zhodnotenie.id_pret = $ID_PRET
+      ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
 EOF;
 
   $ret = $db->query($sql);
   while ($row = $ret->fetchArray(SQLITE3_ASSOC)){
     ?>
-    <tr><td><?php echo $row['KAT']?></td><td><?php echo $row["MENO"] ?></td><td><?php echo $row["PRIEZVISKO"] ?></td><td><?php echo $row["CAS"] ?></td></tr>
+    <tr><td><?php echo $row['nazov']?></td><td><?php echo $row["meno"] ?></td><td><?php echo $row["priezvisko"] ?></td><td><?php echo $row["cas"] ?></td></tr>
     <?php
   }
   if (isset($_SESSION["admin"]) && $_SESSION["admin"]){
@@ -774,31 +785,25 @@ EOF;
 
 static function vypis_zhodnotenie_admin($ID_PRET){
   $db = napoj_db();
-    $sql =<<<EOF
-      SELECT * FROM ZHODNOTENIE JOIN PRIHLASENY ON PRIHLASENY.ID_POUZ=ZHODNOTENIE.ID_POUZ AND PRIHLASENY.ID_PRET=ZHODNOTENIE.ID_PRET JOIN POUZIVATELIA ON ZHODNOTENIE.ID_POUZ = POUZIVATELIA.ID WHERE ZHODNOTENIE.ID_PRET = $ID_PRET  ORDER BY PRIHLASENY.KAT,ZHODNOTENIE.CAS ASC;
+  $sql =<<<EOF
+    SELECT * FROM Zhodnotenie JOIN Prihlaseni ON Prihlaseni.id_pouz=Zhodnotenie.id_pouz AND Prihlaseni.id_pret=Zhodnotenie.id_pret JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id WHERE Zhodnotenie.id_pret = $ID_PRET  ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
 EOF;
-
   $ret = $db->query($sql);
   $i = 0;
   while($row = $ret->fetchArray(SQLITE3_ASSOC)){
     echo "<tr>";
-
-    echo "<td>".$row['KAT']."</td>";
-
-    echo "<td>".$row['MENO']."</td>";
-
-    echo "<td>".$row['PRIEZVISKO']."</td>";
-
+    echo "<td>".$row['id_kat']."</td>";
+    echo "<td>".$row['meno']."</td>";
+    echo "<td>".$row['priezvisko']."</td>";
     echo '<td><input type="text" name="cas'.$i.'" value = "';
     if (isset($_POST["cas".$i])){
       echo $_POST["cas".$i];
-    } else{
-      echo $row["CAS"];
     }
-    echo '" required/><input type="hidden" name="id'.$i.'" value="'.$row["ID_ZHOD"].'"/></td>';
-
+    else{
+      echo $row["cas"];
+    }
+    echo '" required/><input type="hidden" name="id'.$i.'" value="'.$row["id"].'"/></td>';
     echo "</tr>";
-
     $i++;
   }
   echo '<tr><td></td><td></td><td><input type="submit" name="uprav" value="Ulož zmeny"><input type="hidden" name="pocet" value="'.$i.'"></td></tr>';
@@ -806,35 +811,85 @@ EOF;
 }
 
 static function odstran_duplicity(){
-    $db = napoj_db();
-    $sql =<<<EOF
-           CREATE TABLE duplicity
-      (ID INTEGER PRIMARY KEY   AUTOINCREMENT,
-      ID_POUZ              TEXT    NOT NULL,
-      ID_PRET        TEXT    NOT NULL,
-      KAT        TEXT    NOT NULL,
-      POZNAMKA TEXT
+  $db = napoj_db();
+  $sql =<<<EOF
+      CREATE TABLE duplicity
+      (id INTEGER PRIMARY KEY   AUTOINCREMENT,
+      id_pouz             INTEGER    NOT NULL,
+      id_pret        INTEGER    NOT NULL,
+      id_kat        INTEGER    NOT NULL,
+      poznamka TEXT
       );
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-          INSERT INTO duplicity(ID_POUZ, ID_PRET, KAT,POZNAMKA) SELECT PRIHLASENY.ID_POUZ, PRIHLASENY.ID_PRET, PRIHLASENY.KAT, PRIHLASENY.POZNAMKA FROM PRIHLASENY GROUP BY ID_PRET, ID_POUZ;
+  $db->exec($sql);
+  $sql =<<<EOF
+    INSERT INTO duplicity(id_pouz, id_pret, id_kat,poznamka) SELECT Prihlaseni.id_pouz, Prihlaseni.id_pret, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Prihlaseni GROUP BY id_pret, id_pouz;
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-         DROP TABLE PRIHLASENY;
+  $db->exec($sql);
+  $sql =<<<EOF
+         DROP TABLE Prihlaseni;
 EOF;
-$db->exec($sql);
-$sql =<<<EOF
-         ALTER TABLE duplicity RENAME to PRIHLASENY;
+  $db->exec($sql);
+  $sql =<<<EOF
+         ALTER TABLE duplicity RENAME to Prihlaseni;
 EOF;
-$db->exec($sql);
-
-
-       // echo "Operation done successfully"."<br>";      ////////////////////////////
-
-       $db->close();
+  $db->exec($sql);
+  $db->close();
   }
 
+  static function updateExport($retazec){
+    $db = napoj_db();
+    $sql =<<<EOF
+    UPDATE Exporty SET retazec = "$retazec";
+EOF;
+    $ret = $db->exec($sql);
+    $db->close();
+  }
+
+  static function exportuj($id_pret){
+    $prepis = array("meno"=>"MENO","priezvisko"=>"PRIEZVISKO","os_i_c"=>"OS.ČÍSLO","cip"=>"ČIP","nazov"=>"KATEGÓRIA","poznamka"=>"POZNÁMKA");
+    $myfile = fopen("zoznam.txt", "w") or die("Nedá sa otvoriť súbor. Skontrolujte, či sa v priečinku source nachádza súbor zoznam.txt ak nie vytvorte ho.");
+    header('Pragma: public');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Content-Description: File Transfer');
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename=zoznam.csv;');
+    header('Content-Transfer-Encoding: binary');
+    $myfilecsv = fopen('php://output', 'w');
+    fputs($myfilecsv, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF)  ));
+    $db = napoj_db();
+    $sql =<<<EOF
+    SELECT * FROM Exporty;
+EOF;
+    $ret = $db->query($sql);
+    $vyber = "";
+    if ($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      $vyber = $row['retazec'];
+    }
+    $stlpce = explode(",", $vyber);
+    $hlavicka = array();
+    foreach ($stlpce as $s) {
+      array_push($hlavicka, $prepis[$s]);
+    }
+    fputcsv($myfile,$hlavicka,";");
+    fputcsv($myfilecsv,$hlavicka,";");
+    $sql =<<<EOF
+      SELECT $vyber
+      FROM Prihlaseni JOIN (SELECT id,meno,priezvisko,os_i_c,cip FROM Pouzivatelia) as pouz
+      ON Prihlaseni.id_pouz = pouz.id
+      JOIN Kategorie ON Prihlaseni.id_kat = Kategorie.id
+      WHERE id_pret = $id_pret;
+EOF;
+    $ret = $db->query($sql);
+    while ($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      fputcsv($myfile,$row,";");
+      fputcsv($myfilecsv,$row,";");
+    }
+    exit;
+    $db->close();
+    fclose($myfile);
+    fclose($myfilecsv);
+  }
 }
  ?>

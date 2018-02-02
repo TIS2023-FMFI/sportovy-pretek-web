@@ -113,10 +113,10 @@ function vrat_vykon($id_vykonu){
     if($db){
         $sql =<<<EOF
       SELECT
-        * FROM VYKON
-        JOIN POUZIVATELIA ON VYKON.ID_LOG = POUZIVATELIA.ID
-        JOIN PRETEKY ON VYKON.ID_PRET = PRETEKY.ID
-        WHERE ID_VYKON = "$id_vykonu";
+        * FROM Vykon
+        JOIN Pouzivatelia ON Vykon.id_log = Pouzivatelia.id
+        JOIN Preteky ON Vykon.id_pret = Preteky.id
+        WHERE Vykon.id = "$id_vykonu";
 EOF;
 
         $ret = $db->query($sql);
@@ -149,11 +149,19 @@ function uprav_vykon(){
         $HODNOTENIE = $_POST["HODNOTENIE"];
         //echo $db->lastErrorMsg();
         $sql =<<<EOF
-      UPDATE `VYKON` SET
-      `MIESTO`="$MIESTO",`VITAZ`="$VITAZ",`VITAZ_CAS`="$VITAZ_CAS",`MOJ_CAS`="$MOJ_CAS",`VZDIALENOST`="$VZDIALENOST",
-      `IDEAL_VZDIALENOST`="$IDEAL_VZDIALENOST",`RYCHLOST`="$RYCHLOST",`PREVYSENIE`="$PREVYSENIE",`ODCHYLKA`="$ODCHYLKA",
-      `PRIRAZKA`="$PRIRAZKA",`HODNOTENIE`="$HODNOTENIE"
-      WHERE VYKON.ID_VYKON = "$ID_VYKON";
+      UPDATE Vykon SET
+      miesto`="$MIESTO",
+      vitaz="$VITAZ",
+      vitaz_cas="$VITAZ_CAS",
+      moj_cas="$MOJ_CAS",
+      vzdialenost="$VZDIALENOST",
+      ideal_vzdialenost="$IDEAL_VZDIALENOST",
+      rychlost="$RYCHLOST",
+      prevysenie="$PREVYSENIE",
+      odchylka="$ODCHYLKA",
+      prirazka="$PRIRAZKA",
+      hodnotenie="$HODNOTENIE"
+      WHERE id = "$ID_VYKON";
 
 EOF;
 
@@ -180,8 +188,8 @@ function nazov_a_datum_pretekov($id_preteku, $typ){
         //echo $db->lastErrorMsg();
         $sql =<<<EOF
       SELECT
-        NAZOV, DATUM FROM PRETEKY
-        WHERE ID = "$id_preteku";
+        nazov, datum FROM Preteky
+        WHERE id = "$id_preteku";
 EOF;
 
         $ret = $db->query($sql);
