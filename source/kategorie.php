@@ -58,7 +58,7 @@ else{
   }
   if ($zobraz_form) {
     ?>
-    <div class="novy_pouzivatel">
+    <div id="novy_pouzivatel">
   	  <form method="post" enctype="multipart/form-data">
         <h2>Pridať kategóriu</h2>
   	    <table>

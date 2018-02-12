@@ -31,10 +31,10 @@ else{
       $pr = new PRETEKY();
       $pr=PRETEKY::vrat_pretek($_POST["id"]);
       if($pr->AKTIV == 1){
-        echo '<strong style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol aktivovaný.</strong>';
+        echo '<strong style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol vybratý z archívu.</strong>';
       }
       else{
-        echo '<strong  style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol deaktivovaný.</strong>';
+        echo '<strong  style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol archivovaný.</strong>';
       }
     }
     if(isset($_POST['zmaz'])){
@@ -54,12 +54,12 @@ else{
         <th class="prvy header">Typ tréningu</th>
         <th class="prvy header">Dátum konania</th>
         <th class="prvy">Prihlasovanie do</th>
-        <th class="prvy"></th>
-        <th class="prvy"></th>
-        <th class="prvy"></th>
-        <th class="prvy"></th>
-        <th class="prvy"></th>
-        <th class="prvy"></th>
+        <th class="prvy">Uprav tréning</th>
+        <th class="prvy">Zobraz osobný výkon</th>
+        <th class="prvy">Zobraz celkové hodnotenie</th>
+        <th class="prvy">Archivácia</th>
+        <th class="prvy">Skopíruj tréning</th>
+        <th class="prvy">Vymaž tréning</th>
       </tr>
     </thead>
     <tbody>

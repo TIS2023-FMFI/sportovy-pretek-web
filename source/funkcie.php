@@ -1,7 +1,7 @@
 <?php
 $heslo="olympiada";
-$mail_od="sksandberg@ap.urk.fei.stuba.sk"; //mail z ktoreho sa posielaju spravy
-$mail_komu = "balogh@elf.stuba.sk"; // mail, na ktory pride sprava s heslo
+$mail_od="sksandberg@ap.urk.fei.stuba.sk"; //tu treba nastavit odosielatela a prijemcu
+$mail_komu = ""; //ak si to chcete vyskusat, tak sem si napiste svoj mail, na gite je mail p.Balogha: balogh@elf.stuba.sk
 date_default_timezone_set('UTC');
 class MyDB extends SQLite3{
   function __construct(){

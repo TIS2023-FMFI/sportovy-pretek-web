@@ -2,7 +2,9 @@ console.log("loog");
 function save2(event, item, idcko){
   var i = $(item).attr("id");
   var s = $(item).attr("name");
-  var o = document.getElementById(i).innerHTML;
+  var element = document.getElementById(i);
+  var o = element.innerText || element.textContent;
+  var o = o.trim();
   $.ajax({
     url: "kmenovi_clenovia.php",
     type: "post",
