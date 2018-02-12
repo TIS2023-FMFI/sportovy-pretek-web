@@ -27,16 +27,16 @@ else{
 
     ?>
     <div class="novy_pouzivatel">
-  	  <form method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data">
         <h2>Pridať kategóriu</h2>
-  	    <table>
+        <table>
         <?php if(isset($_POST['nazov']) && !over($_POST['nazov'])){echo'<tr><td><font color="red">Nevyplnili ste názov!</font></td></tr>';} ?>
           <tr>
-      		  <td><label for="nazov">Názov:</label></td>
-  		      <td><input type="text" name="nazov" id="nazov" size="30" value="<?php if(isset($_POST['nazov'])){echo $_POST['nazov'];} ?>"></td>
-  		    </tr>
+            <td><label for="nazov">Názov:</label></td>
+            <td><input type="text" name="nazov" id="nazov" size="30" value="<?php if(isset($_POST['nazov'])){echo $_POST['nazov'];} ?>"></td>
+          </tr>
         </table>
-  	  	<p id="buttons">
+        <p id="buttons">
           <input type="submit" name="posli" value="Pridaj" onclick="console.log('log')">
         </p>
       </form>

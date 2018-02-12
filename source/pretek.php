@@ -23,18 +23,6 @@ if (isset($_SERVER['HTTP_COOKIE'])) {
 if(isset($_POST['export'])){
   PRETEKY::exportuj($pretekId);
 }
-
-/*v map je poradie nazvov stlpcov, ktore chcem vytiahnut s tabulky pouzivatelia JOIN kategorie*/
-if(isset($_POST['ulozFormu']) && isset($_POST['ex'])){
-  $map = array();
-  foreach($_POST['ex'] as $stlpec){
-    $val = $_POST[$stlpec."Select"];
-    $map[$val] = $stlpec;
-  }
-  ksort($map);
-  PRETEKY::updateExport(implode(",",$map));
-}
-
 if (isset($_POST['prihlas'])&&isset($_POST['checked'])){
     $selected = array();
     if(is_array($_POST['incharge'])){
@@ -175,15 +163,153 @@ if(isset($_POST['skry'])){
    ?>
   <div id="prihlaseny">
     <h2>Zoznam prihlásených</h2>
+    <p>
     <?php
       $pr = new PRETEKY();
       $pr=PRETEKY::vrat_pretek($_GET["id"]);
       $deadline = new DateTime($pr->DEADLINE);
       $now = new DateTime(date("Y-m-d H:i:s"));
     if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $pr->AKTIV == 1)) ) {?>
-      <p><input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu" style="margin-bottom: 1em;"></p>
+      <input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu" style="margin-bottom: 1em;">
       <?php
     }
+    ?>
+    <input name="export" type="submit" id="export" value="Export do súboru">
+    <?php
+    if(isset($_SESSION['admin'])&&$_SESSION['admin'] ==1 ){
+      if(isset($_GET['exp']) && $_GET['exp'] == 1){
+        echo "<a href='pretek.php?id=".$pretekId."&exp=0'>Skryť nastavenie exportu &#x23EB;</a>";
+        ?>
+        <div id="formaExportu" style="border: solid 2px #4169e1; padding-left: 20px; width: 280px;">
+          <h3>Forma exportu</h3>
+          <?php 
+          $forma = PRETEKY::exportForm();
+          echo "Aktuálna forma exportu: ".$forma;
+          ?>
+          <table id="table_export">
+            <tr>
+              <th>Stĺpec</th><th>Poradie</th>
+            </tr>
+            <tr>
+              <td>Meno</td>
+              <td><select name = "menoS">
+                <option value="0">-</option>
+                <option value="1">1.</option>
+                <option value="2">2.</option>
+                <option value="3">3.</option>
+                <option value="4">4.</option>
+                <option value="5">5.</option>
+                <option value="6">6.</option>
+              </select></td>
+            </tr>
+            <tr>
+              <td>Priezvisko</td>
+              <td><select name = "priezviskoS">
+                <option value="0">-</option>
+                <option value="1">1.</option>
+                <option value="2">2.</option>
+                <option value="3">3.</option>
+                <option value="4">4.</option>
+                <option value="5">5.</option>
+                <option value="6">6.</option>
+              </select></td>
+            </tr>
+            <tr>
+              <td>Kategória</td>
+              <td><select name="nazovS">
+                <option value="0">-</option>
+                <option value="1">1.</option>
+                <option value="2">2.</option>
+                <option value="3">3.</option>
+                <option value="4">4.</option>
+                <option value="5">5.</option>
+                <option value="6">6</option>
+              </select></td>
+            </tr>
+            <tr>
+              <td>Osobné číslo</td>
+              <td><select name="os_i_cS">
+                <option value="0">-</option>
+                <option value="1">1.</option>
+                <option value="2">2.</option>
+                <option value="3">3.</option>
+                <option value="4">4.</option>
+                <option value="5">5.</option>
+                <option value="6">6.</option>
+              </select></td>
+            </tr>
+            <tr>
+              <td>Čip</td>
+              <td><select name="cipS">
+                <option value="0">-</option>
+                <option value="1">1.</option>
+                <option value="2">2.</option>
+                <option value="3">3.</option>
+                <option value="4">4.</option>
+                <option value="5">5.</option>
+                <option value="6">6.</option>
+              </select></td>
+            </tr>
+            <tr>
+              <td>Poznámka</td>
+              <td><select name="poznamkaS">
+                <option value="0">-</option>
+                <option value="1">1.</option>
+                <option value="2">2.</option>
+                <option value="3">3.</option>
+                <option value="4">4.</option>
+                <option value="5">5.</option>
+                <option value="6">6.</option>
+              </select></td>
+            </tr>
+          </table>
+          <?php
+
+          /*v map je poradie nazvov stlpcov, ktore chcem vytiahnut s tabulky pouzivatelia JOIN kategorie*/
+          if(isset($_POST['ulozFormu'])){
+            $ok = true;
+            $map = array();
+            $por = array();
+            $posty = ['menoS','priezviskoS','nazovS','os_i_cS','cipS','poznamkaS'];
+            foreach($posty as $stlpec){
+              $val = $_POST[$stlpec];
+              if($val != 0){
+                if(in_array($val, $por)){
+                  $ok= false;
+                }
+                else{
+                  array_push($por, $val);
+                  $map[$val] = substr($stlpec, 0, -1);
+                }
+              }
+            }
+            if($ok){
+              if(sizeof($map) == 0){
+                echo "<span style='color:red;'>Nebol vybraný žiadny stĺpec!</span>";
+              }
+              else{
+                ksort($map);
+                echo "<span>Zvolené: ";
+                echo implode(',',$map);
+                echo "</span>";
+                PRETEKY::updateExport(implode(",",$map));
+              }
+            }
+            else{
+              echo "<span style='color:red;'>Vybrané poradové číslo sa opakuje viackrát!</span>";
+            }
+          }
+          ?>
+          
+          <p><input name="ulozFormu" type="submit" id="ulozFormu" value="Ulož formu exportu"></p>
+        </div><br>
+        <?php
+      }
+      else{
+        echo "<a href='pretek.php?id=".$pretekId."&exp=1'>Zobraziť nastavenie exportu &#x23EC;</a></p>";
+      }
+    }?>
+    <?php
     if(isset($_SESSION['prihlaseni']) && $_SESSION['prihlaseni'] !== ""){?>
       <p style="color:green;"><?php echo $_SESSION['prihlaseni']; ?> prihlásený/í</p>
       <?php
@@ -216,93 +342,7 @@ if(isset($_POST['skry'])){
           ?>
         </tbody>
       </table>
-      <?php
-      if(isset($_SESSION['admin'])&&$_SESSION['admin'] ==1 ){
-        if(isset($_GET['exp']) && $_GET['exp'] == 1){
-          echo "<a href='pretek.php?id=".$pretekId."&exp=0'>Skryť nastavenie exportu ^</a>";
-          ?>
-          <div id="formaExportu" style="border: solid 2px #4169e1; padding-left: 20px; width: 280px;">
-            <h3>Forma exportu</h3>
-            <table id="table_export">
-              <tr>
-                <th>Zvoliť</th><th>Stĺpec</th><th>Poradie</th>
-              </tr>
-              <tr>
-                <td><input type="checkbox" name="ex[]" value="meno"></td><td>Meno</td>
-                <td><select name = "menoSelect">
-                  <option value="1">1.</option>
-                  <option value="2">2.</option>
-                  <option value="3">3.</option>
-                  <option value="4">4.</option>
-                  <option value="5">5.</option>
-                  <option value="6">6.</option>
-                </select></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" name="ex[]" value="priezvisko"></td> <td>Priezvisko</td>
-                <td><select name = "priezviskoSelect">
-                  <option value="1">1.</option>
-                  <option value="2">2.</option>
-                  <option value="3">3.</option>
-                  <option value="4">4.</option>
-                  <option value="5">5.</option>
-                  <option value="6">6.</option>
-                </select></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" name="ex[]" value="nazov"></td><td>Kategória</td>
-                <td><select name="nazovSelect">
-                  <option value="1">1.</option>
-                  <option value="2">2.</option>
-                  <option value="3">3.</option>
-                  <option value="4">4.</option>
-                  <option value="5">5.</option>
-                  <option value="6">6</option>
-                </select></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" name="ex[]" value="os_i_c"></td><td>Osobné číslo</td>
-                <td><select name="os_i_cSelect">
-                  <option value="1">1.</option>
-                  <option value="2">2.</option>
-                  <option value="3">3.</option>
-                  <option value="4">4.</option>
-                  <option value="5">5.</option>
-                  <option value="6">6.</option>
-                </select></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" name="ex[]" value="cip"></td><td>Čip</td>
-                <td><select name="cipSelect">
-                  <option value="1">1.</option>
-                  <option value="2">2.</option>
-                  <option value="3">3.</option>
-                  <option value="4">4.</option>
-                  <option value="5">5.</option>
-                  <option value="6">6.</option>
-                </select></td>
-              </tr>
-              <tr>
-                <td><input type="checkbox" name="ex[]" value="poznamka"></td><td>Poznámka</td>
-                <td><select name="poznamkaSelect">
-                  <option value="1">1.</option>
-                  <option value="2">2.</option>
-                  <option value="3">3.</option>
-                  <option value="4">4.</option>
-                  <option value="5">5.</option>
-                  <option value="6">6.</option>
-                </select></td>
-              </tr>
-            </table>
-            <p><input name="ulozFormu" type="submit" id="ulozFormu" value="Ulož formu exportu"></p>
-          </div>
-          <?php
-        }
-        else{
-          echo "<a href='pretek.php?id=".$pretekId."&exp=1'>Zobraziť nastavenie exportu v</a>";
-        }
-      }?>
-      <p><input name="export" type="submit" id="export" value="Export do súboru"></p>
+
       <br><br><br>
     </div>
     <div id="odhlaseny">

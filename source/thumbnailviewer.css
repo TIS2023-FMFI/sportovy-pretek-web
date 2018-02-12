@@ -1,4 +1,4 @@
-#thumbBox{
+#thumbBox{ 
 position: absolute;
 left: 0;
 top: 0;
@@ -13,7 +13,7 @@ cursor: hand;
 cursor: pointer;
 }
 
-#thumbBox .footerbar{
+#thumbBox .footerbar{ 
 font: bold 16px Tahoma;
 letter-spacing: 5px;
 line-height: 1.1em;
@@ -26,8 +26,8 @@ text-align: right;
 	max-width: 800px;
 
 }
-
-#thumbLoading{
+   
+#thumbLoading{ 
 position: absolute;
 visibility: hidden;
 border: 1px solid black;

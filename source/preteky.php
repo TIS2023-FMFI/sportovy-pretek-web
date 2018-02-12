@@ -126,15 +126,16 @@ EOF;
       id_kmen_clen      INTEGER,
       poznamka          TEXT,
       uspech            TEXT,
-      id_kat            INTEGER,
+      nazov            TEXT,
       id_oddiel         INTEGER,
       poznamkaPouz      TEXT
       );
 EOF;
     $db->exec($sql);
     $sql =<<<EOF
-          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka)
-          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz
+          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, nazov, poznamka)
+          SELECT Pouzivatelia.*,Kategorie.nazov, Prihlaseni.poznamka
+          FROM (Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz) JOIN Kategorie ON Kategorie.id = Prihlaseni.id_kat
           WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
     $db->exec($sql);
@@ -155,7 +156,7 @@ EOF;
       }
       echo "<td class='fnt'><strong class=upozornenie>".$row['meno']."</strong></td>";
       echo "<td class='fnt'><strong class=upozornenie>".$row['priezvisko']."</strong></td>";
-      echo "<td class='fnt'>".$row['id_kat']."</td>";
+      echo "<td class='fnt'>".$row['nazov']."</td>";
       echo "<td class='fnt'>".$row['os_i_c']."</td>";
       echo "<td class='fnt'><strong class=upozornenie>".$row['cip']."</strong></td>";
       echo "<td class='fnt'>".$row['poznamka']."</td>";
@@ -182,15 +183,16 @@ EOF;
       id_kmen_clen      INTEGER,
       poznamka          TEXT,
       uspech            TEXT,
-      id_kat            INTEGER,
+      nazov             TEXT,
       id_oddiel         INTEGER,
       poznamkaPouz      TEXT
       );
 EOF;
     $db->exec($sql);
     $sql =<<<EOF
-          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, id_kat, poznamka)
-          SELECT Pouzivatelia.*, Prihlaseni.id_kat, Prihlaseni.poznamka FROM Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz
+          INSERT INTO temp(id, id_kmen_clen, id_oddiel, meno, priezvisko, os_i_c, cip,  poznamkaPouz, uspech, nazov, poznamka)
+          SELECT Pouzivatelia.*, Kategorie.nazov, Prihlaseni.poznamka
+          FROM (Pouzivatelia INNER JOIN Prihlaseni ON Pouzivatelia.id = Prihlaseni.id_pouz) JOIN Kategorie ON Kategorie.id = Prihlaseni.id_kat
           WHERE (Prihlaseni.id_pret = $this->ID);
 EOF;
     $db->exec($sql);
@@ -211,7 +213,7 @@ EOF;
       }
       echo "<td>".$row['meno']."</td>";
       echo "<td>".$row['priezvisko']."</td>";
-      echo "<td>".$row['id_kat']."</td>";
+      echo "<td>".$row['nazov']."</td>";
       echo "<td>".$row['os_i_c']."</td>";
       echo "<td>".$row['cip']."</td>";
       echo "<td>".$row['poznamka']."</td>";
@@ -377,26 +379,39 @@ EOF;
 static function vypis_zoznam(){
   $db = napoj_db();
   $sql =<<<EOF
-    SELECT * from Preteky WHERE datetime(datum) >= datetime('now','localtime') ORDER BY datum DESC;
+    SELECT * from Preteky WHERE datetime(datum) >= datetime('now','-3 days') AND aktiv =1 ORDER BY deadline DESC;
 EOF;
   $ret = $db->query($sql);
   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
     $d1 = $row['deadline'];
     $d2 = $row['datum'];
     $d3 = new DateTime(date("Y-m-d H:i:s"));
-    if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
-      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='red'>".$row['nazov']."</a></td>";
-    }
-    if(strtotime($d1) > strtotime('1 days')){
-      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='green'>".$row['nazov']."</a></td>";
+    if(strtotime($d2) < strtotime('0 days')){
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'grey'>".$row['nazov']."</a></td>";
+      echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
+      echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
+      echo "<td><a style='font-size:13px;' href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
+      echo "<td><a style='font-size:13px;' href='zhodnotenie.php?id=". $row['id']."'>Výsledky</a></td>";
     }
     else{
-      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+    if(strtotime($d1) > strtotime('1 days')){
+      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='green'>".$row['nazov']."</a></td>";
+
+    }
+    else{
+      if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
+        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='red'>".$row['nazov']."</a></td>";
+
+      }
+      else{
+        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+      }
     }
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
       echo "</tr>";
    }
+ }
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
@@ -406,33 +421,64 @@ EOF;
 static function vypis_zoznam_admin(){
     $db = napoj_db();
     $sql =<<<EOF
-      SELECT * from Preteky WHERE datetime(datum) >= datetime('now','localtime') ORDER BY datum DESC;
+      SELECT * from Preteky WHERE datetime(datum) >= datetime('now','-3 days') AND aktiv =1 ORDER BY deadline DESC;
 EOF;
     $ret = $db->query($sql);
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
       $d1 = $row['deadline'];
       $d2 = $row['datum'];
       $d3 = new DateTime(date("Y-m-d H:i:s"));
-      if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
-        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'red'>".$row['nazov']."</a></td>";
-      }
+      if(strtotime($d2) < strtotime('0 days')){
+        echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'grey'>".$row['nazov']."</a></td>";
+        echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
+        echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
+        echo "<td><a style='font-size:13px;' href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
+        echo "<td><a style='font-size:13px;' href='zhodnotenie.php?id=". $row['id']."'>Výsledky</a></td>";
+        echo "<td><a style='font-size:13px;' href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
+
+        echo "<form method='post'>
+          <td><input type='submit' value='Archivuj' name='aktiv'>
+            <input type='hidden' value=".$row['id']." name='id'>
+          </td>
+       </form>";
+        echo "<form action='novy_pretek.php' method='get'>
+        <td><input name='novy' type='submit' id='novy' value='Cc'>
+          <input type='hidden' value=".$row['id']." name='id'>
+        </td>
+        </form>";
+        echo "<form method='post'>
+          <td><input type='submit' value='X' name='zmaz'>
+            <input type='hidden' value=".$row['id']." name='id'>
+          </td>
+        </form>";
+        echo "</tr>";
+    }
+    else{
       if(strtotime($d1) > strtotime('1 days')){
         echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'green'>".$row['nazov']."</a></td>";
       }
       else{
-      echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+        if(strtotime($d1) <= strtotime('1 days') && strtotime($d1) >= strtotime('0 days')){
+          echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'red'>".$row['nazov']."</a></td>";
+        }
+        else{
+          echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."' class='grey'>".$row['nazov']."</a></td>";
+        }
       }
+
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
+      echo "<td></td>";
+      echo "<td></td>";
       echo "<td><a style='font-size:13px;' href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
 
       echo "<form method='post'>
-        <td><input type='submit' value='A/D' name='aktiv'>
+        <td><input type='submit' value='Archivuj' name='aktiv'>
             <input type='hidden' value=".$row['id']." name='id'>
         </td>
       </form>";
       echo "<form action='novy_pretek.php' method='get'>
-      <td><input name='novy' type='submit' class='novy' value='Cc'>
+      <td><input name='novy' type='submit' id='novy' value='Cc'>
           <input type='hidden' value=".$row['id']." name='id'>
       </td>
       </form>";
@@ -442,6 +488,7 @@ EOF;
         </td>
       </form>";
       echo "</tr>";
+    }
    }
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
@@ -449,23 +496,37 @@ EOF;
 static function vypis_archiv($rok){
   $db = napoj_db();
   $rokReg = $rok.'%';
+
     $sql =<<<EOF
-      SELECT * from Preteky WHERE datetime(datum) < datetime('now','localtime') AND datum like "$rokReg" ORDER BY datum DESC;
+      SELECT * from Preteky WHERE datetime(datum) < datetime('now','-3 days') AND datum like "$rokReg" OR aktiv=0 AND datum like "$rokReg" ORDER BY datum DESC;
 EOF;
     $ret = $db->query($sql);
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      $d2 = $row['datum'];
+      $d3 = new DateTime(date("Y-m-d H:i:s"));
       echo "<tr><td><a style='font-size:13px;' href='pretek.php?id=".$row['id']."&amp;ad=1' class = 'grey'>".$row['nazov']."</a></td>";
       echo "<td>".PRETEKY::otoc_datum($row['datum'])."</td>";
       echo "<td>".PRETEKY::otoc_datum($row['deadline'])."</td>";
       echo "<td><a style='font-size:13px;' href='uprav_preteky.php?id=".$row['id']."'>Uprav</a></td>";
       echo "<td><a style='font-size:13px;' href='vykon.php?id=". $row['id']."'>Osobný výkon</a></td>";
-      echo "<td><a style='font-size:13px;' href='zhodnotenie.php?id=". $row['id']."'>Celkové hodnotenie</a></td>";
-
-      echo "<form method='post'>
-        <td><input type='submit' value='A/D' name='aktiv'>
+      echo "<td><a style='font-size:13px;' href='zhodnotenie.php?id=". $row['id']."'>Výsledky</a></td>";
+      //if($row['aktiv']==1){
+      //echo "<form method='post'>
+        //<td><input type='submit' value='Potvrď archiváciu' name='aktiv'>
+          //  <input type='hidden' value=".$row['id']." name='id'>
+        //</td>
+      //</form>";}
+      //else{
+        if(strtotime($d2) < strtotime('-3 days')){
+          echo "<td><style='font-size:13px;'>ARCHIVOVANÉ</a></td>";}
+        //}
+        else{
+        echo "<form method='post'>
+        <td><input type='submit' value='Vyber z archívu' name='aktiv'>
             <input type='hidden' value=".$row['id']." name='id'>
         </td>
       </form>";
+      }
       echo "<form action='novy_pretek.php' method='get'>
       <td><input name='novy' type='submit' value='Cc'>
       <input type='hidden' value=".$row['id']." name='id'>
@@ -525,7 +586,6 @@ EOF;
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
    $db->close();
 }
-
 static function vypis_zoznam_oddiely(){
    $db = napoj_db();
    $sql =<<<EOF
@@ -742,31 +802,13 @@ EOF;
   $db->close();
 }
 
-static function exportuj_zhodnotenie($id){
-  $db = napoj_db();
-    $sql =<<<EOF
-      SELECT *
-      FROM Zhodnotenie JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id
-                       JOIN Prihlaseni ON Prihlaseni.id_pouz=Pouzivatelia.id
-                       JOIN Kategorie ON Zhodnotenie.id_kat = Kategorie.id
-      WHERE Zhodnotenie.id_pret = $id
-      ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
-EOF;
-  $ret = $db->query($sql);
-  $myfile = fopen("zhodnotenie.csv", "w") or die("Unable to open file!");
-    fputcsv($myfile, array("KATEGORIA","MENO","PRIEZVISKO","CAS"), ";");
-    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      fputcsv($myfile,array($row['nazov'],$row['meno'],$row['priezvisko'],$row['cas']),";");
-    }
-  echo '<meta http-equiv="refresh" content="0;URL=zhodnotenie.csv" />';
-}
-
 static function vypis_zhodnotenie($ID_PRET){
   $db = napoj_db();
     $sql =<<<EOF
-      SELECT * FROM Zhodnotenie JOIN Prihlaseni ON Prihlaseni.id_pouz=Zhodnotenie.id_pouz AND Prihlaseni.id_pret=Zhodnotenie.id_pret
+      SELECT * FROM Zhodnotenie
+      JOIN Prihlaseni ON Prihlaseni.id_pouz=Zhodnotenie.id_pouz AND Prihlaseni.id_pret=Zhodnotenie.id_pret
       JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id
-      JOIN Kategorie ON Kategorie.id = Zhodnotenie.id_kat
+      JOIN Kategorie ON Kategorie.id = Prihlaseni.id_kat
       WHERE Zhodnotenie.id_pret = $ID_PRET
       ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
 EOF;
@@ -786,13 +828,19 @@ EOF;
 static function vypis_zhodnotenie_admin($ID_PRET){
   $db = napoj_db();
   $sql =<<<EOF
-    SELECT * FROM Zhodnotenie JOIN Prihlaseni ON Prihlaseni.id_pouz=Zhodnotenie.id_pouz AND Prihlaseni.id_pret=Zhodnotenie.id_pret JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id WHERE Zhodnotenie.id_pret = $ID_PRET  ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
+    SELECT z.id,z.id_pouz,z.id_pret,z.cas,pr.id_kat,po.meno,po.priezvisko,k.nazov
+  FROM Zhodnotenie as z
+    JOIN Prihlaseni as pr ON pr.id_pouz=z.id_pouz AND pr.id_pret=z.id_pret
+    JOIN Pouzivatelia as po ON z.id_pouz = po.id
+    JOIN Kategorie as k ON k.id = pr.id_kat
+    WHERE z.id_pret = $ID_PRET
+    ORDER BY pr.id_kat,z.cas ASC;
 EOF;
   $ret = $db->query($sql);
   $i = 0;
   while($row = $ret->fetchArray(SQLITE3_ASSOC)){
     echo "<tr>";
-    echo "<td>".$row['id_kat']."</td>";
+    echo "<td>".$row['nazov']."</td>";
     echo "<td>".$row['meno']."</td>";
     echo "<td>".$row['priezvisko']."</td>";
     echo '<td><input type="text" name="cas'.$i.'" value = "';
@@ -846,6 +894,18 @@ EOF;
     $db->close();
   }
 
+  static function exportForm(){
+    $db = napoj_db();
+    $sql =<<<EOF
+    SELECT * FROM Exporty;"
+EOF;
+    $ret = $db->query($sql);
+    $row = $ret->fetchArray(SQLITE3_ASSOC);
+    $db->close();
+    return $row['retazec'];
+  }
+
+
   static function exportuj($id_pret){
     $prepis = array("meno"=>"MENO","priezvisko"=>"PRIEZVISKO","os_i_c"=>"OS.ČÍSLO","cip"=>"ČIP","nazov"=>"KATEGÓRIA","poznamka"=>"POZNÁMKA");
     $myfile = fopen("zoznam.txt", "w") or die("Nedá sa otvoriť súbor. Skontrolujte, či sa v priečinku source nachádza súbor zoznam.txt ak nie vytvorte ho.");
@@ -891,5 +951,45 @@ EOF;
     fclose($myfile);
     fclose($myfilecsv);
   }
+
+  static function exportujK(){
+    $db = napoj_db();
+    $sql =<<<EOF
+      SELECT meno,priezvisko,pohlavie,datum_narodenia,krajina_narodenia,statna_prislusnost,krajina_trvaleho_pobytu,ulica,cislo_domu,psc,mesto,telefon,mail,cip,os_i_c from Kmenovi_clenovia AS k JOIN Pouzivatelia AS p ON p.id_kmen_clen = k.id ORDER BY p.priezvisko ASC;
+EOF;
+    $ret = $db->query($sql);
+    $myfile = fopen("kmenovi.csv", "w") or die("Unable to open file!");
+    fputs($myfile, chr(0xEF).chr(0xBB).chr(0xBF));
+    fputcsv($myfile, array("MENO","PRIEZVISKO","POHLAVIE",'DÁTUM NARODENIA',"KRAJINA NARODENIA","ŠTÁTNA PRÍSLUŠNOSŤ","KRAJINA TRVALÉHO BYDLISKA","ULICA","ČÍSLO DOMU","PSČ","MESTO","TELEFÓN","MAIL","ČÍSLO ČIPU","REGISTRAČNÉ ČÍSLO"), ";");
+    while ($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      fputcsv($myfile,$row,";");
+    }
+  echo '<meta http-equiv="refresh" content="0;URL=kmenovi.csv" />';
+  $db->close();
+  fclose($myfile);
+  }
+
+  static function exportuj_zhodnotenie($id){
+  $db = napoj_db();
+    $sql =<<<EOF
+      SELECT *
+      FROM Zhodnotenie JOIN Pouzivatelia ON Zhodnotenie.id_pouz = Pouzivatelia.id
+                       JOIN Prihlaseni ON Prihlaseni.id_pouz=Pouzivatelia.id AND Prihlaseni.id_pret = Zhodnotenie.id_pret
+                       JOIN Kategorie ON Prihlaseni.id_kat = Kategorie.id
+      WHERE Zhodnotenie.id_pret = $id
+      ORDER BY Prihlaseni.id_kat,Zhodnotenie.cas ASC;
+EOF;
+  $ret = $db->query($sql);
+  $myfile = fopen("zhodnotenie.csv", "w") or die("Unable to open file!");
+    fputs($myfile, chr(0xEF).chr(0xBB).chr(0xBF));
+    fputcsv($myfile, array("KATEGÓRIA","MENO","PRIEZVISKO","ČAS"), ";");
+    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
+      fputcsv($myfile,array($row['nazov'],$row['meno'],$row['priezvisko'],$row['cas']),";");
+    }
+  echo '<meta http-equiv="refresh" content="0;URL=zhodnotenie.csv" />';
+  $db->close();
+  fclose($myfile);
+  }
+
 }
  ?>

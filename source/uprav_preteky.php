@@ -28,6 +28,7 @@ else{
     PRETEKY::zmaz_kat_preteku($_GET["id"]);
     if(is_array($_POST['incharge'])){
       foreach($_POST['incharge'] as $idKat){
+        //echo $val . '<br />';
         PRETEKY::pridaj_kat_preteku($_GET["id"], $idKat);
       }
     }
@@ -87,7 +88,7 @@ else{
         PRETEKY::vypis_zoznam_pretek_table(); PRETEKY::vypis_zoznam_ostatne_table(); ?></table>
         <p id="buttons">
         <input type="submit" name="posli" value="Uprav">
-        <input type="submit" name="zmaz" value="Vymaž" onclick="return confirm('Naozaj chcete vymazať preteky?');">
+        <input type="submit" name="zmaz" value="Vymaž" onclick="return confirm('Naozaj chcete vymazať preteky?');"">
         <br>
         <?php
         if(isset($po->AKTIV) && $po->AKTIV == 1){

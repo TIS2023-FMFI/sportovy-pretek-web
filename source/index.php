@@ -24,7 +24,7 @@ else{
   <h2>Zoznam tréningov</h2>
   <?php
   if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
-    <input class="novy" type="submit" id="novy" onclick="location.href='novy_pretek.php';" value="Nové preteky">
+    <input name="novy" type="submit" class="novy" onclick="location.href='novy_pretek.php';" value="Nové preteky">
     <input type="submit" onclick="location.href='kategorie.php';" value="Kategórie">
     <input type="submit" onclick="location.href='oddiely.php';" value="Oddiely">
     <?php
@@ -41,7 +41,7 @@ else{
       echo '<strong style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol aktivovaný.</strong>';
     }
     else{
-      echo '<strong  style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol deaktivovaný.</strong>';
+      echo '<strong  style="color:green; font-size:15px; margin-left:30px;">Pretek '.$pr->NAZOV.' bol archivovaný.</strong>';
     }
   }
   if(isset($_POST['zmaz'])){
@@ -59,11 +59,13 @@ else{
           <th class="prvy">Typ tréningu</th>
           <th class="prvy">Dátum konania</th>
           <th class="prvy">Prihlasovanie do</th>
+          <th class="prvy">Zobraz osobný výkon</th>
+          <th class="prvy">Zobraz výsledky</th>
           <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
-          <th class="prvy"></th>
-          <th class="prvy"></th>
-          <th class="prvy"></th>
-          <th class="prvy"></th>
+          <th class="prvy">Uprav tréning</th>
+          <th class="prvy">Archivácia</th>
+          <th class="prvy">Skopíruj tréning</th>
+          <th class="prvy">Vymaž tréning</th>
           <?php } ?>
         </tr>
       </thead>

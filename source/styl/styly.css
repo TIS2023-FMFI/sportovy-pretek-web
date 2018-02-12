@@ -55,6 +55,7 @@ body {
   margin:0px;
   padding: 0px;
   padding-bottom: 25px;
+  font-size: small;
 }
 
 header{
@@ -136,7 +137,6 @@ section .rok a:hover {
 /*-------------------------------- admin.php, index.php --------------------------------*/
 .upozornenie {
     color: red;
-    font-size: 10px;
 }
 #prihlasenieAdministratora{
 	width: 30%;
@@ -215,7 +215,7 @@ section .rok a:hover {
 	font-size: large;
 }
 .uprav_preteky td{padding:5px;}
-#buttons{float:right; right: 4%; position: relative;margin-bottom: 50px;}
+#buttons{float:right; right: 4%; position: relative; padding-bottom: 50px;}
 .chyba{color:green;}
 
 .uprav_preteky tr:hover{ background-color: white; }
@@ -246,7 +246,7 @@ form {
 #odhlaseny{
 	float: left;
 	width: 500px;
-	margin-left: 2%;
+	margin-left: 4%;
 	margin-bottom: 10%;
 	margin-top: 0;
 }
@@ -298,7 +298,6 @@ form {
 #upozornenie table.u td{
 	border:0px;
 	background-color: #ffffc6;
-	color:red;
 }
 #navodik,input#skry{
 	margin-left: 2%;
