@@ -94,11 +94,30 @@ EOF;
 /**
 *prihlasi pouzivatela na pretek
 */
+  static function prihlas_na_pretek_noveho($id,$id_pouz,$kat,$poz){
+    $db = napoj_db();
+    $sql =<<<EOF
+    SELECT id FROM Kategorie WHERE nazov = "$kat";
+EOF;
+    $ret = $db->query($sql);
+    $row = $ret->fetchArray(SQLITE3_ASSOC);
+    $id_kat = $row['id'];
+    $sql =<<<EOF
+      INSERT INTO Prihlaseni (id_pouz,id_pret,id_kat,poznamka)
+      VALUES ("$id_pouz","$id","$id_kat","$poz");
+EOF;
+    $ret = $db->exec($sql);
+    if(!$ret){
+      echo $db->lastErrorMsg();
+    }
+    $db->close();
+}
+
   static function prihlas_na_pretek($id,$id_pouz,$id_kat,$poz){
     $db = napoj_db();
     $sql =<<<EOF
-        INSERT INTO Prihlaseni (id_pouz,id_pret,id_kat,poznamka)
-        VALUES ("$id_pouz","$id","$id_kat","$poz");
+      INSERT INTO Prihlaseni (id_pouz,id_pret,id_kat,poznamka)
+      VALUES ("$id_pouz","$id","$id_kat","$poz");
 EOF;
     $ret = $db->exec($sql);
     if(!$ret){
@@ -257,7 +276,7 @@ EOF;
 
     $ret = $db->query($sql);
     $sql =<<<EOF
-         SELECT id_kat,nazov FROM Kategorie_pre JOIN Kategorie on Kategorie_pre.id_kat = Kategorie.id WHERE id_pret = $this->ID;
+         SELECT DISTINCT id_kat,nazov FROM Kategorie_pre JOIN Kategorie on Kategorie_pre.id_kat = Kategorie.id WHERE id_pret = $this->ID;
 EOF;
     $result = $db->query($sql);
     $sql =<<<EOF
@@ -299,7 +318,7 @@ EOF;
     <td><input type="checkbox" name="posli"></td>
     <?php
     echo '<td><select name="kategoria">';
-    echo '<option value="-">-</option>';
+    echo "<option value='-'>-</option>";
     while($row1 = $result->fetchArray(SQLITE3_ASSOC) ){
       echo '<option value="'.$row1['nazov'].'">'.$row1['nazov'].'</option>';
     }
@@ -905,6 +924,39 @@ EOF;
     return $row['retazec'];
   }
 
+  static function exportujTxt($id_pret){
+    $prepis = array("meno"=>"MENO","priezvisko"=>"PRIEZVISKO","os_i_c"=>"OS.ČÍSLO","cip"=>"ČIP","nazov"=>"KATEGÓRIA","poznamka"=>"POZNÁMKA");
+    $myfile = fopen("zoznam.txt", "w") or die("Nedá sa otvoriť súbor. Skontrolujte, či sa v priečinku source nachádza súbor zoznam.txt ak nie vytvorte ho.");
+    $db = napoj_db();
+    $sql =<<<EOF
+    SELECT * FROM Exporty;
+EOF;
+    $ret = $db->query($sql);
+    $vyber = "";
+    if ($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      $vyber = $row['retazec'];
+    }
+    $stlpce = explode(",", $vyber);
+    $hlavicka = array();
+    foreach ($stlpce as $s) {
+      array_push($hlavicka, $prepis[$s]);
+    }
+    fputcsv($myfile,$hlavicka,";");
+    $sql =<<<EOF
+      SELECT $vyber
+      FROM Prihlaseni JOIN (SELECT id,meno,priezvisko,os_i_c,cip FROM Pouzivatelia) as pouz
+      ON Prihlaseni.id_pouz = pouz.id
+      JOIN Kategorie ON Prihlaseni.id_kat = Kategorie.id
+      WHERE id_pret = $id_pret;
+EOF;
+    $ret = $db->query($sql);
+    while ($row = $ret->fetchArray(SQLITE3_ASSOC)){
+      fputcsv($myfile,$row,";");
+    }
+    exit;
+    $db->close();
+    fclose($myfile);
+  }
 
   static function exportuj($id_pret){
     $prepis = array("meno"=>"MENO","priezvisko"=>"PRIEZVISKO","os_i_c"=>"OS.ČÍSLO","cip"=>"ČIP","nazov"=>"KATEGÓRIA","poznamka"=>"POZNÁMKA");

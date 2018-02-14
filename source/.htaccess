@@ -1,3 +1,4 @@
+AddDefaultCharset utf-8
 <Files database.db>
 Order Allow,Deny
 Deny from all

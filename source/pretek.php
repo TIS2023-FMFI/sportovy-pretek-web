@@ -19,6 +19,7 @@ if (isset($_SERVER['HTTP_COOKIE'])) {
     }
 }
 
+
 //export
 if(isset($_POST['export'])){
   PRETEKY::exportuj($pretekId);
@@ -85,17 +86,21 @@ $po = new POUZIVATELIA();
 if (isset ($_POST['posli'])&&over($_POST['meno'])&&over($_POST['priezvisko'])){
   $rovnaky = $po->over_pouzivatela($_POST['meno'], $_POST['priezvisko']);
   if($rovnaky == ""){
-    $id_novy = $po->pridaj_pouzivatela ($_POST['meno'], $_POST['priezvisko'],"", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'],"");
-    if ($id_novy>-1 && isset($_POST['kategoria']) && $_POST['kategoria']!='-'){
-      PRETEKY::prihlas_na_pretek($_GET["id"], $id_novy,$_POST['kategoria'],$_POST['poznamka']);
+    if ((isset($_POST['kategoria'])) && ($_POST['kategoria']!='-')){
+      $id_novy = $po->pridaj_pouzivatela ($_POST['meno'], $_POST['priezvisko'],"", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'],"");
+      $po->nacitaj($id_novy,$_POST['meno'], $_POST['priezvisko'],"", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'],"");
+      PRETEKY::prihlas_na_pretek_noveho($_GET["id"], $id_novy,$_POST['kategoria'],$_POST['poznamka']);
       if (isset($_COOKIE['prihlaseni'])){
         setcookie("prihlaseni", $_COOKIE['prihlaseni'].','.$id_novy, time() + (86400 * 366),"/");
       }
       else{
         setcookie("prihlaseni", $id_novy, time() + (86400 * 366),"/");
       }
+      $_SESSION['novy_pouz'] = $po->meno." ".$po->priezvisko;
     }
-    $_SESSION['novy_pouz'] = $po->meno." ".$po->priezvisko;
+    else{
+       $_SESSION['error_kat'] = true;
+    }
     unset($po);
   }
   else{
@@ -306,7 +311,7 @@ if(isset($_POST['skry'])){
         <?php
       }
       else{
-        echo "<a href='pretek.php?id=".$pretekId."&exp=1'>Zobraziť nastavenie exportu &#x23EC;</a></p>";
+        echo "<a href='pretek.php?id=".$pretekId."&exp=1'>Nastavenie exportu &#x23EC;</a>&nbsp;&nbsp; <A HREF='zoznam.txt'>export.txt</A></p>";
       }
     }?>
     <?php
@@ -373,7 +378,7 @@ if(isset($_POST['skry'])){
         <?php
         unset($_SESSION['error_kat']);
       }
-      if (isset($_SESSION['rovnaky'])){ ?>
+      else if (isset($_SESSION['rovnaky'])){ ?>
         <p style="color:red">Používateľ <?php echo $_SESSION['rovnaky'];?> je už zaregistrovaný!</p>
         <?php
         unset($_SESSION['rovnaky']);
@@ -439,5 +444,6 @@ if(isset($_POST['skry'])){
 <?php
  unset($pr);
  paticka();
+ PRETEKY::exportujTxt($pretekId);
 ?>
 
