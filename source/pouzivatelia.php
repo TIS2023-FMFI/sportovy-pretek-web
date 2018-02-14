@@ -2,7 +2,7 @@
 class POUZIVATELIA{  
   public $id;
   public $meno;
-  public $prezvisko;
+  public $priezvisko;
   public $oddiel;
   public $os_i_c;
   public $chip;
@@ -24,10 +24,10 @@ class POUZIVATELIA{
 
   function __construct(){ }
 
-  function nacitaj($id, $meno,$prezvisko,$oddiel,$os_i_c,$chip,$poznamka,$uspech){
+  function nacitaj($id,$meno,$priezvisko,$oddiel,$os_i_c,$chip,$poznamka,$uspech){
     $this->id = $id;
     $this->meno = $meno;  
-    $this->priezvisko = $prezvisko;
+    $this->priezvisko = $priezvisko;
     $this->oddiel = $oddiel;
     $this->os_i_c = $os_i_c;
     $this->chip = $chip;
@@ -52,9 +52,9 @@ class POUZIVATELIA{
 
 
 
-  function pridaj_pouzivatela($meno,$prezvisko,$oddiel,$os_i_c,$chip,$poznamka,$uspech){
+  function pridaj_pouzivatela($meno,$priezvisko,$oddiel,$os_i_c,$chip,$poznamka,$uspech){
     $meno2 = $meno;
-    $prezvisko2 = $prezvisko;
+    $priezvisko2 = $priezvisko;
     $os_i_c2 = $os_i_c;
     $chip2 = strtoupper($chip);
     $poznamka2 = $poznamka;
@@ -62,7 +62,7 @@ class POUZIVATELIA{
     $db = napoj_db();
     $sql =<<<EOF
       INSERT INTO Pouzivatelia (meno,priezvisko,id_oddiel,os_i_c,cip,poznamka,uspech)
-      VALUES ("$meno2", "$prezvisko2","$oddiel", "$os_i_c2", "$chip2", "$poznamka2","$uspech2");
+      VALUES ("$meno2", "$priezvisko2","$oddiel", "$os_i_c2", "$chip2", "$poznamka2","$uspech2");
 EOF;
     $ret = $db->exec($sql);
     if(!$ret){
