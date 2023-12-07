@@ -207,6 +207,7 @@ if (isset($_GET['odhlas'])) {
 ?>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title><?php echo $meno ?></title>
         <link rel="stylesheet" href="styl/styly.css">
         <link rel="stylesheet" href="sorter/themes/blue/style.css">
@@ -220,14 +221,12 @@ if (isset($_GET['odhlas'])) {
     <nav>
         <a href="index.php">Domov</a>
         <?php
-        if (isset($_SESSION["admin"]) && $_SESSION["admin"]) {
-            ?>
+        if (isset($_SESSION["admin"]) && $_SESSION["admin"]) { ?>
             <a href="archiv.php">Archív</a>
             <a href="kmenovi_clenovia.php">Kmeňoví členovia</a>
             <a href="?odhlas=1">Odhlásenie</a>
             <?php
-        }
-        ?>
+        } ?>
     </nav>
 </header>
 <?php
@@ -295,4 +294,3 @@ EOF;
        $db->close();
   }
 */
-?>
