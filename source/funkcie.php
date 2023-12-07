@@ -99,16 +99,13 @@ function pridaj_obrazok($id)
         } else {
 
             if (isset($_FILES['obrazok'])) {
-                $novy_nazov = '';
                 if ($_FILES['obrazok']['error'] == UPLOAD_ERR_OK) {
                     if (is_uploaded_file($_FILES['obrazok']['tmp_name'])) {
-                        $novy_nazov = 'pictures/' . $id . '.' . $pripona[1] . '';
+                        $novy_nazov = 'pictures/' . $id . '.' . $pripona[1];
                         $podarilosa = move_uploaded_file($_FILES['obrazok']['tmp_name'], $novy_nazov);
-                        if ($podarilosa) {
-                        } else {
+                        if (!$podarilosa) {
                             $_SESSION['nenahralo_img'] = true;
                         }
-                        $novy_nazov = '';
                     }
                 } else $_SESSION['nenahralo_img'] = true;
             }
@@ -198,7 +195,7 @@ function posli_heslo($pass, $pass_od, $pass_komu)
     $header .= "MIME-Version: 1.0\r\n";
     $header .= "Content-type: text/html\r\n";
 
-    $retval = mail($to, $subject, $txt, $header);
+    return mail($to, $subject, $txt, $header);
 
 }
 
@@ -214,7 +211,7 @@ if (isset($_GET['odhlas'])) {
         <link rel="stylesheet" href="styl/styly.css">
         <link rel="stylesheet" href="sorter/themes/blue/style.css">
         <link rel="stylesheet" href="thumbnailviewer.css">
-        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="javascript/script.js"></script>
     </head>
 <body>
