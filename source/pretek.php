@@ -148,7 +148,7 @@ if(isset($_POST['skry'])){
               V ľavom stĺpci je zoznam prihlásených, v pravom si vyberiete koho prihlasujete. <br>
               Ak si vás počítač zapamätal, tak tam máte tých, čo ste prihlasovali minule.<br>
               Ak sa nenájdete v pravom stĺpci, stlačte VIAC POUŽÍVATEĽOV, zoznam sa rozbalí.<br>
-              Ak sa ani tak nenájdete (ste tu prvý raz), vyplňte položky v prázdnom riadku, zakliknite štvorček a stlačte PRIHLÁSIŤ NA TRÉNING. <br>
+              Ak sa ani tak nenájdete (ste tu prvý raz), vyplňte položky v prázdnom riadku, zakliknite štvorček a stlačte PRIHLÁSIŤ NA PRETEKY. <br>
               Ak potrebujete poradiť, alebo sa chcete prihlásiť mailom, napíšte na adresu balogh@elf.stuba.sk
             </td>
           </tr>
@@ -175,7 +175,7 @@ if(isset($_POST['skry'])){
       $deadline = new DateTime($pr->DEADLINE);
       $now = new DateTime(date("Y-m-d H:i:s"));
     if((isset($_SESSION['admin']) && $_SESSION['admin'] ==1 || ($now < $deadline && $pr->AKTIV == 1)) ) {?>
-      <input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z tréningu" style="margin-bottom: 1em;">
+      <input name="odhlas" type="submit" id="odhlas" value="Odhlásiť z pretekov" style="margin-bottom: 1em;">
       <?php
     }
     ?>
@@ -355,7 +355,7 @@ if(isset($_POST['skry'])){
     <?php
       if((isset($_SESSION['admin'])&&$_SESSION['admin']==1)||(isset($pr->AKTIV)&&$pr->AKTIV==1&&isset($pr->DEADLINE))&&$deadline>$now){
         echo''; ?>
-        <p><input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na tréning" style="margin-bottom: 1em">
+        <p><input name="prihlas" type="submit" id="prihlas" value="Prihlásiť na preteky" style="margin-bottom: 1em">
         <?php
         if (!isset($_GET['cookies'])){?>
           <?php $link="'pretek.php?id=".$_GET['id']."&cookies=0'"; ?>

@@ -398,7 +398,7 @@ EOF;
 static function vypis_zoznam(){
   $db = napoj_db();
   $sql =<<<EOF
-    SELECT * from Preteky WHERE datetime(datum) >= datetime('now','-3 days') AND aktiv =1 ORDER BY deadline DESC;
+    SELECT * from Preteky WHERE datetime(datum) >= datetime('now','-14 days') AND aktiv =1 ORDER BY deadline DESC;
 EOF;
   $ret = $db->query($sql);
   while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
@@ -440,7 +440,7 @@ EOF;
 static function vypis_zoznam_admin(){
     $db = napoj_db();
     $sql =<<<EOF
-      SELECT * from Preteky WHERE datetime(datum) >= datetime('now','-3 days') AND aktiv =1 ORDER BY deadline DESC;
+      SELECT * from Preteky WHERE datetime(datum) >= datetime('now','-14 days') AND aktiv =1 ORDER BY deadline DESC;
 EOF;
     $ret = $db->query($sql);
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
@@ -517,7 +517,7 @@ static function vypis_archiv($rok){
   $rokReg = $rok.'%';
 
     $sql =<<<EOF
-      SELECT * from Preteky WHERE datetime(datum) < datetime('now','-3 days') AND datum like "$rokReg" OR aktiv=0 AND datum like "$rokReg" ORDER BY datum DESC;
+      SELECT * from Preteky WHERE datetime(datum) < datetime('now','-14 days') AND datum like "$rokReg" OR aktiv=0 AND datum like "$rokReg" ORDER BY datum DESC;
 EOF;
     $ret = $db->query($sql);
     while($row = $ret->fetchArray(SQLITE3_ASSOC) ){

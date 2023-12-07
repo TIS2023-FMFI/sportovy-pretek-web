@@ -1,17 +1,17 @@
 /* CSS Document */
 
 .tabulkaVykonou td:hover{
-	background-color:#161;
+	background-color:#ff0000;
 	color:white;
 }
 
 .tabulkaVykonou th{
-	background-color:#161;
+	background-color:#ff0000;
 	color:white;
 }
 
 .tabulkaVykonou tr:hover{
-	background-color:#5A5;
+	background-color:#ffb3b3;
 }
 
 .tabulkaVykonou td .tooltiptext{
@@ -63,7 +63,7 @@ header{
     height: 20%;
     top: 0;
 	left:0;
-	background-color: rgb(17, 102, 17);
+	background-color: rgb(255, 0, 0);
     color: white;
     text-align: center;
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
@@ -75,7 +75,7 @@ h1{
 }
 
 nav{
-	background-color: rgb(85, 170, 85);
+	background-color: rgb(255, 102, 102);
 	height: 19%;
 	padding: 0.5em;
   	margin-bottom: 2%;
@@ -90,7 +90,7 @@ nav a{
 }
 
 nav a:hover{
-	background-color: rgb(136, 204, 136);
+	background-color: rgb(255, 102, 102);
 	padding: 0.4em 0.5em;
 }
 
@@ -121,7 +121,7 @@ footer {
     height: 25px;
     bottom: 0;
 	left:0;
-	background-color: rgb(17, 102, 17);
+	background-color: rgb(204, 0, 0);
     color: white;
     text-align: center;
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
@@ -314,7 +314,7 @@ table.n{
 }
 table.n td{
 	border:0px;
-	background-color: rgb(85, 170, 85);
+	background-color: rgb(255, 0, 0);
 	color:black;
 }
 /*-------------------------------- uprav.php --------------------------------*/

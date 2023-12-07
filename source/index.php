@@ -16,12 +16,12 @@ if (isset($_SESSION['admin'])&&$_SESSION['admin']){
   hlavicka("Admin");
 }
 else{
-  hlavicka("Tréningy ŠK Sandberg");
+  hlavicka("ŠK Sandberg: Prihlasovanie na preteky.");
 }
 ?>
 
 <div id="zoz_pretekov_uzivatel">
-  <h2>Zoznam tréningov</h2>
+  <h2>Zoznam pretekov</h2>
   <?php
   if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
     <input name="novy" type="submit" class="novy" onclick="location.href='novy_pretek.php';" value="Nové preteky">
@@ -56,16 +56,16 @@ else{
     <table border="1" id="treningy" class="tablesorter" style="width:100%;">
       <thead>
         <tr>
-          <th class="prvy">Typ tréningu</th>
+          <th class="prvy">Názov pretekov</th>
           <th class="prvy">Dátum konania</th>
           <th class="prvy">Prihlasovanie do</th>
           <th class="prvy">Zobraz osobný výkon</th>
           <th class="prvy">Zobraz výsledky</th>
           <?php if(isset($_SESSION['admin'])&&$_SESSION['admin']){?>
-          <th class="prvy">Uprav tréning</th>
+          <th class="prvy">Uprav preteky</th>
           <th class="prvy">Archivácia</th>
-          <th class="prvy">Skopíruj tréning</th>
-          <th class="prvy">Vymaž tréning</th>
+          <th class="prvy">Skopíruj preteky</th>
+          <th class="prvy">Vymaž preteky</th>
           <?php } ?>
         </tr>
       </thead>

@@ -236,7 +236,7 @@ function hlavicka($meno=""){
 
 function paticka(){ ?>
   <footer>
-  <div id="footer"><A HREF="prihlasenie.php">TIS</A> - projekt 2015 pre ŠK Sandberg</div>
+  <div id="footer"><A HREF="prihlasenie.php">TIS</A> - projekt 2018 pre ŠK Sandberg</div>
   </footer>
   </body>
 <?php
