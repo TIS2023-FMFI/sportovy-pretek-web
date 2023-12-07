@@ -45,7 +45,6 @@ if ((isset($_POST['posli'])) && (over ($_POST['nazov']))) {
 
 </section>
 
-<script src="js/jquery.js"></script>
 <script src="js/jquery.datetimepicker.js"></script>
 <script>
   $('#datetimepicker').datetimepicker({

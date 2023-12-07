@@ -53,7 +53,6 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
 
         ?>
     </section>
-    <script src="js/jquery.js"></script>
     <script src="js/jquery.datetimepicker.js"></script>
     <script>
         $('#datetimepicker').datetimepicker({

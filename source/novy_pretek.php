@@ -121,7 +121,6 @@ if (isset($_GET['novy']) && isset ($_GET['id'])) {
 }
 ?>
 
-<script src="js/jquery.js"></script>
 <script src="js/jquery.datetimepicker.js"></script>
 <script>
     $('#datetimepicker').datetimepicker({
