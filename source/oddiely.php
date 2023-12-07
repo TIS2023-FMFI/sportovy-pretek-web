@@ -6,70 +6,65 @@ include('preteky.php');
 ?>
 
 <!DOCTYPE HTML>
-<html>
+<html lang="sk">
 <?php
-if (!isset($_SESSION['admin']) || !$_SESSION['admin']){
-  echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';
-}
-else{
-  hlavicka("Oddiely");
-  ?>
-  <section>
-  <div id="tab_platby">
-    <form method="post">
-      <h2>Oddiely</h2>
-      <table border="1" style="width:100%">
-        <tr>
-          <th class="prvy"></th>
-          <th class="prvy">ID oddielu</th>
-          <th class="prvy">Názov</th>
-        </tr>
+if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
+    echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';
+} else {
+    hlavicka("Oddiely");
+    ?>
+    <section>
+        <div id="tab_platby">
+            <form method="post">
+                <h2>Oddiely</h2>
+                <table style="width:100%">
+                    <tr>
+                        <th class="prvy"></th>
+                        <th class="prvy">ID oddielu</th>
+                        <th class="prvy">Názov</th>
+                    </tr>
+                    <?php
+                    $pl = new PRETEKY();
+                    PRETEKY::vypis_zoznam_oddiely();
+                    ?>
+                </table>
+                <p>
+                    <a href="oddiely_new.php"><input type="button" value="Nový oddiel"></a>
+                    <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať oddiel?');"
+                           value="Vymazať oddiel">
+                </p>
+            </form>
+            <br><br> <br> <br>
+        </div>
+        <br>
         <?php
-        $pl = new PRETEKY();
-        PRETEKY::vypis_zoznam_oddiely();
+
+
+        if ((isset($_POST['del']) && (isset($_POST['incharge'])))) {
+            // PHP throws a fit if we try to loop a non-array
+            if (is_array($_POST['incharge'])) {
+                foreach ($_POST['incharge'] as $val) {
+                    PRETEKY::vymaz_oddiel($val);
+                    echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
+                }
+            }
+        }
+
+
         ?>
-      </table>
-      <p>
-        <a href="oddiely_new.php"><input type="button" value="Nový oddiel"></a>
-        <input name="del" type="submit" id="del" onclick="return confirm('Naozaj chcete vymazať oddiel?');" value="Vymazať oddiel">
-      </p>
-    </form>
-    <br><br> <br> <br>
-</div>
-<br>
-<?php
+    </section>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.datetimepicker.js"></script>
+    <script>
+        $('#datetimepicker').datetimepicker({
+            dayOfWeekStart: 1,
+            format: 'd-m-Y H:i',
+            lang: 'sk',
+            showAnim: "show"
+        });
+    </script>
 
-
-
-if ((isset($_POST['del']) && (isset($_POST['incharge'])))){
-  // PHP throws a fit if we try to loop a non-array
-  if(is_array($_POST['incharge'])){
-    foreach($_POST['incharge'] as $val){
-      PRETEKY::vymaz_oddiel($val);
-        echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
-      }
-    }
-  }
-
-
-
- ?>
-</section>
-
-<script src="js/jquery.js"></script>
-<script src="js/jquery.datetimepicker.js"></script>
-<script>
-  $('#datetimepicker').datetimepicker({
-  dayOfWeekStart : 1,
-  format:'d-m-Y H:i',
-  lang:'sk',
-  showAnim: "show"
-  });
-</script>
-
-<?php
+    <?php
 }
-paticka();
-
-?>
+paticka(); ?>
 </html>
