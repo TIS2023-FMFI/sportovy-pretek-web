@@ -26,11 +26,8 @@ if ((isset ($_POST['posli'])) &&
     $po = PRETEKY::vrat_pretek($_GET["id"]);
     $po->uprav_pretek($_POST['nazov'], $_POST['datum'], $_POST['deadline'], $_POST['poznamka']);
     PRETEKY::zmaz_kat_preteku($_GET["id"]);
-    if (is_array($_POST['incharge'])) {
-        foreach ($_POST['incharge'] as $idKat) {
-            //echo $val . '<br />';
-            PRETEKY::pridaj_kat_preteku($_GET["id"], $idKat);
-        }
+    foreach ($_POST['incharge'] as $idKat) {
+        PRETEKY::pridaj_kat_preteku($_GET["id"], $idKat);
     }
     unset($po);
     echo '<meta http-equiv="refresh" content="0; URL=index.php">';
@@ -45,7 +42,7 @@ if (isset($_POST['zmaz'])) {
 }
 ?>
 <!DOCTYPE HTML>
-<html>
+<html lang="sk">
 <?php
 $po = new PRETEKY();
 $po = PRETEKY::vrat_pretek($_GET["id"]);
@@ -61,7 +58,7 @@ unset($po);
         <form method="post" enctype="multipart/form-data">
             <table id="tabulka_uprav_pretek">
                 <?php if (isset($_POST['nazov']) && !over($_POST['nazov'])) {
-                    echo '<tr><td><font color="red">Nevyplnili ste názov!</font></td></tr>';
+                    echo '<tr><td><span style="color: red; ">Nevyplnili ste názov!</span></td></tr>';
                 } ?>
                 <tr>
                     <td><label for="nazov">Názov pretekov</label></td>
@@ -72,7 +69,7 @@ unset($po);
                         } ?>"></td>
                 </tr>
                 <?php if (isset($_POST['datum']) && !over($_POST['datum'])) {
-                    echo '<tr><td><font color="red">Nevyplnili ste dátum!</font></td></tr>';
+                    echo '<tr><td><span style="color: red; ">Nevyplnili ste dátum!</span></td></tr>';
                 } ?>
                 <tr>
                     <td><label for="datetimepicker">Dátum konania</label></td>
@@ -84,7 +81,7 @@ unset($po);
                                } ?>"></td>
                 </tr>
                 <?php if (isset($_POST['deadline']) && !over($_POST['deadline'])) {
-                    echo '<tr><td><font color="red">Nevyplnili ste deadline!</font></td></tr>';
+                    echo '<tr><td><span style="color: red; ">Nevyplnili ste deadline!</span></td></tr>';
                 } ?>
                 <tr>
                     <td><label for="datetimepicker1">Deadline prihlásenia</label></td>
@@ -108,7 +105,7 @@ unset($po);
             <!-- kategorie-->
             <table id="tabulka_uprav_pretek_kategotie"><?php
                 if (isset($_POST['posli']) && !isset($_POST['incharge'])) {
-                    echo '<tr><td><font color="red">Musíte zadať aspoň jednu kategóriu!</font></td></tr>';
+                    echo '<tr><td><span style="color: red; ">Musíte zadať aspoň jednu kategóriu!</span></td></tr>';
                 }
                 PRETEKY::vypis_zoznam_pretek_table();
                 PRETEKY::vypis_zoznam_ostatne_table(); ?></table>
