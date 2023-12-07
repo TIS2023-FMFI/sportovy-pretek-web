@@ -11,8 +11,7 @@ include('preteky.php');
 if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
     echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';
 } else {
-    hlavicka("Oddiely");
-    ?>
+    hlavicka("Oddiely"); ?>
     <section>
         <div id="tab_platby">
             <form method="post">
@@ -38,8 +37,6 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
         </div>
         <br>
         <?php
-
-
         if ((isset($_POST['del']) && (isset($_POST['incharge'])))) {
             // PHP throws a fit if we try to loop a non-array
             if (is_array($_POST['incharge'])) {
@@ -48,10 +45,7 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
                     echo '<META HTTP-EQUIV="refresh" CONTENT="0">';
                 }
             }
-        }
-
-
-        ?>
+        } ?>
     </section>
     <script src="js/jquery.datetimepicker.js"></script>
     <script>
