@@ -15,7 +15,7 @@ class MyDB extends SQLite3
 function napoj_db()
 {
     $db = new MyDB();
-    if (!$db) {
+    if (!empty($db->lastErrorCode())) {
         echo $db->lastErrorMsg();
         return false;
     } else {
@@ -23,7 +23,7 @@ function napoj_db()
     }
 }
 
-function pridaj_kmenovy_clen($id)
+function pridaj_kmenovy_clen()
 {
     $db = napoj_db();
     $sql = <<<EOF

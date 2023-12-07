@@ -37,7 +37,7 @@ if ((isset ($_POST['posli'])) && over ($_POST['meno'])  && over ($_POST['priezvi
 
 //pridavanie medzi kemnovych clenov
 if(isset($_POST['pridajMedziKmenovych'])){
-  pridaj_kmenovy_clen($_GET['id']);
+  pridaj_kmenovy_clen();
 }
 
 ?>
