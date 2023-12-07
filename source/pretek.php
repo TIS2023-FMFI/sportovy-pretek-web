@@ -428,7 +428,7 @@ if(isset($_POST['skry'])){
 
 </section>
 
-<script type="text/javascript" src="sorter/jquery-latest.js"></script>
+
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){

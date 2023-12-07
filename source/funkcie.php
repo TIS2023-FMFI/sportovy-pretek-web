@@ -211,7 +211,7 @@ if (isset($_GET['odhlas'])) {
         <link rel="stylesheet" href="styl/styly.css">
         <link rel="stylesheet" href="sorter/themes/blue/style.css">
         <link rel="stylesheet" href="thumbnailviewer.css">
-        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
         <script type="text/javascript" src="javascript/script.js"></script>
     </head>
 <body>

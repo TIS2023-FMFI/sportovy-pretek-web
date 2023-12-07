@@ -8,7 +8,7 @@ $navodik = false;
 ?>
 <!DOCTYPE HTML>
 <html>
-  <script type="text/javascript" src="sorter/jquery-latest.js"></script>
+  <script type="text/javascript" src="sorter/"></script>
   <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script> 
   <?php
   $pr = new PRETEKY();

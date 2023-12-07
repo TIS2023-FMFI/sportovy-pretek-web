@@ -44,7 +44,7 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
         echo '<meta http-equiv="refresh" content="0; URL=archiv_rok.php?rok=' . $rok . '">';
         $_SESSION['zmazany'] = $nazov;
     } ?>
-    <table border="1" id="archiv" class="tablesorter" style="width:100%;">
+    <table id="archiv" class="tablesorter" style="width:100%;">
         <thead>
         <tr>
             <th class="prvy header">Typ tréningu</th>
@@ -64,8 +64,6 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
 </div>
 <br><br>
 
-?>
-<script type="text/javascript" src="sorter/jquery-latest.js"></script>
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {

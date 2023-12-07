@@ -197,7 +197,7 @@ EOF;
 
 </script>
 <script type="text/javascript"></script>
-<script type="text/javascript" src="sorter/jquery-latest.js"></script>
+
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
 <script>
     $(document).ready(function(){
