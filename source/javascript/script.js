@@ -1,9 +1,9 @@
 function save2(event, item, idcko) {
-    var i = $(item).attr("id");
-    var s = $(item).attr("name");
-    var element = document.getElementById(i);
-    var o = element.innerText || element.textContent;
-    var o = o.trim();
+    const i = $(item).attr("id");
+    const s = $(item).attr("name");
+    const element = document.getElementById(i);
+    let o = element.innerText || element.textContent;
+    o = o.trim();
     $.ajax({
         url: "kmenovi_clenovia.php",
         type: "post",
@@ -24,7 +24,7 @@ function save2(event, item, idcko) {
 }
 
 function posli() {
-    var ajaxurl = 'prihlasenie.php';
+    const ajaxurl = 'prihlasenie.php';
     $.ajax({
         url: ajaxurl,
         type: "post",
@@ -43,12 +43,13 @@ function posli() {
     });
 }
 
-$(function () {
-    $('#obrazok').change(function () {
-        if ($('#obrazok')[0].files[0].size >= 2000000) {
+addEventListener("DOMContentLoaded", (event) => {
+    let obrazok = document.getElementById('obrazok');
+    obrazok.onchange = () => {
+        if (obrazok.files[0].size >= 2_000_000) {
             alert("Vybraný obrázok je príliš veľký!");
-            $('#obrazok')[0].value = null;
+            obrazok.value = null;
         }
-    });
+    };
 });
 
