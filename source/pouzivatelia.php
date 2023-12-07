@@ -108,45 +108,34 @@ EOF;
         return "";
     }
 
-    static function vrat_pouzivatela($ID)
+    static function vrat_pouzivatela($id)
     {
-        $sql2 = NULL;
+        if (!is_numeric($id)) {
+            return null;
+        }
         $db = napoj_db();
-        $sql = <<<EOF
-       SELECT * FROM Pouzivatelia WHERE id = $ID;
+        $pouz_sql = <<<EOF
+       SELECT * FROM Pouzivatelia WHERE id = $id;
 EOF;
-        $sql1 = <<<EOF
-       SELECT * FROM Pouzivatelia WHERE id = $ID;
+        $ret = $db->query($pouz_sql);
+        if (has_rows($ret)) {
+            $row = $ret->fetchArray(SQLITE3_ASSOC);
+            $p = new self();
+            $p->nacitaj($row['id'], $row['meno'], $row['priezvisko'], $row['id_oddiel'], $row['os_i_c'], $row['cip'], $row['poznamka'], $row['uspech']);
+            if (is_admin()) {
+                $kmen_sql = <<<EOF
+       SELECT * FROM Kmenovi_clenovia AS k JOIN Pouzivatelia AS p ON p.id_kmen_clen = k.id WHERE p.id = $id;
 EOF;
-        if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
-            $sql2 = <<<EOF
-       SELECT * from Kmenovi_clenovia AS k JOIN Pouzivatelia AS p ON p.id_kmen_clen = k.id WHERE p.id = $ID;
-EOF;
+                $ret3 = $db->query($kmen_sql);
+                $kmen_row = $ret3->fetchArray(SQLITE3_ASSOC);
+                $p->nacitaj_kmenove_info($kmen_row['pohlavie'], $kmen_row['datum_narodenia'], $kmen_row['krajina_narodenia'], $kmen_row['statna_prislusnost'], $kmen_row['krajina_trvaleho_pobytu'], $kmen_row['ulica'], $kmen_row['cislo_domu'], $kmen_row['psc'], $kmen_row['mesto'], $kmen_row['telefon'], $kmen_row['mail'], $kmen_row['id_kmen_clen']);
 
-        }
-        $count = 0;
-        if (is_numeric($ID)) {
-            $ret = $db->query($sql);
-            $ret2 = $db->query($sql1);
-            $ret3 = $db->query($sql2);
-            $count = $ret2->fetchArray(PDO::FETCH_NUM);
-        }
-        if ($count > 0) {
-            while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
-                $p = new self();
-                $p->nacitaj($row['id'], $row['meno'], $row['priezvisko'], $row['id_oddiel'], $row['os_i_c'], $row['cip'], $row['poznamka'], $row['uspech']);
-                if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1) {
-                    while ($row = $ret3->fetchArray(SQLITE3_ASSOC)) {
-
-                        $p->nacitaj_kmenove_info($row['pohlavie'], $row['datum_narodenia'], $row['krajina_narodenia'], $row['statna_prislusnost'], $row['krajina_trvaleho_pobytu'], $row['ulica'], $row['cislo_domu'], $row['psc'], $row['mesto'], $row['telefon'], $row['mail'], $row['id_kmen_clen']);
-                    }
-                }
-                return $p;
             }
-            $db->close();
+            return $p;
         } else {
             echo 'Zvoleny pouzivatel neexistuje';
         }
+        return null;
     }
 
     static function vypis_zoznam()
@@ -174,7 +163,7 @@ EOF;
     static function vypis_profil($pouz)
     {
         ?>
-        <div class="profil_ram" border=1>
+        <div class="profil_ram">
             <p><strong><?php echo $pouz['MENO'] . " " . $pouz['PRIEZVISKO'] ?></strong></p>
             <div class="foto_ram">
                 <?php
@@ -190,7 +179,7 @@ EOF;
                     $subor = 'pictures/no_photo.jpg';
                 }
                 ?>
-                <a href="<?php echo $subor; ?>"><img src="<?php echo $subor; ?>"></a>
+                <a href="<?php echo $subor; ?>"><img src="<?php echo $subor; ?>" alt="Profilová fotografia"></a>
             </div>
 
             <?php
@@ -244,13 +233,13 @@ EOF;
         $POZNAMKA2 = $POZNAMKA;
         $uspech2 = htmlentities($uspech, ENT_QUOTES, "UTF-8");
         $sql = <<<EOF
-        UPDATE Pouzivatelia set meno = "$MENO2" where id="$this->id";
-        UPDATE Pouzivatelia set priezvisko = "$PRIEZVISKO2" where id="$this->id";
-        UPDATE Pouzivatelia set id_oddiel = "$oddiel" where id="$this->id";
-        UPDATE Pouzivatelia set os_i_c = "$OS_I_C2" where id="$this->id";
-        UPDATE Pouzivatelia set cip = "$CHIP2" where id="$this->id";
-        UPDATE Pouzivatelia set poznamka = "$POZNAMKA2" where id="$this->id";
-        UPDATE Pouzivatelia set uspech = "$uspech2" where id="$this->id";
+        UPDATE Pouzivatelia set meno = "$MENO2" WHERE id="$this->id";
+        UPDATE Pouzivatelia set priezvisko = "$PRIEZVISKO2" WHERE id="$this->id";
+        UPDATE Pouzivatelia set id_oddiel = "$oddiel" WHERE id="$this->id";
+        UPDATE Pouzivatelia set os_i_c = "$OS_I_C2" WHERE id="$this->id";
+        UPDATE Pouzivatelia set cip = "$CHIP2" WHERE id="$this->id";
+        UPDATE Pouzivatelia set poznamka = "$POZNAMKA2" WHERE id="$this->id";
+        UPDATE Pouzivatelia set uspech = "$uspech2" WHERE id="$this->id";
 EOF;
         $ret = $db->exec($sql);
         if (!$ret) {
@@ -263,17 +252,17 @@ EOF;
     {
         $db = napoj_db();
         $sql = <<<EOF
-        UPDATE Kmenovi_clenovia set pohlavie = "$pohlavie" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set datum_narodenia = "$narodenie" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set krajina_narodenia = "$krajina_narodenia" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set statna_prislusnost = "$statna_prislusnost" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set krajina_trvaleho_pobytu = "$krajina_trvaleho_pobytu" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set ulica = "$ulica" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set cislo_domu = "$cislo_domu" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set psc = "$psc" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set mesto = "$mesto" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set telefon = "$telefon" where id="$this->id_kmen_clen";
-        UPDATE Kmenovi_clenovia set mail = "$mail" where id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set pohlavie = "$pohlavie" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set datum_narodenia = "$narodenie" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set krajina_narodenia = "$krajina_narodenia" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set statna_prislusnost = "$statna_prislusnost" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set krajina_trvaleho_pobytu = "$krajina_trvaleho_pobytu" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set ulica = "$ulica" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set cislo_domu = "$cislo_domu" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set psc = "$psc" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set mesto = "$mesto" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set telefon = "$telefon" WHERE id="$this->id_kmen_clen";
+        UPDATE Kmenovi_clenovia set mail = "$mail" WHERE id="$this->id_kmen_clen";
 EOF;
         $ret = $db->exec($sql);
         if (!$ret) {

@@ -60,6 +60,16 @@ EOF;
     return false;
 }
 
+function is_admin()
+{
+    return session_status() != PHP_SESSION_NONE && isset($_SESSION['admin']) && $_SESSION['admin'] == 1;
+}
+
+function has_rows($sqlite_result)
+{
+    return $sqlite_result->numColumns() && $sqlite_result->columnType(0) != SQLITE3_NULL;
+}
+
 function vymaz_obrazok($id)
 {
     if (file_exists('pictures/' . $id . '.png')) {

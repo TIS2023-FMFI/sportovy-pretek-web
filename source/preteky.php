@@ -63,10 +63,10 @@ EOF;
     $POZNAMKA2 = htmlentities($text, ENT_QUOTES, 'UTF-8');
     $db = napoj_db();
     $sql =<<<EOF
-       UPDATE Preteky set nazov = "$NAZOV2" where id="$this->ID";
-       UPDATE Preteky set datum = "$DATUM" where id="$this->ID";
-       UPDATE Preteky set deadline = "$DEADLINE" where id="$this->ID";
-       UPDATE Preteky set poznamka = "$POZNAMKA2" where id="$this->ID";
+       UPDATE Preteky set nazov = "$NAZOV2" WHERE id="$this->ID";
+       UPDATE Preteky set datum = "$DATUM" WHERE id="$this->ID";
+       UPDATE Preteky set deadline = "$DEADLINE" WHERE id="$this->ID";
+       UPDATE Preteky set poznamka = "$POZNAMKA2" WHERE id="$this->ID";
        DELETE FROM Kategorie_pre WHERE id_pret = "$this->ID";
 EOF;
     $ret = $db->exec($sql);
@@ -583,13 +583,13 @@ static function aktivuj($ID){
    $pretek = PRETEKY::vrat_pretek($ID);
    if($pretek->AKTIV=='0'){
    $sql =<<<EOF
-      UPDATE Preteky set aktiv = "1" where id="$ID";
+      UPDATE Preteky set aktiv = "1" WHERE id="$ID";
 EOF;
     $ret = $db->exec($sql);
   }
     else{
   $sql =<<<EOF
-      UPDATE Preteky set aktiv = "0" where id="$ID";
+      UPDATE Preteky set aktiv = "0" WHERE id="$ID";
 EOF;
     $ret = $db->exec($sql);
  }
@@ -599,7 +599,7 @@ EOF;
 static function deaktivuj($ID){
    $db = napoj_db();
    $sql =<<<EOF
-      UPDATE Preteky set aktiv = "0" where id="$ID";
+      UPDATE Preteky set aktiv = "0" WHERE id="$ID";
 EOF;
    $ret = $db->exec($sql);
    //echo "Operation done successfully"."<br>";   ////////////////////////////////
