@@ -44,12 +44,14 @@ function posli() {
 }
 
 addEventListener("DOMContentLoaded", (event) => {
-    let obrazok = document.getElementById('obrazok');
-    obrazok.onchange = () => {
-        if (obrazok.files[0].size >= 2_000_000) {
-            alert("Vybraný obrázok je príliš veľký!");
-            obrazok.value = null;
-        }
-    };
+    if (window.location.pathname === "/profil.php") {
+        let obrazok = document.getElementById('obrazok');
+        obrazok.onchange = () => {
+            if (obrazok.files[0].size >= 2_000_000) {
+                alert("Vybraný obrázok je príliš veľký!");
+                obrazok.value = null;
+            }
+        };
+    }
 });
 
