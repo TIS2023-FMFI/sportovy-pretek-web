@@ -39,7 +39,7 @@
 .tabulkaVykonou .cellEditing { padding: 0; }
 .tabulkaVykonou .cellEditing input[type=text]{ width:100%; border:0; background-color:rgb(255,253,210); }
 
-Read more: http://mrbool.com/how-to-create-an-editable-html-table-with-jquery/27425#ixzz51ZRDuBYb
+/*Read more: http://mrbool.com/how-to-create-an-editable-html-table-with-jquery/27425#ixzz51ZRDuBYb*/
 
 html,body{
 	height: 100%;
@@ -891,8 +891,8 @@ position:relative;
 
 #mouseOver img {
 	display:none;
-	max-width: 250;
-	max-height: 200;
+	max-width: 250px;
+	max-height: 200px;
     /*position: absolute;
     left: 50%;
     transform: translate(-50%);
