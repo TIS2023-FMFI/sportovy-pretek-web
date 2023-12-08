@@ -4,10 +4,10 @@ include('funkcie.php');
 include('pouzivatelia.php');
 include('preteky.php');
 
-if (!isset($_SESSION['admin']) || !$_SESSION['admin']){
+if (!is_admin()){
     echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';
+    die();
 }
-else{
 $zobraz_form = true;
 if (isset($_POST['aktivuj'])) {
     PRETEKY::aktivuj($_GET['id']);
@@ -21,7 +21,6 @@ if ((isset ($_POST['posli'])) &&
     over($_POST['deadline']) &&
     is_array($_POST['incharge'])
 ) {
-    //$po->uprav_pretek ($_POST['meno'], $_POST['priezvisko'], $_POST['oscislo'], $_POST['cip'], $_POST['poznamka']);
     $po = new PRETEKY();
     $po = PRETEKY::vrat_pretek($_GET["id"]);
     $po->uprav_pretek($_POST['nazov'], $_POST['datum'], $_POST['deadline'], $_POST['poznamka']);
@@ -147,8 +146,5 @@ unset($po);
     });
 </script>
 <br><br><br>
-<?php
-}
-paticka();
-?>
+<?php paticka(); ?>
 </html>

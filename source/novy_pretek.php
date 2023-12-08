@@ -4,10 +4,11 @@ include('funkcie.php');
 include('pouzivatelia.php');
 include('preteky.php');
 
-if (!isset($_SESSION['admin']) || !$_SESSION['admin']){
+if (!is_admin()) {
     echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';
+    die();
 }
-else{
+
 $zobraz_form = true;
 if ((isset ($_POST['vytvor'])) && over($_POST['nazov']) && over($_POST['datum']) && over($_POST['deadline']) && is_array($_POST['incharge'])) {
     $po = new PRETEKY();
@@ -118,8 +119,7 @@ if (isset($_GET['novy']) && isset ($_GET['id'])) {
         </form>
     </section>
     <?php
-}
-?>
+} ?>
 
 <script src="js/jquery.datetimepicker.js"></script>
 <script>
@@ -140,7 +140,5 @@ if (isset($_GET['novy']) && isset ($_GET['id'])) {
 </script>
 <br><br><br>
 
-<?php
-paticka();
-} ?>
+<?php paticka(); ?>
 </html>

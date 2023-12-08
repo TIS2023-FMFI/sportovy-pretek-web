@@ -11,7 +11,7 @@ if (isset($_GET['odhlas'])) {
 <!DOCTYPE HTML>
 <html lang="sk">
 <?php
-if (isset($_SESSION['admin']) && $_SESSION['admin']) {
+if (is_admin()) {
     hlavicka("Archív " . $_GET['rok']);
 } else {
     echo '<META HTTP-EQUIV="refresh" CONTENT="0;URL=index.php">';
