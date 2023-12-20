@@ -57,7 +57,7 @@ class POUZIVATELIA
     }
 
 
-    function pridaj_pouzivatela($meno, $priezvisko, $oddiel, $os_i_c, $chip, $poznamka, $uspech)
+    function pridaj_pouzivatela($meno, $priezvisko, $os_i_c, $chip, $poznamka, $uspech)
     {
         $meno2 = $meno;
         $priezvisko2 = $priezvisko;
@@ -68,7 +68,7 @@ class POUZIVATELIA
         $db = napoj_db();
         $sql = <<<EOF
       INSERT INTO Pouzivatelia (meno,priezvisko,id_oddiel,os_i_c,cip,poznamka,uspech)
-      VALUES ("$meno2", "$priezvisko2","$oddiel", "$os_i_c2", "$chip2", "$poznamka2","$uspech2");
+      VALUES ("$meno2", "$priezvisko2", null, "$os_i_c2", "$chip2", "$poznamka2","$uspech2");
 EOF;
         $ret = $db->exec($sql);
         if (!$ret) {
@@ -225,6 +225,7 @@ EOF;
 
     function uprav_pouzivatela($MENO, $PRIEZVISKO, $oddiel, $OS_I_C, $CHIP, $POZNAMKA, $uspech)
     {
+        if (empty($oddiel)) $oddiel = null;
         $db = napoj_db();
         $MENO2 = $MENO;
         $PRIEZVISKO2 = $PRIEZVISKO;

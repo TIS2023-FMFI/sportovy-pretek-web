@@ -83,7 +83,7 @@ if (isset ($_POST['posli']) && over($_POST['meno']) && over($_POST['priezvisko']
     $rovnaky = $po->over_pouzivatela($_POST['meno'], $_POST['priezvisko']);
     if ($rovnaky == "") {
         if ((isset($_POST['kategoria'])) && ($_POST['kategoria'] != '-')) {
-            $id_novy = $po->pridaj_pouzivatela($_POST['meno'], $_POST['priezvisko'], "", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'], "");
+            $id_novy = $po->pridaj_pouzivatela($_POST['meno'], $_POST['priezvisko'], $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'], "");
             $po->nacitaj($id_novy, $_POST['meno'], $_POST['priezvisko'], "", $_POST['oscislo'], $_POST['cip'], $_POST['poznamka'], "");
             PRETEKY::prihlas_na_pretek_noveho($_GET["id"], $id_novy, $_POST['kategoria'], $_POST['poznamka']);
             if (isset($_COOKIE['prihlaseni'])) {
