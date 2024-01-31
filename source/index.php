@@ -13,7 +13,8 @@ if (isset($_GET['odhlas'])) {
 <?php
 if (isset($_SESSION['admin']) && $_SESSION['admin']) {
     hlavicka("Admin");
-} else {
+}
+else {
     hlavicka("ŠK Sandberg: Prihlasovanie na preteky.");
 } ?>
 
@@ -37,7 +38,8 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
         $pr = PRETEKY::vrat_pretek($_POST["id"]);
         if ($pr->AKTIV == 1) {
             echo '<strong style="color:green; font-size:15px; margin-left:30px;">Pretek ' . $pr->NAZOV . ' bol aktivovaný.</strong>';
-        } else {
+        }
+        else {
             echo '<strong  style="color:green; font-size:15px; margin-left:30px;">Pretek ' . $pr->NAZOV . ' bol archivovaný.</strong>';
         }
     }
@@ -69,14 +71,14 @@ if (isset($_SESSION['admin']) && $_SESSION['admin']) {
         <?php
         if (isset($_SESSION['admin']) && $_SESSION['admin']) {
             PRETEKY::vypis_zoznam_admin();
-        } else {
+        }
+        else {
             PRETEKY::vypis_zoznam();
         } ?>
         </tbody>
     </table>
 </div>
 <br><br>
-
 <script type="text/javascript" src="sorter/jquery.tablesorter.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {

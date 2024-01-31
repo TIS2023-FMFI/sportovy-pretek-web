@@ -5,19 +5,19 @@ include('preteky.php');
 session_start();
 ?>
 
-<!DOCTYPE HTML>
-<html lang="sk">
-<?php
-hlavicka("Tabuľka výkonov");
-if (isset($_POST["vymaz"])) {
-    if (vymaz_vykon($_POST["ID_VYKON"])) {
-        echo "<h4 align='center'>Výkon vymazaný</h4>";
+    <!DOCTYPE HTML>
+    <html lang="sk">
+    <?php
+    hlavicka("Tabuľka výkonov");
+    if (isset($_POST["vymaz"])) {
+        if (vymaz_vykon($_POST["ID_VYKON"])) {
+            echo "<h4 align='center'>Výkon vymazaný</h4>";
+        }
     }
-}
-vypis_vykony($_GET["id"]);
-paticka(); ?>
+    vypis_vykony($_GET["id"]);
+    paticka(); ?>
 
-</html>
+    </html>
 
 <?php
 // === PHP Functions ===
@@ -96,5 +96,3 @@ EOF;
     }
     return 0;
 }
-
-?>
