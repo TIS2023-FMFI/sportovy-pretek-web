@@ -8,7 +8,7 @@ class MyDB extends SQLite3
 {
     function __construct()
     {
-        parent::__construct('databaseNew.db', SQLITE3_OPEN_READWRITE, "");
+        parent::__construct('database.db', SQLITE3_OPEN_READWRITE, "");
     }
 }
 
@@ -63,11 +63,6 @@ EOF;
 function is_admin()
 {
     return session_status() != PHP_SESSION_NONE && isset($_SESSION['admin']) && $_SESSION['admin'] == 1;
-}
-
-function has_rows($sqlite_result)
-{
-    return $sqlite_result->numColumns() && $sqlite_result->columnType(0) != SQLITE3_NULL;
 }
 
 function vymaz_obrazok($id)

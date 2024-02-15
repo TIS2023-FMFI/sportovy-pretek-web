@@ -74,7 +74,8 @@ EOF;
         if (!$ret) {
             echo $db->lastErrorMsg();
             $ret = -1;
-        } else {
+        }
+        else {
             $ret = $db->lastInsertRowID();
         }
         $db->close();
@@ -118,8 +119,7 @@ EOF;
        SELECT * FROM Pouzivatelia WHERE id = $id;
 EOF;
         $ret = $db->query($pouz_sql);
-        if (has_rows($ret)) {
-            $row = $ret->fetchArray(SQLITE3_ASSOC);
+        if ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
             $p = new self();
             $p->nacitaj($row['id'], $row['meno'], $row['priezvisko'], $row['id_oddiel'], $row['os_i_c'], $row['cip'], $row['poznamka'], $row['uspech']);
             if (is_admin()) {
@@ -132,8 +132,9 @@ EOF;
 
             }
             return $p;
-        } else {
-            echo 'Zvoleny pouzivatel neexistuje';
+        }
+        else {
+            echo "Zvoleny pouzivatel neexistuje: id $id";
         }
         return null;
     }
@@ -151,7 +152,8 @@ EOF;
                 $akt_oddiel = $row['nazov'];
                 if ($akt_oddiel == "") {
                     echo "<h2 class=ZC_nadpis>Bez oddielu</h2>";
-                } else {
+                }
+                else {
                     echo "<h2 class=ZC_nadpis>" . $akt_oddiel . "</h2>";
                 }
             }
@@ -169,13 +171,17 @@ EOF;
                 <?php
                 if (file_exists('pictures/' . $pouz['ID'] . '.gif')) {
                     $subor = 'pictures/' . $pouz['ID'] . '.gif';
-                } else if (file_exists('pictures/' . $pouz['ID'] . '.png')) {
+                }
+                else if (file_exists('pictures/' . $pouz['ID'] . '.png')) {
                     $subor = 'pictures/' . $pouz['ID'] . '.png';
-                } else if (file_exists('pictures/' . $pouz['ID'] . '.jpg')) {
+                }
+                else if (file_exists('pictures/' . $pouz['ID'] . '.jpg')) {
                     $subor = 'pictures/' . $pouz['ID'] . '.jpg';
-                } else if (file_exists('pictures/' . $pouz['ID'] . '.jpeg')) {
+                }
+                else if (file_exists('pictures/' . $pouz['ID'] . '.jpeg')) {
                     $subor = 'pictures/' . $pouz['ID'] . '.jpeg';
-                } else {
+                }
+                else {
                     $subor = 'pictures/no_photo.jpg';
                 }
                 ?>
@@ -217,7 +223,8 @@ EOF;
         $ret = $db->exec($sql);
         if (!$ret) {
             echo $db->lastErrorMsg();
-        } else {
+        }
+        else {
             vymaz_obrazok($ID);
         }
         $db->close();
